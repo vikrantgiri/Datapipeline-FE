@@ -16,8 +16,6 @@ const TriggerLeads = () => {
   const [searchText, setSearchText] = useState("");
   const [showCounts, setShowCounts] = useState(true);
   const [selectedSource, setSelectedSource] = useState("All");
-  const [selectedLeadType, setSelectedLeadType] = useState("All");
-  const [selectedState, setSelectedState] = useState("All");
 
   const filteredData = triggerLeadsData.filter((item) => {
     const search = searchText.toLowerCase();
@@ -27,33 +25,54 @@ const TriggerLeads = () => {
       item.state.toLowerCase().includes(search) ||
       item.zip.includes(search);
 
-    const matchesSource =
-      selectedSource === "All" || item.dataSource === selectedSource;
+    const matchesFilter =
+      selectedSource === "All" ||
+      item.dataSource === selectedSource ||
+      item.leadType === selectedSource ||
+      item.state === selectedSource;
 
-    const matchesLeadType =
-      selectedLeadType === "All" || item.leadType === selectedLeadType;
-
-    const matchesState =
-      selectedState === "All" || item.state === selectedState;
-
-    return matchesSearch && matchesSource && matchesLeadType && matchesState;
+    return matchesSearch && matchesFilter;
   });
 
   const columns = [
+    { title: "ID", dataIndex: "id", key: "id", width: 80,
+         render: (text: string) => <span className="text-blue-600">{text}</span>,
+     },
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      width: 80,
-      render: (text: string) => <span className="text-blue-600">{text}</span>,
+      title: "FIRST NAME",
+      dataIndex: "firstName",
+      key: "firstName",
     },
-    { title: "FIRST NAME", dataIndex: "firstName", key: "firstName" },
-    { title: "LAST NAME", dataIndex: "lastName", key: "lastName" },
-    { title: "STATE", dataIndex: "state", key: "state" },
-    { title: "ZIP", dataIndex: "zip", key: "zip" },
-    { title: "DATA SOURCE", dataIndex: "dataSource", key: "dataSource" },
-    { title: "LEAD TYPE", dataIndex: "leadType", key: "leadType" },
-    { title: "CREATED AT", dataIndex: "createdAt", key: "createdAt" },
+    {
+      title: "LAST NAME",
+      dataIndex: "lastName",
+      key: "lastName",
+    },
+    {
+      title: "STATE",
+      dataIndex: "state",
+      key: "state",
+    },
+    {
+      title: "ZIP",
+      dataIndex: "zip",
+      key: "zip",
+    },
+    {
+      title: "DATA SOURCE",
+      dataIndex: "dataSource",
+      key: "dataSource",
+    },
+    {
+      title: "LEAD TYPE",
+      dataIndex: "leadType",
+      key: "leadType",
+    },
+    {
+      title: "CREATED AT",
+      dataIndex: "createdAt",
+      key: "createdAt",
+    },
   ];
 
   return (
@@ -106,11 +125,11 @@ const TriggerLeads = () => {
               selectLabel2="By lead type"
               selectLabel3=" By state"
               selectedValue1={selectedSource}
-              selectedValue2={selectedLeadType}
-              selectedValue3={selectedState}
+              selectedValue2={selectedSource}
+              selectedValue3={selectedSource}
               onSelectChange1={(value) => setSelectedSource(value)}
-              onSelectChange2={(value) => setSelectedLeadType(value)}
-              onSelectChange3={(value) => setSelectedState(value)}
+              onSelectChange2={(value) => setSelectedSource(value)}
+              onSelectChange3={(value) => setSelectedSource(value)}
               selectOptions1={["All", "TransUnion", "Experian", "unspecified"]}
               selectOptions2={[
                 "All",

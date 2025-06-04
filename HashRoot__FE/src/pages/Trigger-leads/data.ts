@@ -29,8 +29,8 @@ export const triggerLeadsData: TriggerLeadItem[] = [
     lastName: "SUAREZ",
     state: "CO",
     zip: "80542",
-    dataSource: "TransUnion",
-    leadType: "First Time Reverse",
+    dataSource: "Experian",
+    leadType: "HECM to HECM",
     createdAt: "June 4, 2025, 2:13 a.m.",
   },
 ];

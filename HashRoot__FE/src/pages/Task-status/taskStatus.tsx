@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Button, Input, Table } from "antd";
-import { DeleteOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import MainLayout from "../../layout/MainLayout";
 import HeadingWithButton from "../../components/Heading-button";
 import FileDDFilter from "../../components/Filter/FileDDFilter";
@@ -11,60 +14,24 @@ const { Search } = Input;
 const TaskStatus = () => {
   const [searchText, setSearchText] = useState("");
   const [showCounts, setShowCounts] = useState(true);
-  const [selectedStatus, setSelectedStatus] = useState("All");
-  const [selectedDateRange, setSelectedDateRange] = useState("Any date");
+  const [selectedSource, setSelectedSource] = useState("All");
 
   const filteredData = taskStatusData.filter((item) => {
     const searchLower = searchText.toLowerCase();
-
     const matchesSearch =
       item.taskDefinition.toLowerCase().includes(searchLower) ||
       item.status.toLowerCase().includes(searchLower) ||
       item.createdBy.toLowerCase().includes(searchLower);
 
-    const matchesStatus =
-      selectedStatus === "All" || item.status === selectedStatus;
+    const matchesFilter =
+      selectedSource === "All" || item.status === selectedSource;
 
-    const matchesDate = (() => {
-      if (selectedDateRange === "Any date") return true;
-
-      const createdAt = new Date(item.createdAt);
-      const now = new Date();
-
-      if (selectedDateRange === "Today") {
-        return createdAt.toDateString() === now.toDateString();
-      }
-
-      if (selectedDateRange === "Past 7 Day") {
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(now.getDate() - 7);
-        return createdAt >= sevenDaysAgo && createdAt <= now;
-      }
-
-      if (selectedDateRange === "This month") {
-        return (
-          createdAt.getMonth() === now.getMonth() &&
-          createdAt.getFullYear() === now.getFullYear()
-        );
-      }
-
-      if (selectedDateRange === "This Year") {
-        return createdAt.getFullYear() === now.getFullYear();
-      }
-
-      return true;
-    })();
-
-    return matchesSearch && matchesStatus && matchesDate;
+    return matchesSearch && matchesFilter;
   });
 
   const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      width: 80,
-      render: (text: string) => <span className="text-blue-600">{text}</span>,
+    { title: "ID", dataIndex: "id", key: "id", width: 80 ,
+         render: (text: string) => <span className="text-blue-600">{text}</span>,
     },
     {
       title: "TASK DEFINITION",
@@ -118,12 +85,12 @@ const TaskStatus = () => {
               title="Filters"
               showCounts={showCounts}
               setShowCounts={setShowCounts}
-              selectLabel1="By status"
-              selectLabel2="By created at"
-              selectedValue1={selectedStatus}
-              selectedValue2={selectedDateRange}
-              onSelectChange1={(value) => setSelectedStatus(value)}
-              onSelectChange2={(value) => setSelectedDateRange(value)}
+              selectLabel1=" By status"
+              selectLabel2=" By created at"
+              selectedValue1={selectedSource}
+              selectedValue2={selectedSource}
+              onSelectChange1={(value) => setSelectedSource(value)}
+              onSelectChange2={(value) => setSelectedSource(value)}
               selectOptions1={[
                 "All",
                 "Pending",

@@ -7,26 +7,25 @@ import {
 } from "@ant-design/icons";
 import MainLayout from "../../layout/MainLayout";
 import HeadingWithButton from "../../components/Heading-button/index";
-import FileDDFilter from "../../components/Filter/FileDDFilter";
+import CredentialsFilter from "../../components/Filter/CredentialsFilter";
 import {
-  fileDownloadDefinitionData,
-  fileDownloadDefinitionColumns,
- 
-} from "./data"; 
+  credentialsData,
+  credentialsColumns,
+} from "./data";
 
 const { Search } = Input;
 
-const FileDownloadDefinition = () => {
+const Credentials = () => {
   const [searchText, setSearchText] = useState("");
   const [showCounts, setShowCounts] = useState(true);
   const [selectedSource, setSelectedSource] = useState("All");
 
-  const filteredData = fileDownloadDefinitionData.filter((item) => {
+  const filteredData = credentialsData.filter((item) => {
     const matchesSearch = item.name
       .toLowerCase()
       .includes(searchText.toLowerCase());
     const matchesFilter =
-      selectedSource === "All" || item.name === selectedSource;
+      selectedSource === "All" || item.thirdParty === selectedSource;
     return matchesSearch && matchesFilter;
   });
 
@@ -34,17 +33,17 @@ const FileDownloadDefinition = () => {
     <MainLayout>
       <div className="p-4 sm:p-6">
         <HeadingWithButton
-          heading="Select File Download Definition to change"
-          buttonText="Add File Download Definition"
+          heading="Select Credential"
+          buttonText="Add Credentials"
           buttonColor="primary"
           buttonIcon={<PlusOutlined />}
-          to="/FileDownloadDefinition/add"
+          to="/credentials/add"
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
           <div className="lg:col-span-9 w-full">
             <Search
-              placeholder="Search File Download Definition"
+              placeholder="Search credentials"
               allowClear
               enterButton={<SearchOutlined />}
               className="mb-4 w-full"
@@ -53,7 +52,7 @@ const FileDownloadDefinition = () => {
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
               <span className="text-sm text-gray-600">
-                {filteredData.length} File Download Definition found
+                {filteredData.length} credentials found
               </span>
               <Button icon={<DeleteOutlined />} danger>
                 Delete Selected
@@ -62,7 +61,7 @@ const FileDownloadDefinition = () => {
 
             <div className="overflow-x-auto">
               <Table
-                columns={fileDownloadDefinitionColumns}
+                columns={credentialsColumns}
                 dataSource={filteredData}
                 rowSelection={{ type: "checkbox" }}
                 bordered
@@ -72,35 +71,22 @@ const FileDownloadDefinition = () => {
           </div>
 
           <div className="lg:col-span-3 w-full">
-            <FileDDFilter
+            <CredentialsFilter
               title="Filters"
               showCounts={showCounts}
               setShowCounts={setShowCounts}
-              selectLabel1="By Credentials"
-              selectLabel2="By Post DC"
-              selectLabel3="By post to call shaper"
-              selectLabel4="By insert to postgres"
-              selectedValue1={selectedSource}
-              selectedValue2={selectedSource}
-              selectedValue3={selectedSource}
-              selectedValue4={selectedSource}
-              onSelectChange1={(value) => setSelectedSource(value)}
-              onSelectChange2={(value) => setSelectedSource(value)}
-              onSelectChange3={(value) => setSelectedSource(value)}
-               onSelectChange4={(value) => setSelectedSource(value)}
-              selectOptions1={[
+              selectLabel="By Third Party"
+              selectedValue={selectedSource}
+              onSelectChange={(value) => setSelectedSource(value)}
+              selectOptions={[
                 "All",
-                "Experian Prescreen Data Gateway",
-                "TransUnion Data Gateway",
-                "Marketing Postgres",
+                "TransUnion",
+                "Experian",
+                "Other",
                 "Snowflake",
-                "Experian Trigger",
-                "Experian Input Files",
+                "Postgres",
+                "DemandConversions",
               ]}
-            
-              selectOptions2={["All", "Yes", "No"]}
-              selectOptions3={["All", "Yes", "No"]}
-              selectOptions4={["All", "Yes", "No"]}
             />
           </div>
         </div>
@@ -109,4 +95,4 @@ const FileDownloadDefinition = () => {
   );
 };
 
-export default FileDownloadDefinition;
+export default Credentials;

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Form, Input, Button, Select,Typography , Divider} from "antd";
 
 
@@ -6,14 +6,8 @@ const { Option } = Select;
 const { TextArea } = Input;
 const {  Text,Title } = Typography;
 
-const InputFileForm: React.FC<{ onSubmit: (values: any) => void ,initialValues?: any }> = ({ onSubmit ,initialValues,}) => {
+const InputFileForm: React.FC<{ onSubmit: (values: any) => void }> = ({ onSubmit }) => {
   const [form] = Form.useForm();
-
-  useEffect(() => {
-    if (initialValues) {
-      form.setFieldsValue(initialValues);
-    }
-  }, [initialValues]);
 
   const handleFinish = (values: any) => {
     onSubmit(values);
@@ -100,7 +94,15 @@ const InputFileForm: React.FC<{ onSubmit: (values: any) => void ,initialValues?:
       <Text >Created by:</Text> <Text>-</Text>
       <Divider />
 
-
+ <Title level={5}>Task Statuses</Title>
+      <div className="bg-blue-500 text-white p-2 grid grid-cols-6 gap-2">
+        <span>TASK LOGS</span>
+        <span>STATUS</span>
+        <span>CREATED AT</span>
+        <span>CREATED BY</span>
+        <span>UPDATED AT</span>
+        
+      </div>
 
     
     </Form>

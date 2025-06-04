@@ -6,9 +6,6 @@ export interface FileDownloadDefinitionItem {
   createdAt: string;
   createdBy: string;
   action:string
-  post_dc?: boolean;
-post_call_shaper?: boolean;
-insert_postgres?: boolean;
 }
 
 export const fileDownloadDefinitionData: FileDownloadDefinitionItem[] = [

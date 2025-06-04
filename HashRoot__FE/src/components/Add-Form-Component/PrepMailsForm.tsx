@@ -23,7 +23,15 @@ const PrepMailsForm: React.FC<PrepMailsFormProps> = ({ form, onFinish }) => {
       <Text >Created by:</Text> <Text>-</Text>
 <Divider/>
 
-
+ <Title level={5}>Prep Mail Statuses</Title>
+      <div className="bg-blue-500 text-white p-2 grid grid-cols-6 gap-2">
+        <span>CSV FILE NAME</span>
+        <span>STATUS</span>
+        <span>CREATED AT</span>
+        <span>CREATED BY</span>
+        <span>UPDATED AT</span>
+         <span>TASK LOGS</span>
+      </div>
 
       
     </Form>

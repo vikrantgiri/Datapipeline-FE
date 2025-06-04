@@ -112,7 +112,14 @@ const FileDownloadForm: React.FC<FileDownloadFormProps> = ({
 
       <Divider />
 
-    
+      <Title level={5}>File Download Statuses</Title>
+      <div className="bg-blue-500 text-white p-2 grid grid-cols-5 gap-2">
+        <span>TASK LOGS</span>
+        <span>STATUS</span>
+        <span>CREATED AT</span>
+        <span>CREATED BY</span>
+        <span>UPDATED AT</span>
+      </div>
     </Form>
   </div>
   <div className="flex gap-4 pt-4">

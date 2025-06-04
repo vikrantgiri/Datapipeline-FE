@@ -1,13 +1,13 @@
 export interface inputfileData {
   key: string;
-   id: string;
+  id: string;
   taskType: string;
   campaignType: string;
   thirdParty: string;
-  useTabu: boolean;
+  useTabu: string;
   createdBy: string;
-  executions: number;
-  action: string;
+  executions: string;
+  action:string;
 }
 
 export const mockInputFileData: inputfileData[] = [
@@ -17,9 +17,9 @@ export const mockInputFileData: inputfileData[] = [
     taskType: "Prescreen",
     campaignType: "aws.snowflake.com",
     thirdParty: "Experian",
-    useTabu: true,
+    useTabu: "admin_aws",
     createdBy: "2024-05-22",
-    executions:8,
+    executions: "	8 executions",
     action:"Run task",
   },
   {
@@ -27,10 +27,10 @@ export const mockInputFileData: inputfileData[] = [
     id: "2",
     taskType: "Trigger",
     campaignType: "ftp.tu.com",
-    thirdParty: "TransUnion",
-    useTabu: false,
+    thirdParty: "	TransUnion",
+    useTabu: "ftp_user",
     createdBy: "2024-05-21",
-    executions: 8,
+    executions: "	8 executions",
      action:"Run task",
   },
 ];
