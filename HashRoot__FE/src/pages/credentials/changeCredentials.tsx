@@ -4,7 +4,7 @@ import MainLayout from '../../layout/MainLayout';
 import CredentialsForm from '../../components/Add-Form-Component/CredentialsForm'; 
 import { Form } from 'antd';
 
-const AddCredentials: React.FC = () => {
+const ChangeCredentials: React.FC = () => {
   const [form] = Form.useForm();
   const [credentials, setCredentials] = useState<any[]>([]);
 
@@ -37,6 +37,7 @@ const AddCredentials: React.FC = () => {
         <div className="pr-4">
           <CredentialsForm form={form} onFinish={handleFinish} />
         </div>
+      
 
         {credentials.length > 0 && (
           <div className="mt-12">
@@ -55,4 +56,4 @@ const AddCredentials: React.FC = () => {
   );
 };
 
-export default AddCredentials;
+export default ChangeCredentials;
