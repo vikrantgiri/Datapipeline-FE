@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Button, Input, Table } from "antd";
 import {
@@ -35,9 +36,23 @@ const TriggerLeads = () => {
   });
 
   const columns = [
-    { title: "ID", dataIndex: "id", key: "id", width: 80,
-         render: (text: string) => <span className="text-blue-600">{text}</span>,
-     },
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      width: 80,
+      render: (text: string, record: any) => (
+        <Link
+          to={{
+            pathname: "/TriggerLeads/change",
+          }}
+          state={{ record }}
+          className="text-blue-600"
+        >
+          {text}
+        </Link>
+      ),
+    },
     {
       title: "FIRST NAME",
       dataIndex: "firstName",

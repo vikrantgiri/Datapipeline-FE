@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Button, Input, Table } from "antd";
 import {
@@ -30,14 +31,38 @@ const TaskStatus = () => {
   });
 
   const columns = [
-    { title: "ID", dataIndex: "id", key: "id", width: 80 ,
-         render: (text: string) => <span className="text-blue-600">{text}</span>,
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      width: 80,
+      render: (text: string, record: any) => (
+        <Link
+          to={{
+            pathname: "/TaskStatus/change",
+          }}
+          state={{ record }}
+          className="text-blue-600"
+        >
+          {text}
+        </Link>
+      ),
     },
     {
       title: "TASK DEFINITION",
       dataIndex: "taskDefinition",
       key: "taskDefinition",
-      render: (text: string) => <span className="text-blue-600">{text}</span>,
+      render: (text: string, record: any) => (
+        <Link
+          to={{
+            pathname: "/InputFileDefinition/change",
+          }}
+          state={{ record }}
+          className="text-blue-600"
+        >
+          {text}
+        </Link>
+      ),
     },
     { title: "STATUS", dataIndex: "status", key: "status" },
     { title: "CREATED AT", dataIndex: "createdAt", key: "createdAt" },

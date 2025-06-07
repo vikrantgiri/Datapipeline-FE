@@ -1,5 +1,4 @@
-import type { ColumnsType } from "antd/es/table"; 
-
+// src/pages/Credentials/data.ts
 
 export interface Credential {
   key: string;
@@ -33,19 +32,4 @@ export const credentialsData: Credential[] = [
     createdAt: "2024-05-21",
     createdBy: "Admin",
   },
-];
-
-export const credentialsColumns: ColumnsType<Credential> = [
-  {
-    title: "NAME",
-    dataIndex: "name",
-    key: "name",
-    render: (text: string) => text ,
-  },
-  { title: "THIRD PARTY", dataIndex: "thirdParty", key: "thirdParty" },
-  { title: "HOST", dataIndex: "host", key: "host" },
-  { title: "DATABASE", dataIndex: "db", key: "db" },
-  { title: "USERNAME", dataIndex: "username", key: "username" },
-  { title: "CREATED AT", dataIndex: "createdAt", key: "createdAt" },
-  { title: "CREATED BY", dataIndex: "createdBy", key: "createdBy" },
 ];

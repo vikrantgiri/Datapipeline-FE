@@ -1,18 +1,15 @@
+
 import { useState } from "react";
 import { Button, Input, Table } from "antd";
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined, DeleteOutlined, SearchOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import type { ColumnsType } from "antd/es/table";
+
 import MainLayout from "../../layout/MainLayout";
-import HeadingWithButton from "../../components/Heading-button/index";
+import HeadingWithButton from "../../components/Heading-button";
 import FileDDFilter from "../../components/Filter/FileDDFilter";
-import {
-  fileDownloadDefinitionData,
-  fileDownloadDefinitionColumns,
- 
-} from "./data"; 
+
+import { fileDownloadDefinitionData, type FileDownloadDefinitionItem } from "./data";
 
 const { Search } = Input;
 
@@ -22,13 +19,33 @@ const FileDownloadDefinition = () => {
   const [selectedSource, setSelectedSource] = useState("All");
 
   const filteredData = fileDownloadDefinitionData.filter((item) => {
-    const matchesSearch = item.name
-      .toLowerCase()
-      .includes(searchText.toLowerCase());
-    const matchesFilter =
-      selectedSource === "All" || item.name === selectedSource;
+    const matchesSearch = item.name.toLowerCase().includes(searchText.toLowerCase());
+    const matchesFilter = selectedSource === "All" || item.credentials === selectedSource;
     return matchesSearch && matchesFilter;
   });
+
+  const columns: ColumnsType<FileDownloadDefinitionItem> = [
+    {
+      title: "NAME",
+      dataIndex: "name",
+      key: "name",
+      render: (text: string, record: FileDownloadDefinitionItem) => (
+        <Link
+          to={{
+            pathname: "/FileDownloadDefinition/change",
+          }}
+          state={{ record }}
+        >
+          {text}
+        </Link>
+      ),
+    },
+    { title: "CREDENTIALS", dataIndex: "credentials", key: "credentials" },
+    { title: "REMOTE PATH", dataIndex: "remotepath", key: "remotepath" },
+    { title: "CREATED AT", dataIndex: "createdAt", key: "createdAt" },
+    { title: "CREATED BY", dataIndex: "createdBy", key: "createdBy" },
+    { title: "ACTION", dataIndex: "action", key: "action" },
+  ];
 
   return (
     <MainLayout>
@@ -62,7 +79,7 @@ const FileDownloadDefinition = () => {
 
             <div className="overflow-x-auto">
               <Table
-                columns={fileDownloadDefinitionColumns}
+                columns={columns}
                 dataSource={filteredData}
                 rowSelection={{ type: "checkbox" }}
                 bordered
@@ -87,7 +104,7 @@ const FileDownloadDefinition = () => {
               onSelectChange1={(value) => setSelectedSource(value)}
               onSelectChange2={(value) => setSelectedSource(value)}
               onSelectChange3={(value) => setSelectedSource(value)}
-               onSelectChange4={(value) => setSelectedSource(value)}
+              onSelectChange4={(value) => setSelectedSource(value)}
               selectOptions1={[
                 "All",
                 "Experian Prescreen Data Gateway",
@@ -97,7 +114,6 @@ const FileDownloadDefinition = () => {
                 "Experian Trigger",
                 "Experian Input Files",
               ]}
-            
               selectOptions2={["All", "Yes", "No"]}
               selectOptions3={["All", "Yes", "No"]}
               selectOptions4={["All", "Yes", "No"]}

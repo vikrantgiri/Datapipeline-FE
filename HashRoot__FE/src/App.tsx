@@ -20,6 +20,7 @@ import ChangeCredentials from './pages/credentials/changeCredentials';
 import ChangeInputFileDefinition from './pages/Input-File-Definitions/ChangeInputFileDefinition';
 import ChangePrepMails from './pages/prep-mails/ChangePrepMails'
 import ChangeTriggerLeads from './pages/Trigger-leads/ChangeTriggerLeads';
+import ChangeTaskStatus from './pages/Task-status/ChangeTaskStatus';
 
 const App = () => {
   return (
@@ -45,6 +46,7 @@ const App = () => {
    <Route path='/InputFileDefinition/change' element={<ChangeInputFileDefinition/>}/>
      <Route path='/PrepMails/change' element={<ChangePrepMails/>}/>
        <Route path='/TriggerLeads/change' element={<ChangeTriggerLeads/>}/>
+        <Route path='/TaskStatus/change' element={<ChangeTaskStatus/>}/>
 
     </Routes>  
     </>

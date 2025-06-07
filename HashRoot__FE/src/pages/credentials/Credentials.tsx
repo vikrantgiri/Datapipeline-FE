@@ -1,17 +1,16 @@
+// src/pages/Credentials/index.tsx
+
 import { useState } from "react";
 import { Button, Input, Table } from "antd";
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined, DeleteOutlined, SearchOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import type { ColumnsType } from "antd/es/table";
+
 import MainLayout from "../../layout/MainLayout";
 import HeadingWithButton from "../../components/Heading-button/index";
 import CredentialsFilter from "../../components/Filter/CredentialsFilter";
-import {
-  credentialsData,
-  credentialsColumns,
-} from "./data";
+
+import { credentialsData, type Credential } from "./data";
 
 const { Search } = Input;
 
@@ -21,13 +20,34 @@ const Credentials = () => {
   const [selectedSource, setSelectedSource] = useState("All");
 
   const filteredData = credentialsData.filter((item) => {
-    const matchesSearch = item.name
-      .toLowerCase()
-      .includes(searchText.toLowerCase());
-    const matchesFilter =
-      selectedSource === "All" || item.thirdParty === selectedSource;
+    const matchesSearch = item.name.toLowerCase().includes(searchText.toLowerCase());
+    const matchesFilter = selectedSource === "All" || item.thirdParty === selectedSource;
     return matchesSearch && matchesFilter;
   });
+
+  const columns: ColumnsType<Credential> = [
+    {
+      title: "NAME",
+      dataIndex: "name",
+      key: "name",
+      render: (text: string, record: Credential) => (
+        <Link
+          to={{
+            pathname: "/credentials/change",
+          }}
+          state={{ record }}
+        >
+          {text}
+        </Link>
+      ),
+    },
+    { title: "THIRD PARTY", dataIndex: "thirdParty", key: "thirdParty" },
+    { title: "HOST", dataIndex: "host", key: "host" },
+    { title: "DATABASE", dataIndex: "db", key: "db" },
+    { title: "USERNAME", dataIndex: "username", key: "username" },
+    { title: "CREATED AT", dataIndex: "createdAt", key: "createdAt" },
+    { title: "CREATED BY", dataIndex: "createdBy", key: "createdBy" },
+  ];
 
   return (
     <MainLayout>
@@ -61,7 +81,7 @@ const Credentials = () => {
 
             <div className="overflow-x-auto">
               <Table
-                columns={credentialsColumns}
+                columns={columns}
                 dataSource={filteredData}
                 rowSelection={{ type: "checkbox" }}
                 bordered

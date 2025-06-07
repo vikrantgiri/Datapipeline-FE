@@ -1,14 +1,11 @@
 import { useState } from "react";
 import { Button, Input, Table } from "antd";
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined, DeleteOutlined, SearchOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 import MainLayout from "../../layout/MainLayout";
 import HeadingWithButton from "../../components/Heading-button";
 import FileDDFilter from "../../components/Filter/FileDDFilter";
-import {mockInputFileData, type inputfileData} from './data'
+import { mockInputFileData, type inputfileData } from "./data";
 
 const { Search } = Input;
 
@@ -16,7 +13,6 @@ const InputFileDefinition = () => {
   const [searchText, setSearchText] = useState("");
   const [showCounts, setShowCounts] = useState(true);
   const [selectedSource, setSelectedSource] = useState("All");
-
 
   const data: inputfileData[] = mockInputFileData;
 
@@ -34,7 +30,17 @@ const InputFileDefinition = () => {
       title: "ID",
       dataIndex: "id",
       key: "id",
-      render: (text: string) => <span className="text-blue-600">{text}</span>,
+      render: (text: string, record: inputfileData) => (
+        <Link
+          to={{
+            pathname: "/InputFileDefinition/change",
+          }}
+          state={{ record }}
+          className="text-blue-600"
+        >
+          {text}
+        </Link>
+      ),
     },
     { title: "TASK TYPE", dataIndex: "taskType", key: "taskType" },
     { title: "CAMPAIGN TYPE", dataIndex: "campaignType", key: "campaignType" },
@@ -87,31 +93,22 @@ const InputFileDefinition = () => {
           </div>
 
           <div className="lg:col-span-3 w-full">
-             <FileDDFilter
+            <FileDDFilter
               title="Filters"
               showCounts={showCounts}
               setShowCounts={setShowCounts}
               selectLabel1=" By task type"
               selectLabel2="By TASK TYPE"
               selectLabel3="By use tabu"
-              
               selectedValue1={selectedSource}
               selectedValue2={selectedSource}
               selectedValue3={selectedSource}
-              
               onSelectChange1={(value) => setSelectedSource(value)}
               onSelectChange2={(value) => setSelectedSource(value)}
               onSelectChange3={(value) => setSelectedSource(value)}
-              
-              selectOptions1={[
-                "All",
-                "Prescreen",
-                "Trigger"
-              ]}
-            
-              selectOptions2={["All", "TransUnion", "Experian","other"]}
+              selectOptions1={["All", "Prescreen", "Trigger"]}
+              selectOptions2={["All", "TransUnion", "Experian", "other"]}
               selectOptions3={["All", "Yes", "No"]}
-              
             />
           </div>
         </div>

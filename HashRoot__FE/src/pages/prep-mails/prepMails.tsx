@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"; 
 import { useState } from "react";
 import { Button,  Table } from "antd";
 import {
@@ -27,16 +28,56 @@ const PrepMails = () => {
   });
 
   const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      render: (text: string) => <span className="text-blue-600">{text}</span>,
-    },
+   {
+  title: "ID",
+  dataIndex: "id",
+  key: "id",
+  render: (text: string, record: PrepMail) => (
+    <Link
+      to={{
+        pathname: "/PrepMails/change",
+      }}
+      state={{ record }}
+      className="text-blue-600"
+    >
+      {text}
+    </Link>
+  ),
+},
      { title: "CREATED BY", dataIndex: "createdBy", key: "createdBy" },
     { title: "CREATED AT", dataIndex: "createdAt", key: "createdAt" },
-     { title: "Run Trigger", dataIndex: "runTrigger", key: "runTrigger" },
-      { title: "Download Results", dataIndex: "downloadResult", key: "downloadResult" },
+   {
+  title: "Run Trigger",
+  dataIndex: "runTrigger",
+  key: "runTrigger",
+  render: (_: any, record: PrepMail) => (
+    <Link
+      to={{
+        pathname: "/PrepMails/run-trigger",
+      }}
+      state={{ record }}
+      className="text-green-600 underline"
+    >
+      Run Trigger
+    </Link>
+  ),
+},
+{
+  title: "Download Results",
+  dataIndex: "downloadResult",
+  key: "downloadResult",
+  render: (_: any, record: PrepMail) => (
+    <Link
+      to={{
+        pathname: "/PrepMails/download-results",
+      }}
+      state={{ record }}
+      className="text-blue-600 underline"
+    >
+      Download CSV
+    </Link>
+  ),
+},
    
   ];
 
