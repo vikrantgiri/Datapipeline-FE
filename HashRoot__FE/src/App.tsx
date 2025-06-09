@@ -21,36 +21,62 @@ import ChangeInputFileDefinition from './pages/Input-File-Definitions/ChangeInpu
 import ChangePrepMails from './pages/prep-mails/ChangePrepMails'
 import ChangeTriggerLeads from './pages/Trigger-leads/ChangeTriggerLeads';
 import ChangeTaskStatus from './pages/Task-status/ChangeTaskStatus';
+import TaskLogFileDD from './pages/TaskLogs/TaskLogFileDD'
+import TaskLogInputFileDefinition from './pages/TaskLogs/TaskLogInputFileDefinition';
+import TaskLogPrepMailsDefinition from './pages/TaskLogs/TaskLogPrepMails';
 
 const App = () => {
   return (
     <>
-  <Routes>
-    <Route path ='/' element={<Home/>}/>
-    <Route path ='/dashboard' element={<Dashboard/>}/>
-    <Route path ='/credentials' element={<Credentials/>}/>
-    <Route path="/credentials/add" element={<AddCredentials />} />
-    <Route path ='/FileDownloadDefinition' element={<FileDownloadDefinition/>}/>
-    <Route path ='/FileDownloadDefinition/add' element={<AddFileDD/>}/>
-   <Route path ='/Files' element={<Files/>}/>
-   <Route path ='/Files/add' element={<AddFiles/>}/>
-     <Route path ='/InputFileDefinitions' element={<InputFileDefinition/>}/>
-     <Route path='/InputFileDefinition/add' element={<AddInputFileDefinition/>}/>
-    <Route path='/PrepMails' element={<PrepMails/>}/>
-    <Route path='/PrepMails/add' element={<AddPrepMails/>}/>
-    <Route path='/TaskStatus' element={<TaskStatus/>}/>
-    <Route path='/TriggerLeads' element={<TriggerLeads/>}/>
-    <Route path='/TriggerLeads/add' element={<AddTriggerLeads/>}/>
-     <Route path="/credentials/change" element={<ChangeCredentials/>} />
-   <Route path="/FileDownloadDefinition/change" element={<ChangeFileDD />} />
-   <Route path='/InputFileDefinition/change' element={<ChangeInputFileDefinition/>}/>
-     <Route path='/PrepMails/change' element={<ChangePrepMails/>}/>
-       <Route path='/TriggerLeads/change' element={<ChangeTriggerLeads/>}/>
-        <Route path='/TaskStatus/change' element={<ChangeTaskStatus/>}/>
-
-    </Routes>  
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/credentials" element={<Credentials />} />
+        <Route path="/credentials/add" element={<AddCredentials />} />
+        <Route
+          path="/FileDownloadDefinition"
+          element={<FileDownloadDefinition />}
+        />
+        <Route path="/FileDownloadDefinition/add" element={<AddFileDD />} />
+        <Route path="/Files" element={<Files />} />
+        <Route path="/Files/add" element={<AddFiles />} />
+        <Route path="/InputFileDefinitions" element={<InputFileDefinition />} />
+        <Route
+          path="/InputFileDefinition/add"
+          element={<AddInputFileDefinition />}
+        />
+        <Route path="/PrepMails" element={<PrepMails />} />
+        <Route path="/PrepMails/add" element={<AddPrepMails />} />
+        <Route path="/TaskStatus" element={<TaskStatus />} />
+        <Route path="/TriggerLeads" element={<TriggerLeads />} />
+        <Route path="/TriggerLeads/add" element={<AddTriggerLeads />} />
+        <Route path="/credentials/change" element={<ChangeCredentials />} />
+        <Route
+          path="/FileDownloadDefinition/change"
+          element={<ChangeFileDD />}
+        />
+        <Route
+          path="/InputFileDefinition/change"
+          element={<ChangeInputFileDefinition />}
+        />
+        <Route path="/PrepMails/change" element={<ChangePrepMails />} />
+        <Route path="/TriggerLeads/change" element={<ChangeTriggerLeads />} />
+        <Route path="/TaskStatus/change" element={<ChangeTaskStatus />} />
+        <Route
+          path="/TaskLog/FileDownloadDefinition"
+          element={<TaskLogFileDD />}
+        />
+        <Route
+          path="/TaskLog/InputFileDefinition"
+          element={<TaskLogInputFileDefinition />}
+        />
+        <Route
+          path="/TaskLog/PrepMailsDefinition"
+          element={<TaskLogPrepMailsDefinition />}
+        />
+      </Routes>
     </>
-  )
+  );
 }
 
 export default App

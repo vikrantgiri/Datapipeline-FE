@@ -34,11 +34,11 @@ const FileDownloadForm: React.FC<{ onSubmit: (values: any) => void; initialValue
       </Form.Item>
 
       <Form.Item name="createdAt" label="Created At">
-        <Input disabled />
+        <Input  />
       </Form.Item>
 
       <Form.Item name="createdBy" label="Created By">
-        <Input disabled />
+        <Input   />
       </Form.Item>
 
       <Form.Item>
