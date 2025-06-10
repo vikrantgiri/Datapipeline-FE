@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Sidebar: FC = () => {
   const location = useLocation();
@@ -34,8 +34,10 @@ const Sidebar: FC = () => {
     },
   ];
 
+  useEffect(() => console.log(openDropdown), [openDropdown]);
+
   return (
-    <div className="w-90 bg-gradient-to-b from-gray-50 to-white border-r shadow-sm p-6 min-h-screen">
+    <div className="bg-gradient-to-b from-gray-50 to-white border-r shadow-sm p-6 min-h-screen min-w-80">
       <h2 className="text-2xl font-semibold text-gray-800 mb-8">Admin Panel</h2>
       <ul className="space-y-4">
         {menuItems.map((item) => {

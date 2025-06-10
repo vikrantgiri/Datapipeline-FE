@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Table } from 'antd';
-import MainLayout from '../../layout/MainLayout';
 import CredentialsForm from '../../components/Add-Form-Component/CredentialsForm'; 
 import { Form } from 'antd';
 
@@ -30,7 +29,6 @@ const AddCredentials: React.FC = () => {
   ];
 
   return (
-    <MainLayout>
       <div className=" text-white ">
         <h1 className="text-2xl text-black font-semibold mb-6">Add Credential</h1>
 
@@ -41,6 +39,7 @@ const AddCredentials: React.FC = () => {
         {credentials.length > 0 && (
           <div className="mt-12">
             <h2 className="text-xl mb-4">Saved Credentials</h2>
+            
             <Table
               dataSource={credentials}
               columns={columns}
@@ -51,7 +50,6 @@ const AddCredentials: React.FC = () => {
           </div>
         )}
       </div>
-    </MainLayout>
   );
 };
 

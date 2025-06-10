@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Table } from 'antd';
-import MainLayout from '../../layout/MainLayout';
 import CredentialsForm from '../../components/Add-Form-Component/CredentialsForm'; 
 import { Form } from 'antd';
 
@@ -30,7 +29,6 @@ const ChangeCredentials: React.FC = () => {
   ];
 
   return (
-    <MainLayout>
       <div className=" text-white ">
         <h1 className="text-2xl text-black font-semibold mb-6">Change Credential</h1>
 
@@ -52,7 +50,6 @@ const ChangeCredentials: React.FC = () => {
           </div>
         )}
       </div>
-    </MainLayout>
   );
 };
 
