@@ -1,5 +1,3 @@
-// src/pages/FileDownloadDefinition/data.ts
-
 export interface FileDownloadDefinitionItem {
   key: string;
   name: string;
@@ -8,6 +6,11 @@ export interface FileDownloadDefinitionItem {
   createdAt: string;
   createdBy: string;
   action: string;
+
+
+  postDC: string;             
+  postCallShaper: string;     
+  insertPostgres: string;     
 }
 
 export const fileDownloadDefinitionData: FileDownloadDefinitionItem[] = [
@@ -19,6 +22,10 @@ export const fileDownloadDefinitionData: FileDownloadDefinitionItem[] = [
     createdAt: "2024-05-22",
     createdBy: "System",
     action: "Download File",
+
+    postDC: "Yes",
+    postCallShaper: "No",
+    insertPostgres: "Yes",
   },
   {
     key: "2",
@@ -28,5 +35,9 @@ export const fileDownloadDefinitionData: FileDownloadDefinitionItem[] = [
     createdAt: "2024-05-21",
     createdBy: "Admin",
     action: "Download File",
+
+    postDC: "No",
+    postCallShaper: "Yes",
+    insertPostgres: "No",
   },
 ];

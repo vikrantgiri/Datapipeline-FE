@@ -1,4 +1,4 @@
-// src/pages/Credentials/data.ts
+
 
 export interface Credential {
   key: string;
