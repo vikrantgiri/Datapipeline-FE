@@ -22,15 +22,38 @@ const FileDownloadDefinition = () => {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
   const [showCounts, setShowCounts] = useState(true);
-  const [selectedSource, setSelectedSource] = useState("All");
+
+  const [filterCredentials, setFilterCredentials] = useState("All");
+  const [filterPostDC, setFilterPostDC] = useState("All");
+  const [filterPostCallShaper, setFilterPostCallShaper] = useState("All");
+  const [filterInsertPostgres, setFilterInsertPostgres] = useState("All");
 
   const filteredData = fileDownloadDefinitionData.filter((item) => {
     const matchesSearch = item.name
       .toLowerCase()
       .includes(searchText.toLowerCase());
-    const matchesFilter =
-      selectedSource === "All" || item.credentials === selectedSource;
-    return matchesSearch && matchesFilter;
+
+    const matchesCredentials =
+      filterCredentials === "All" || item.credentials === filterCredentials;
+
+    const matchesPostDC =
+      filterPostDC === "All" || item.postDC === filterPostDC;
+
+    const matchesCallShaper =
+      filterPostCallShaper === "All" ||
+      item.postCallShaper === filterPostCallShaper;
+
+    const matchesInsertPostgres =
+      filterInsertPostgres === "All" ||
+      item.insertPostgres === filterInsertPostgres;
+
+    return (
+      matchesSearch &&
+      matchesCredentials &&
+      matchesPostDC &&
+      matchesCallShaper &&
+      matchesInsertPostgres
+    );
   });
 
   const columns: ColumnsType<FileDownloadDefinitionItem> = [
@@ -69,7 +92,7 @@ const FileDownloadDefinition = () => {
   ];
 
   return (
-    <div className="">
+    <div>
       <HeadingWithButton
         heading="Select File Download Definition to change"
         buttonText="Add File Download Definition"
@@ -117,14 +140,14 @@ const FileDownloadDefinition = () => {
             selectLabel2="By Post DC"
             selectLabel3="By post to call shaper"
             selectLabel4="By insert to postgres"
-            selectedValue1={selectedSource}
-            selectedValue2={selectedSource}
-            selectedValue3={selectedSource}
-            selectedValue4={selectedSource}
-            onSelectChange1={(value) => setSelectedSource(value)}
-            onSelectChange2={(value) => setSelectedSource(value)}
-            onSelectChange3={(value) => setSelectedSource(value)}
-            onSelectChange4={(value) => setSelectedSource(value)}
+            selectedValue1={filterCredentials}
+            selectedValue2={filterPostDC}
+            selectedValue3={filterPostCallShaper}
+            selectedValue4={filterInsertPostgres}
+            onSelectChange1={setFilterCredentials}
+            onSelectChange2={setFilterPostDC}
+            onSelectChange3={setFilterPostCallShaper}
+            onSelectChange4={setFilterInsertPostgres}
             selectOptions1={[
               "All",
               "Experian Prescreen Data Gateway",

@@ -13,11 +13,14 @@ import { triggerLeadsData } from "./data";
 const { Search } = Input;
 
 const TriggerLeads = () => {
-
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
   const [showCounts, setShowCounts] = useState(true);
-  const [selectedSource, setSelectedSource] = useState("All");
+
+
+  const [selectedDataSource, setSelectedDataSource] = useState("All");
+  const [selectedLeadType, setSelectedLeadType] = useState("All");
+  const [selectedState, setSelectedState] = useState("All");
 
   const filteredData = triggerLeadsData.filter((item) => {
     const search = searchText.toLowerCase();
@@ -27,13 +30,18 @@ const TriggerLeads = () => {
       item.state.toLowerCase().includes(search) ||
       item.zip.includes(search);
 
-    const matchesFilter =
-      selectedSource === "All" ||
-      item.dataSource === selectedSource ||
-      item.leadType === selectedSource ||
-      item.state === selectedSource;
+    const matchesDataSource =
+      selectedDataSource === "All" || item.dataSource === selectedDataSource;
 
-    return matchesSearch && matchesFilter;
+    const matchesLeadType =
+      selectedLeadType === "All" || item.leadType === selectedLeadType;
+
+    const matchesState =
+      selectedState === "All" || item.state === selectedState;
+
+    return (
+      matchesSearch && matchesDataSource && matchesLeadType && matchesState
+    );
   });
 
   const columns = [
@@ -145,15 +153,15 @@ const TriggerLeads = () => {
             title="Filters"
             showCounts={showCounts}
             setShowCounts={setShowCounts}
-            selectLabel1=" By data source"
+            selectLabel1="By data source"
             selectLabel2="By lead type"
-            selectLabel3=" By state"
-            selectedValue1={selectedSource}
-            selectedValue2={selectedSource}
-            selectedValue3={selectedSource}
-            onSelectChange1={(value) => setSelectedSource(value)}
-            onSelectChange2={(value) => setSelectedSource(value)}
-            onSelectChange3={(value) => setSelectedSource(value)}
+            selectLabel3="By state"
+            selectedValue1={selectedDataSource}
+            selectedValue2={selectedLeadType}
+            selectedValue3={selectedState}
+            onSelectChange1={(value) => setSelectedDataSource(value)}
+            onSelectChange2={(value) => setSelectedLeadType(value)}
+            onSelectChange3={(value) => setSelectedState(value)}
             selectOptions1={["All", "TransUnion", "Experian", "unspecified"]}
             selectOptions2={[
               "All",

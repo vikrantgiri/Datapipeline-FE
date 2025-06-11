@@ -17,7 +17,10 @@ const InputFileDefinition = () => {
 
   const [searchText, setSearchText] = useState("");
   const [showCounts, setShowCounts] = useState(true);
-  const [selectedSource, setSelectedSource] = useState("All");
+
+  const [filterTaskType, setFilterTaskType] = useState("All");
+  const [filterCampaignType, setFilterCampaignType] = useState("All");
+  const [filterUseTabu, setFilterUseTabu] = useState("All");
 
   const data: inputfileData[] = mockInputFileData;
 
@@ -25,9 +28,19 @@ const InputFileDefinition = () => {
     const matchesSearch = item.id
       .toLowerCase()
       .includes(searchText.toLowerCase());
-    const matchesFilter =
-      selectedSource === "All" || item.taskType === selectedSource;
-    return matchesSearch && matchesFilter;
+
+    const matchesTaskType =
+      filterTaskType === "All" || item.taskType === filterTaskType;
+
+    const matchesCampaignType =
+      filterCampaignType === "All" || item.campaignType === filterCampaignType;
+
+    const matchesUseTabu =
+      filterUseTabu === "All" || item.useTabu === filterUseTabu;
+
+    return (
+      matchesSearch && matchesTaskType && matchesCampaignType && matchesUseTabu
+    );
   });
 
   const columns = [
@@ -113,17 +126,17 @@ const InputFileDefinition = () => {
             title="Filters"
             showCounts={showCounts}
             setShowCounts={setShowCounts}
-            selectLabel1=" By task type"
-            selectLabel2="By TASK TYPE"
-            selectLabel3="By use tabu"
-            selectedValue1={selectedSource}
-            selectedValue2={selectedSource}
-            selectedValue3={selectedSource}
-            onSelectChange1={(value) => setSelectedSource(value)}
-            onSelectChange2={(value) => setSelectedSource(value)}
-            onSelectChange3={(value) => setSelectedSource(value)}
+            selectLabel1="By Task Type"
+            selectLabel2="By Campaign Type"
+            selectLabel3="By Use Tabu"
+            selectedValue1={filterTaskType}
+            selectedValue2={filterCampaignType}
+            selectedValue3={filterUseTabu}
+            onSelectChange1={(value) => setFilterTaskType(value)}
+            onSelectChange2={(value) => setFilterCampaignType(value)}
+            onSelectChange3={(value) => setFilterUseTabu(value)}
             selectOptions1={["All", "Prescreen", "Trigger"]}
-            selectOptions2={["All", "TransUnion", "Experian", "other"]}
+            selectOptions2={["All", "TransUnion", "Experian", "Other"]}
             selectOptions3={["All", "Yes", "No"]}
           />
         </div>

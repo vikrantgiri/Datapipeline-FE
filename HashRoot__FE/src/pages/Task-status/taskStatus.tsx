@@ -9,11 +9,12 @@ import { taskStatusData } from "./data";
 const { Search } = Input;
 
 const TaskStatus = () => {
-
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
   const [showCounts, setShowCounts] = useState(true);
-  const [selectedSource, setSelectedSource] = useState("All");
+
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [createdAtFilter, setCreatedAtFilter] = useState("Any date");
 
   const filteredData = taskStatusData.filter((item) => {
     const searchLower = searchText.toLowerCase();
@@ -22,10 +23,32 @@ const TaskStatus = () => {
       item.status.toLowerCase().includes(searchLower) ||
       item.createdBy.toLowerCase().includes(searchLower);
 
-    const matchesFilter =
-      selectedSource === "All" || item.status === selectedSource;
+    const matchesStatus =
+      statusFilter === "All" || item.status === statusFilter;
 
-    return matchesSearch && matchesFilter;
+   
+    const today = new Date().toISOString().split("T")[0]; 
+    const createdAt = item.createdAt;
+
+    let matchesDate = true;
+    if (createdAtFilter === "Today") {
+      matchesDate = createdAt === today;
+    } else if (createdAtFilter === "Past 7 Day") {
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      matchesDate = new Date(createdAt) >= sevenDaysAgo;
+    } else if (createdAtFilter === "This month") {
+      const createdDate = new Date(createdAt);
+      const now = new Date();
+      matchesDate =
+        createdDate.getMonth() === now.getMonth() &&
+        createdDate.getFullYear() === now.getFullYear();
+    } else if (createdAtFilter === "This Year") {
+      const createdDate = new Date(createdAt);
+      matchesDate = createdDate.getFullYear() === new Date().getFullYear();
+    }
+
+    return matchesSearch && matchesStatus && matchesDate;
   });
 
   const columns = [
@@ -116,12 +139,12 @@ const TaskStatus = () => {
             title="Filters"
             showCounts={showCounts}
             setShowCounts={setShowCounts}
-            selectLabel1=" By status"
-            selectLabel2=" By created at"
-            selectedValue1={selectedSource}
-            selectedValue2={selectedSource}
-            onSelectChange1={(value) => setSelectedSource(value)}
-            onSelectChange2={(value) => setSelectedSource(value)}
+            selectLabel1="By status"
+            selectLabel2="By created at"
+            selectedValue1={statusFilter}
+            selectedValue2={createdAtFilter}
+            onSelectChange1={(value) => setStatusFilter(value)}
+            onSelectChange2={(value) => setCreatedAtFilter(value)}
             selectOptions1={[
               "All",
               "Pending",
