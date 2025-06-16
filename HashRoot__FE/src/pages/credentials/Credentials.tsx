@@ -1,6 +1,5 @@
-
-import { useState } from "react";
-import { Button, Input, Table } from "antd";
+import { useEffect, useState } from "react";
+import { Button, Input, Table, message, Popconfirm } from "antd";
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -8,62 +7,157 @@ import {
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import type { ColumnsType } from "antd/es/table";
-import HeadingWithButton from "../../components/Heading-button/index";
+import HeadingWithButton from "../../components/Heading-button";
 import CredentialsFilter from "../../components/Filter/CredentialsFilter";
-
-import { credentialsData, type Credential } from "./data";
+import { Trash2 } from "lucide-react";
+// import { getCredentials } from "../../api/getCredentials";
+// import { LeafyGreen } from "lucide-react";
+import client from "../../api/axiosInstance";
 
 const { Search } = Input;
+
+export interface Credential {
+  id: number;
+  name: string;
+  third_party: string;
+  host: string;
+  database: string;
+  username: string;
+  created_at: string;
+  updated_at: string;
+  created_by_id: number;
+}
+
 
 
 const Credentials = () => {
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<Credential[]>([]);
 
   const [searchText, setSearchText] = useState("");
-  const [showCounts, setShowCounts] = useState(true);
   const [selectedSource, setSelectedSource] = useState("All");
-  const filteredData = credentialsData.filter((item) => {
-    const matchesSearch = item.name
-      .toLowerCase()
-      .includes(searchText.toLowerCase());
-    const matchesFilter =
-      selectedSource === "All" || item.thirdParty === selectedSource;
-    return matchesSearch && matchesFilter;
-  });
+  
+  // const handleDelete = (id: number) => {
+  //   setData((prev) => prev.filter((item) => item.id !== id));
+  // };
+
+  const handleDelete = async (id: number) => {
+    setLoading(true);
+    try {
+      await client.delete(`/credentials/${id}`);
+      setData((prev) => prev.filter((item) => item.id !== id));
+
+      message.success("Credential successfully deleted.");
+    } catch (error) {
+      console.error("Error while delete.", error);
+      message.error("Failed to delete credential.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await client.get("/credentials");
+        console.log(res?.data?.data);
+        setData(res?.data?.data?.data);
+      } catch (error) {
+        console.error("Failed to fetch credentials.", error);
+        message.error("Failed to fetch credentials.");
+
+       
+        const fallbackData: Credential[] = [
+          {
+            id: 1,
+            name: "aws",
+            third_party: "Snowflake",
+            host: "aws.snowflake.com",
+            database: "avm_db",
+            username: "admin_aws",
+            created_at: "2024-05-22",
+            updated_at: "2024-05-22",
+            created_by_id: 0,
+          },
+          {
+            id: 2,
+            name: "FTP Login",
+            third_party: "TransUnion",
+            host: "ftp.tu.com",
+            database: "trigger_leads",
+            username: "ftp_user",
+            created_at: "2024-05-21",
+            updated_at: "2024-05-21",
+            created_by_id: 1,
+          },
+        ];
+
+        setData(fallbackData);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // Filter if you wish to
+  // const filtered = data.filter(
+  //   (item) =>
+  //     item.name.toLowerCase().includes(searchText.toLowerCase()) &&
+  //     (selectedSource === "All" ||
+  //       item.third_party === selectedSource)
+  // );
 
   const columns: ColumnsType<Credential> = [
     {
-      title: "NAME",
+      title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text: string, record: Credential) => (
-        <Link
-          to={{
-            pathname: "/credentials/change",
-          }}
-          state={{ record }}
-        >
+      render: (text, record) => (
+        <Link to="/credentials/change" state={{ record }}>
           {text}
         </Link>
       ),
     },
-    { title: "THIRD PARTY", dataIndex: "thirdParty", key: "thirdParty" },
-    { title: "HOST", dataIndex: "host", key: "host" },
-    { title: "DATABASE", dataIndex: "db", key: "db" },
-    { title: "USERNAME", dataIndex: "username", key: "username" },
-    { title: "CREATED AT", dataIndex: "createdAt", key: "createdAt" },
-    { title: "CREATED BY", dataIndex: "createdBy", key: "createdBy" },
+    { title: "Third Party", dataIndex: "third_party", key: "third_party" },
+    { title: "Host", dataIndex: "host", key: "host" },
+    { title: "Database", dataIndex: "database", key: "database" },
+    { title: "Username", dataIndex: "username", key: "username" },
+    { title: "Created At", dataIndex: "created_at", key: "created_at" },
+    { title: "Updated At", dataIndex: "updated_at", key: "updated_at" },
     {
       title: "",
       key: "edit",
-      render: (_: any) => (
-        <Button type="primary" onClick={() => navigate("/credentials/change")}>
+      render: (_, record) => (
+        <Button
+          type="primary"
+          onClick={() => navigate("/credentials/change", { state: { record } })}
+        >
           Edit
         </Button>
       ),
     },
+    {
+      title: "",
+      key: "delete",
+      render: (_, record) => (
+        <Popconfirm
+          title="Are you sure to delete this Log?"
+          onConfirm={() => handleDelete(record.id)}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button icon={<Trash2 size={16} className="text-red-600" />} danger />
+        </Popconfirm>
+      ),
+    },
   ];
+
+  
 
   return (
     <div>
@@ -82,45 +176,46 @@ const Credentials = () => {
             allowClear
             enterButton={<SearchOutlined />}
             className="mb-4 w-full"
-            onSearch={(value) => setSearchText(value)}
+            onSearch={setSearchText}
           />
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-            <span className="text-sm text-gray-600">
-              {filteredData.length} credentials found
-            </span>
-            <Button icon={<DeleteOutlined />} danger>
+          <div className="flex justify-between mb-4">
+            {/* <span>{filtered.length} credentials found</span> */}
+            <Button
+              onClick={() => message.info("Bulk delete not implemented")}
+              icon={<DeleteOutlined />}
+              danger
+            >
+
               Delete Selected
             </Button>
           </div>
 
-          <div className="overflow-x-auto">
-            <Table
-              columns={columns}
-              dataSource={filteredData}
-              rowSelection={{ type: "checkbox" }}
-              bordered
-              scroll={{ x: "max-content" }}
-            />
-          </div>
+          <Table
+            loading={loading}
+            columns={columns}
+            dataSource={data}
+            rowKey="id"
+            // rowSelection={{ type: "checkbox" }}
+            bordered
+            scroll={{ x: "max-content" }}
+          />
         </div>
 
         <div className="lg:col-span-3 w-full">
           <CredentialsFilter
             title="Filters"
-            showCounts={showCounts}
-            setShowCounts={setShowCounts}
+            showCounts={true}
+            setShowCounts={() => {}}
             selectLabel="By Third Party"
             selectedValue={selectedSource}
-            onSelectChange={(value) => setSelectedSource(value)}
+            onSelectChange={setSelectedSource}
             selectOptions={[
               "All",
               "TransUnion",
               "Experian",
-              "Other",
               "Snowflake",
-              "Postgres",
-              "DemandConversions",
+              "Other",
             ]}
           />
         </div>

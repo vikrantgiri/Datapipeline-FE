@@ -1,11 +1,27 @@
+import React, { useState } from "react";
+import { Form } from "antd";
+
 import FilesForm from "../../components/Add-Form-Component/FilesForm";
 
-const AddFiles = () => {
-  const handleSubmit = (values: any) => {
-    console.log("Form submitted:", values);
+const AddFiles: React.FC = () => {
+  const [form] = Form.useForm();
+  const [file, setFile] = useState<any[]>([]);
 
-    const file = values?.file?.file;
-    console.log("Uploaded file:", file);
+  const handleFinish = (values: any) => {
+    console.log("Payload :", values);
+
+    // const file = values?.file?.file;
+    // console.log("Uploaded file:", file);
+
+    const newFile = {
+      key: file.length + 1,
+      ...values,
+      created_at: new Date().toLocaleString(),
+      updated_at: new Date().toLocaleString(),
+    };
+    setFile([newFile, ...file]);
+
+    form.resetFields();
   };
 
   const userOptions = ["admin", "mikelyons", "super", "system", "tylerplack"];
@@ -13,7 +29,12 @@ const AddFiles = () => {
   return (
     <div className="text-white">
       <h1 className="text-2xl text-black font-semibold mb-6">Add File</h1>
-      <FilesForm onSubmit={handleSubmit} userOptions={userOptions} />
+
+      <FilesForm
+        form={form}
+        onSubmit={handleFinish}
+        userOptions={userOptions}
+      />
     </div>
   );
 };

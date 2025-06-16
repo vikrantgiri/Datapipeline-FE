@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { Button, Input, Table } from "antd";
+import { useState,useEffect } from "react";
+import { Button, Input, Table, Popconfirm } from "antd";
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -9,14 +9,33 @@ import {
 import HeadingWithButton from "../../components/Heading-button";
 import FileDDFilter from "../../components/Filter/FileDDFilter";
 import { triggerLeadsData } from "./data";
-
+import { Trash2 } from "lucide-react";
+import client from "../../api/axiosInstance";
 const { Search } = Input;
+
+export interface TriggerLeadItem {
+  key: string;
+  id: number;
+  firstName: string;
+  lastName: string;
+  state: string;
+  zip: string;
+  dataSource: string;
+  leadType: string;
+  createdAt: string;
+}
 
 const TriggerLeads = () => {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
   const [showCounts, setShowCounts] = useState(true);
 
+    const [data, setData] = useState<TriggerLeadItem[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    const handleDelete = (id: number) => {
+      setData((prev) => prev.filter((item) => item.id !== id));
+    };
 
   const [selectedDataSource, setSelectedDataSource] = useState("All");
   const [selectedLeadType, setSelectedLeadType] = useState("All");
@@ -44,6 +63,53 @@ const TriggerLeads = () => {
     );
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // throw new Error("Simulated failure");
+
+        const res = await client.get(`/trigger-leads`);
+        console.log(res?.data?.data);
+        setData(res?.data?.data?.data);
+      } catch (error) {
+        console.log("Failed to fetch trigger leads", error);
+        const fallbackData: TriggerLeadItem[] = [
+          {
+            key: "1",
+            id: 680,
+            firstName: "MICHAEL-fallback",
+            lastName: "BROWN",
+            state: "MI",
+            zip: "48820",
+            dataSource: "Experian",
+            leadType: "HECM to HECM",
+            createdAt: "June 4, 2025, 2:13 a.m.",
+          },
+          {
+            key: "2",
+            id: 679,
+            firstName: "TATIANA",
+            lastName: "SUAREZ",
+            state: "CO",
+            zip: "80542",
+            dataSource: "Experian",
+            leadType: "HECM to HECM",
+            createdAt: "June 4, 2025, 2:13 a.m.",
+          },
+        ];
+        setData(fallbackData);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    //   }
+    // };
+    // console.log(data);
+    fetchData();
+  }, []);
+
   const columns = [
     {
       title: "ID",
@@ -64,13 +130,13 @@ const TriggerLeads = () => {
     },
     {
       title: "FIRST NAME",
-      dataIndex: "firstName",
-      key: "firstName",
+      dataIndex: "first_name",
+      key: "first_name",
     },
     {
       title: "LAST NAME",
-      dataIndex: "lastName",
-      key: "lastName",
+      dataIndex: "last_name",
+      key: "last_name",
     },
     {
       title: "STATE",
@@ -84,18 +150,18 @@ const TriggerLeads = () => {
     },
     {
       title: "DATA SOURCE",
-      dataIndex: "dataSource",
-      key: "dataSource",
+      dataIndex: "data_source",
+      key: "data_source",
     },
     {
       title: "LEAD TYPE",
-      dataIndex: "leadType",
-      key: "leadType",
+      dataIndex: "lead_type",
+      key: "lead_type",
     },
     {
       title: "CREATED AT",
-      dataIndex: "createdAt",
-      key: "createdAt",
+      dataIndex: "created_at",
+      key: "created_at",
     },
     {
       title: "",
@@ -104,6 +170,20 @@ const TriggerLeads = () => {
         <Button type="primary" onClick={() => navigate("/TriggerLeads/change")}>
           Edit
         </Button>
+      ),
+    },
+    {
+      title: "",
+      key: "delete",
+      render: (_:any, record:any) => (
+        <Popconfirm
+          title="Are you sure to delete this Log?"
+          onConfirm={() => handleDelete(record.id)}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button icon={<Trash2 size={16} className="text-red-600" />} danger />
+        </Popconfirm>
       ),
     },
   ];
@@ -140,9 +220,10 @@ const TriggerLeads = () => {
           <div className="overflow-x-auto">
             <Table
               columns={columns}
-              dataSource={filteredData}
+              dataSource={data}
               rowSelection={{ type: "checkbox" }}
               bordered
+              loading={loading}
               scroll={{ x: "max-content" }}
             />
           </div>

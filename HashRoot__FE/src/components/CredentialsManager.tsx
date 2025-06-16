@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form } from "antd";
 import CredentialsForm from "./Add-Form-Component/CredentialsForm";
-import CredentialsTable from "../components/CredentialsTable";
+import CredentialsTable from "../components/Add-Form-Component";
 
 const CredentialsManager: React.FC = () => {
   const [form] = Form.useForm();

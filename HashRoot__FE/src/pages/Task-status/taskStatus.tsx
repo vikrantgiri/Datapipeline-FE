@@ -1,17 +1,37 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { Button, Input, Table } from "antd";
+import { useState,useEffect } from "react";
+import { Button, Input, Table, Popconfirm } from "antd";
 import { DeleteOutlined, SearchOutlined } from "@ant-design/icons";
 import HeadingWithButton from "../../components/Heading-button";
 import FileDDFilter from "../../components/Filter/FileDDFilter";
 import { taskStatusData } from "./data";
+import { Trash2 } from "lucide-react";
+import client from "../../api/axiosInstance";
 
 const { Search } = Input;
+
+export interface TaskStatusItem {
+  key: string;
+  id: number;
+  taskDefinition: string;
+  status: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+}
 
 const TaskStatus = () => {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
   const [showCounts, setShowCounts] = useState(true);
+
+  
+    const [data, setData] = useState<TaskStatusItem[]>([]);
+    const [loading, setLoading] = useState(false);
+   
+    const handleDelete = (id: number) => {
+      setData((prev) => prev.filter((item) => item.id !== id));
+    };
 
   const [statusFilter, setStatusFilter] = useState("All");
   const [createdAtFilter, setCreatedAtFilter] = useState("Any date");
@@ -50,6 +70,50 @@ const TaskStatus = () => {
 
     return matchesSearch && matchesStatus && matchesDate;
   });
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // throw new Error("Simulated failure");
+
+        const res = await client.get(`/task-status`);
+        console.log(res?.data?.data);
+        setData(res?.data?.data?.data);
+      } catch (error) {
+        console.log("Failed to fetch task status", error);
+        const fallbackData: TaskStatusItem[] = [
+          {
+            key: "1",
+            id: 98,
+            taskDefinition: "TRIGGER - EXP- fallback",
+            status: "Completed",
+            createdAt: "May 29, 2025, 11:05 a.m.",
+            createdBy: "super",
+            updatedAt: "May 29, 2025, 11:06 a.m.",
+          },
+          {
+            key: "2",
+            id: 97,
+            taskDefinition: "TRIGGER - TU",
+            status: "Completed with errors",
+            createdAt: "May 5, 2025, 8:08 a.m.",
+            createdBy: "admin",
+            updatedAt: "May 5, 2025, 8:37 a.m.",
+          },
+        ];
+        setData(fallbackData);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    //   }
+    // };
+    // console.log(data);
+    fetchData();
+  }, []);
 
   const columns = [
     {
@@ -98,6 +162,20 @@ const TaskStatus = () => {
         </Button>
       ),
     },
+    {
+      title: "",
+      key: "delete",
+      render: (_:any, record:any) => (
+        <Popconfirm
+          title="Are you sure to delete this Log?"
+          onConfirm={() => handleDelete(record.id)}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button icon={<Trash2 size={16} className="text-red-600" />} danger />
+        </Popconfirm>
+      ),
+    },
   ];
 
   return (
@@ -126,9 +204,10 @@ const TaskStatus = () => {
           <div className="overflow-x-auto">
             <Table
               columns={columns}
-              dataSource={filteredData}
-              rowSelection={{ type: "checkbox" }}
+              dataSource={data}
+              // rowSelection={{ type: "checkbox" }}
               bordered
+              loading={loading}
               scroll={{ x: "max-content" }}
             />
           </div>

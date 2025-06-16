@@ -1,49 +1,88 @@
+import React, { useEffect,useState } from "react";
+import { Form, Input, Button,Select } from "antd";
 
+import client from "../../api/axiosInstance";
+const { Option } = Select;
 
-import React, { useEffect } from 'react';
-import { Form, Input, Button } from 'antd';
+interface FileDownloadFormProps {
+  form: any;
+  onFinish: (values: any) => void;
+  initialValues?: any;
+}
 
-const FileDownloadForm: React.FC<{ onSubmit: (values: any) => void; initialValues?: any }> = ({
-  onSubmit,
-  initialValues,
+const FileDownloadForm: React.FC<FileDownloadFormProps> = ({
+  form,
+  onFinish,
+  // initialValues,
 }) => {
-  const [form] = Form.useForm();
+ const [credentialsOptions, setCredentialsOptions] = useState<any[]>([]);
 
   useEffect(() => {
-    if (initialValues) {
-      form.setFieldsValue(initialValues);
-    }
-  }, [initialValues, form]);
+    // if (initialValues) {
+    //   form.setFieldsValue(initialValues);
 
-  const handleFinish = (values: any) => {
-    onSubmit(values);
-  };
+   
+    const fetchCredentials = async () => {
+      try {
+       
+        const res = await client.get("/user/get-user-filters");
+
+        if (res?.data?.error == null) {
+          setCredentialsOptions(res.data.data);
+          console.log("Credentials fetched!", res.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching .", error);
+      }
+    };
+    fetchCredentials();
+  }, []);
+//   [initialValues, form]
+// );
 
   return (
-    <Form form={form} layout="vertical" onFinish={handleFinish}>
-      <Form.Item name="name" label="Name" rules={[{ required: true }]}>
+    <Form form={form} layout="vertical" onFinish={(values) => onFinish(values)}>
+      <Form.Item
+        name="name"
+        label="Name"
+        rules={[{ required: true, message: "Please enter a name" }]}
+      >
         <Input />
       </Form.Item>
 
-      <Form.Item name="credentials" label="Credentials" rules={[{ required: true }]}>
+      <Form.Item
+        name="credentials"
+        label="Credentials"
+        rules={[{ required: true, message: "Please enter credentials" }]}
+      >
+        <Select placeholder="--------">
+          {credentialsOptions.map((item) => (
+            <Option key={item.id} value={item.id}>
+              {item.username}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        name="remote_path"
+        label="Remote Path"
+        rules={[{ required: true, message: "Please enter a remote path" }]}
+      >
         <Input />
       </Form.Item>
-
-      <Form.Item name="remotepath" label="Remote Path" rules={[{ required: true }]}>
-        <Input />
+      {/* 
+      <Form.Item name="created_at" label="Created At">
+        <Input disabled />
       </Form.Item>
 
-      <Form.Item name="createdAt" label="Created At">
-        <Input  />
-      </Form.Item>
-
-      <Form.Item name="createdBy" label="Created By">
-        <Input   />
-      </Form.Item>
+      <Form.Item name="created_by" label="Created By">
+        <Input disabled />
+      </Form.Item> */}
 
       <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Save Changes
+        <Button type="primary" htmlType="submit" onClick={() => form.submit()}>
+          Save File Download Definition
         </Button>
       </Form.Item>
     </Form>
