@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState,useEffect } from "react";
-import { Button, Input, Table, Popconfirm } from "antd";
+import { Button, Input, Table, Popconfirm,message } from "antd";
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -33,9 +33,24 @@ const TriggerLeads = () => {
     const [data, setData] = useState<TriggerLeadItem[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const handleDelete = (id: number) => {
+    // const handleDelete = (id: number) => {
+    //   setData((prev) => prev.filter((item) => item.id !== id));
+    // };
+
+      const handleDelete = async (id: number) => {
+    setLoading(true);
+    try {
+      await client.delete(`/trigger-leads/${id}`);
       setData((prev) => prev.filter((item) => item.id !== id));
-    };
+
+      message.success("Credential successfully deleted.");
+    } catch (error) {
+      console.error("Error while delete.", error);
+      message.error("Failed to delete credential.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [selectedDataSource, setSelectedDataSource] = useState("All");
   const [selectedLeadType, setSelectedLeadType] = useState("All");

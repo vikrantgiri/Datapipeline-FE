@@ -37,7 +37,6 @@ export const postFileDownloadDefinitions = async (payload: CreateFileDDPayload) 
 
 
 
-
 export const deleteFileDownloadDefinitions = async (id: number) => {
   try {
     await client.delete(`/file-download-def/${id}`);

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Input, Table, Popconfirm } from "antd";
+import { Button, Input, Table, Popconfirm, message } from "antd";
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -43,8 +43,23 @@ const InputFileDefinition = () => {
   const [filteruse_tabu, setFilteruse_tabu] = useState("All");
 
 
-  const handleDelete = (id: number) => {
-    setData((prev) => prev.filter((item) => item.id !== id));
+  // const handleDelete = (id: number) => {
+  //   setData((prev) => prev.filter((item) => item.id !== id));
+  // };
+
+    const handleDelete = async (id: number) => {
+    setLoading(true);
+    try {
+      await client.delete(`/input-file-def/${id}`);
+      setData((prev) => prev.filter((item) => item.id !== id));
+
+      message.success("Credential successfully deleted.");
+    } catch (error) {
+      console.error("Error while delete.", error);
+      message.error("Failed to delete credential.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const filteredData = data.filter((item) => {
