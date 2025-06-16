@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState,useEffect } from "react";
-import { Button, Table, Popconfirm } from "antd";
+import { Button, Table, Popconfirm,message } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import HeadingWithButton from "../../components/Heading-button/index";
 // import { mockPrepMails, type PrepMail } from "./data";
@@ -31,9 +31,24 @@ const PrepMails = () => {
     const [data, setData] = useState<PrepMail[]>([]);
     const [loading, setLoading] = useState(false);
     
-    const handleDelete = (id: number) => {
+    // const handleDelete = (id: number) => {
+    //   setData((prev) => prev.filter((item) => item.id !== id));
+    // };
+
+      const handleDelete = async (id: number) => {
+    setLoading(true);
+    try {
+      await client.delete(`/prep-mail/${id}`);
       setData((prev) => prev.filter((item) => item.id !== id));
-    };
+
+      message.success("Credential successfully deleted.");
+    } catch (error) {
+      console.error("Error while delete.", error);
+      message.error("Failed to delete credential.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredData = data.filter((item) => {
     const matchesSearch = item.id.toString().includes(searchText);
@@ -168,20 +183,20 @@ const PrepMails = () => {
     <div className="">
       <HeadingWithButton
         heading="Select prep mail to change"
-        buttonText="Add Prep Mails"
+        // buttonText="Add Prep Mails"
         buttonColor="primary"
         buttonIcon={<PlusOutlined />}
         to="/PrepMails/add"
       />
       <div className="lg:col-span-9 w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        {/* <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
           <span className="text-sm text-gray-600">
             {filteredData.length} credentials found
           </span>
           <Button icon={<DeleteOutlined />} danger>
             Delete Selected
           </Button>
-        </div>
+        </div> */}
 
         <div className="overflow-x-auto">
           <Table
