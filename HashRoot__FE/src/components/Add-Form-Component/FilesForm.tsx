@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Form,
   
@@ -17,18 +17,25 @@ const { Option } = Select;
 const {  Text } = Typography;
 
 interface FilesFormProps {
+  form: any;
   credentialOptions?: string[];
-  userOptions?: string[]; 
+  userOptions?: string[];
   onSubmit: (values: any) => void;
   initialValues?: any;
 }
 
 const FilesForm: React.FC<FilesFormProps> = ({
+  form,
   onSubmit,
   initialValues = {},
   userOptions = [],
 }) => {
-  const [form] = Form.useForm();
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue(initialValues);
+    }
+  }, [initialValues, form]);
+  // const [form] = Form.useForm();
 
   return (
     <>
@@ -89,7 +96,7 @@ const FilesForm: React.FC<FilesFormProps> = ({
     </Form>
     </div>
     <div className="flex gap-4 pt-4">
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" onClick={() => form.submit()}>
             SAVE
           </Button>
           <Button>Save and add another</Button>

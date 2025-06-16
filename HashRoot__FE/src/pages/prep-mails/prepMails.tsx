@@ -1,11 +1,24 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { Button, Table } from "antd";
+import { useState,useEffect } from "react";
+import { Button, Table, Popconfirm } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import HeadingWithButton from "../../components/Heading-button/index";
-import { mockPrepMails, type PrepMail } from "./data";
+// import { mockPrepMails, type PrepMail } from "./data";
+import type { ColumnsType } from "antd/es/table";
+import { Trash2 } from "lucide-react";
+import client from "../../api/axiosInstance";
 
-// const { Search } = Input;
+
+
+export interface PrepMail {
+  key: string;
+  id: number;
+  username?:string;
+ created_at: string;
+ created_by: string;
+  runTrigger: string;
+  downloadResult: string;
+}
 
 const PrepMails = () => {
   const navigate = useNavigate();
@@ -13,18 +26,64 @@ const PrepMails = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedSource, setSelectedSource] = useState("All");
 
-  const data: PrepMail[] = mockPrepMails;
+  // const data: PrepMail[] = mockPrepMails;
+
+    const [data, setData] = useState<PrepMail[]>([]);
+    const [loading, setLoading] = useState(false);
+    
+    const handleDelete = (id: number) => {
+      setData((prev) => prev.filter((item) => item.id !== id));
+    };
 
   const filteredData = data.filter((item) => {
-    const matchesSearch = item.id
-      .toLowerCase()
-      .includes(searchText.toLowerCase());
+    const matchesSearch = item.id.toString().includes(searchText);
     const matchesFilter =
-      selectedSource === "All" || item.createdBy === selectedSource;
+      selectedSource === "All" || item.created_by=== selectedSource;
     return matchesSearch && matchesFilter;
   });
 
-  const columns = [
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await client.get(`/prep-mail`);
+        console.log(res?.data?.data);
+        setData(res?.data?.data?.data);
+      } catch (error) {
+        console.log("Failed to fetch prep mails", error);
+        const fallbackData: PrepMail[] = [
+          {
+            key: "1",
+            id: 1,
+
+           created_at: "2024-05-22",
+           created_by: "System",
+            runTrigger: "Run Trigger",
+            downloadResult: "Download CSV",
+          },
+          {
+            key: "2",
+            id: 2,
+
+           created_at: "2024-05-21",
+           created_by: "Admin",
+            runTrigger: "Run Trigger",
+            downloadResult: "Download CSV",
+          },
+        ];
+        setData(fallbackData);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    //   }
+    // };
+    // console.log(data);
+    fetchData();
+  }, []);
+
+  const columns: ColumnsType<PrepMail> = [
     {
       title: "ID",
       dataIndex: "id",
@@ -41,8 +100,13 @@ const PrepMails = () => {
         </Link>
       ),
     },
-    { title: "CREATED BY", dataIndex: "createdBy", key: "createdBy" },
-    { title: "CREATED AT", dataIndex: "createdAt", key: "createdAt" },
+    {
+      title: "CREATED BY",
+      dataIndex: "username",
+      key: "username",
+     
+    },
+    { title: "CREATED AT", dataIndex: "created_at", key: "created_at" },
     {
       title: "Run Trigger",
       dataIndex: "runTrigger",
@@ -84,6 +148,20 @@ const PrepMails = () => {
         </Button>
       ),
     },
+    {
+      title: "",
+      key: "delete",
+      render: (_, record) => (
+        <Popconfirm
+          title="Are you sure to delete this Log?"
+          onConfirm={() => handleDelete(record.id)}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button icon={<Trash2 size={16} className="text-red-600" />} danger />
+        </Popconfirm>
+      ),
+    },
   ];
 
   return (
@@ -108,9 +186,10 @@ const PrepMails = () => {
         <div className="overflow-x-auto">
           <Table
             columns={columns}
-            dataSource={filteredData}
-            rowSelection={{ type: "checkbox" }}
+            dataSource={data}
+            // rowSelection={{ type: "checkbox" }}
             bordered
+            loading={loading}
             scroll={{ x: "max-content" }}
           />
         </div>

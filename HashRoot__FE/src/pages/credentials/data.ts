@@ -1,35 +1,35 @@
 
 
 export interface Credential {
-  key: string;
+  id: string;
   name: string;
-  thirdParty: string;
+  third_party: string;
   host: string;
   db: string;
   username: string;
-  createdAt: string;
-  createdBy: string;
+  created_at: string;
+  created_by: string;
 }
 
 export const credentialsData: Credential[] = [
   {
-    key: "1",
-    name: "AWS Credential",
-    thirdParty: "Snowflake",
+    id: "1",
+    name:'aws',
+    third_party: "Snowflake",
     host: "aws.snowflake.com",
     db: "avm_db",
     username: "admin_aws",
-    createdAt: "2024-05-22",
-    createdBy: "System",
+    created_at: "2024-05-22",
+    created_by: "System",
   },
   {
-    key: "2",
+    id: "2",
     name: "FTP Login",
-    thirdParty: "TransUnion",
+    third_party: "TransUnion",
     host: "ftp.tu.com",
     db: "trigger_leads",
     username: "ftp_user",
-    createdAt: "2024-05-21",
-    createdBy: "Admin",
+    created_at: "2024-05-21",
+    created_by: "Admin",
   },
 ];

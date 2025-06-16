@@ -12,7 +12,7 @@ const Sidebar: FC = () => {
     { label: "Files", path: "/files" },
     { label: "Input File Definitions", path: "/InputFileDefinitions" },
     { label: "Prep mails", path: "/PrepMails" },
-    { label: "Task Statuses", path: "/TaskStatus" },
+    // { label: "Task Statuses", path: "/TaskStatus" },
     { label: "Trigger Leads", path: "/TriggerLeads" },
     {
       label: "Task Logs",
