@@ -179,8 +179,8 @@ const Credentials = () => {
             onSearch={setSearchText}
           />
 
-          <div className="flex justify-between mb-4">
-            {/* <span>{filtered.length} credentials found</span> */}
+          {/* <div className="flex justify-between mb-4">
+            <span>{filtered.length} credentials found</span>
             <Button
               onClick={() => message.info("Bulk delete not implemented")}
               icon={<DeleteOutlined />}
@@ -189,7 +189,7 @@ const Credentials = () => {
 
               Delete Selected
             </Button>
-          </div>
+          </div> */}
 
           <Table
             loading={loading}

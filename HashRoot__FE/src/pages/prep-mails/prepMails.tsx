@@ -183,20 +183,20 @@ const PrepMails = () => {
     <div className="">
       <HeadingWithButton
         heading="Select prep mail to change"
-        buttonText="Add Prep Mails"
+        // buttonText="Add Prep Mails"
         buttonColor="primary"
         buttonIcon={<PlusOutlined />}
         to="/PrepMails/add"
       />
       <div className="lg:col-span-9 w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        {/* <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
           <span className="text-sm text-gray-600">
             {filteredData.length} credentials found
           </span>
           <Button icon={<DeleteOutlined />} danger>
             Delete Selected
           </Button>
-        </div>
+        </div> */}
 
         <div className="overflow-x-auto">
           <Table
