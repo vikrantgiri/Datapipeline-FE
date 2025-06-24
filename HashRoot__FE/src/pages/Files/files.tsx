@@ -8,7 +8,6 @@ import { Trash2 } from "lucide-react";
 import client from "../../api/axiosInstance";
 
 
-
 export interface FileData {
   id: number;
   // key: string;
@@ -33,9 +32,9 @@ const Files = () => {
 
   // const data: FileData[] = mockFilesData;
 
-  const handleDelete = (id: number) => {
-    setData((prev) => prev.filter((item) => item.id !== id));
-  };
+  // const handleDelete = (id: number) => {
+  //   setData((prev) => prev.filter((item) => item.id !== id));
+  // };
 
   const filteredData = data.filter((item) => {
     const fileName = item.file.split("\\").pop()?.toLowerCase() || "";
@@ -127,20 +126,20 @@ const Files = () => {
         </a>
       ),
     },
-    {
-      title: "",
-      key: "delete",
-      render: (_, record) => (
-        <Popconfirm
-          title="Are you sure to delete this Log?"
-          onConfirm={() => handleDelete(record.id)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button icon={<Trash2 size={16} className="text-red-600" />} danger />
-        </Popconfirm>
-      ),
-    },
+    // {
+    //   title: "",
+    //   key: "delete",
+    //   render: (_, record) => (
+    //     <Popconfirm
+    //       title="Are you sure to delete this Log?"
+    //       onConfirm={() => handleDelete(record.id)}
+    //       okText="Yes"
+    //       cancelText="No"
+    //     >
+    //       <Button icon={<Trash2 size={16} className="text-red-600" />} danger />
+    //     </Popconfirm>
+    //   ),
+    // },
   ];
 
   return (

@@ -1,16 +1,15 @@
-import { useState, useEffect } from "react";
-import { Button, Input, Table, Popconfirm, message } from "antd";
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { Button, Input, Table, message, Popconfirm } from "antd";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
+import type { ColumnsType } from "antd/es/table";
 import { Trash2 } from "lucide-react";
-import HeadingWithButton from "../../components/Heading-button";
-import FileDDFilter from "../../components/Filter/FileDDFilter";
 
+import HeadingWithButton from "../../components/Heading-button";
 import client from "../../api/axiosInstance";
+import FilterCardWrapper from "../../components/Add-Form-Component/Filter-component/input";
+import FilterDropdown from "../../components/Add-Form-Component/Filter-dropdown";
+import { getTaskTypeFilters, getThirdPartyFilters } from "../../api/filter-api";
 
 const { Search } = Input;
 
@@ -18,152 +17,135 @@ export interface inputfileData {
   key?: string;
   id: number;
   task_type: string;
-  campaign_type: string;
   third_party: string;
   use_tabu: boolean;
-  created_by_id: number;
+  created_by?: {
+    id?: number;
+    username?: string;
+  };
   updated_at: string;
   remote_path: string;
   custom_filename: string | null;
+  sql_script?: string;
   max_column_size: number;
-  // action: string;
-  executions: number;
 }
 
 const InputFileDefinition = () => {
   const navigate = useNavigate();
-
   const [searchText, setSearchText] = useState("");
-  const [showCounts, setShowCounts] = useState(true);
   const [data, setData] = useState<inputfileData[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const [filtertask_type, setFiltertask_type] = useState("All");
-  const [filtercampaign_type, setFiltercampaign_type] = useState("All");
-  const [filteruse_tabu, setFilteruse_tabu] = useState("All");
+  const [taskTypeFilters, setTaskTypeFilters] = useState<any[]>([]);
+  const [thirdPartyFilters, setThirdPartyFilters] = useState<any[]>([]);
 
+  const [selectedTaskType, setSelectedTaskType] = useState("");
+  const [selectedThirdParty, setSelectedThirdParty] = useState("");
+  const [selectedUseTabu, setSelectedUseTabu] = useState("");
 
-  // const handleDelete = (id: number) => {
-  //   setData((prev) => prev.filter((item) => item.id !== id));
-  // };
+  // const filteredData = data.filter((item) => {
+  //   const matchesSearch = item.third_party
+  //     .toLowerCase()
+  //     .includes(searchText.toLowerCase());
 
-    const handleDelete = async (id: number) => {
+  //   const matchesTaskType =
+  //     selectedTaskType === "All" || item.task_type === selectedTaskType;
+
+  //   const matchesThirdParty =
+  //     selectedThirdParty === "All" || item.third_party === selectedThirdParty;
+
+  //   const matchesUseTabu =
+  //     selectedUseTabu === "All" ||
+  //     (selectedUseTabu === "Yes" && item.use_tabu === true) ||
+  //     (selectedUseTabu === "No" && item.use_tabu === false);
+
+  //   return (
+  //     matchesSearch && matchesTaskType && matchesThirdParty && matchesUseTabu
+  //   );
+  // });
+
+  const handleDelete = async (id: number) => {
     setLoading(true);
     try {
       await client.delete(`/input-file-def/${id}`);
       setData((prev) => prev.filter((item) => item.id !== id));
-
       message.success("Credential successfully deleted.");
     } catch (error) {
-      console.error("Error while delete.", error);
+      console.error("Error while deleting.", error);
       message.error("Failed to delete credential.");
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredData = data.filter((item) => {
-    const matchesSearch = item.third_party
-      .toLowerCase()
-      .includes(searchText.toLowerCase());
-
-    const matchestask_type =
-      filtertask_type === "All" || item.task_type === filtertask_type;
-
-    const matchescampaign_type =
-      filtercampaign_type === "All" ||
-      item.campaign_type === filtercampaign_type;
-
-    const matchesuse_tabu =
-      filteruse_tabu === "All" ||
-      (filteruse_tabu === "Yes" && item.use_tabu) ||
-      (filteruse_tabu === "No" && !item.use_tabu);
-
-    return (
-      matchesSearch &&
-      matchestask_type &&
-      matchescampaign_type &&
-      matchesuse_tabu
-    );
-  });
-
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await client.get("/input-file-def");
-     
+        const res = await client.post(
+          "/input-file-def/filtered?skip=0&limit=100",
+          {
+            task_type: String(selectedTaskType),
+            third_party: String(selectedThirdParty),
+            use_tabu: String(selectedUseTabu),
+          }
+        );
         const rawData = res?.data?.data?.data;
 
-        if (rawData && Array.isArray(rawData)) {
+        if (Array.isArray(rawData)) {
           const parsed = rawData.map((item) => ({
+            ...item,
             key: item.id.toString(),
-            id: item.id,
-            task_type: item.task_type,
-            campaign_type: item.campaign_type,
-            third_party: item.third_party,
-            use_tabu: item.use_tabu,
-            created_by_id: item.created_by_id,
-            updated_at: item.updated_at,
-            remote_path: item.remote_path,
-            custom_filename: item.custom_filename,
-            max_column_size: item.max_column_size,
-            // action: "Edit",
-            executions: item.execution,
+            created_by: {
+              username: item?.user?.username,
+              id: item?.user?.id,
+            },
           }));
-
           setData(parsed);
         }
       } catch (error) {
         console.error("Failed to fetch input file definition.", error);
-        // fallback data
-        setData([
-          {
-            key: "1",
-            id: 1,
-            task_type: "Prescreen-fallback",
-            campaign_type: "aws.snowflake.com",
-            third_party: "Experian",
-            use_tabu: true,
-            created_by_id: 2,
-            updated_at: "2025-04-14T21:26:15.327245+00:00",
-            remote_path: "/some/path",
-            custom_filename: null,
-            max_column_size: 100,
-            // action: "Edit",
-            executions:8,
-          },
-        ]);
+        setData([]);
       } finally {
         setLoading(false);
       }
     };
+
     fetchData();
+  }, [selectedTaskType, selectedThirdParty, selectedUseTabu]);
+
+  useEffect(() => {
+    const fetchFilters = async () => {
+      try {
+        const [taskRes, thirdRes] = await Promise.all([
+          getTaskTypeFilters(),
+          getThirdPartyFilters(),
+        ]);
+
+        setTaskTypeFilters(taskRes?.data || []);
+        setThirdPartyFilters(thirdRes?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch filters", error);
+      }
+    };
+
+    fetchFilters();
   }, []);
 
+  console.log(data);
 
-  const columns = [
+  const columns: ColumnsType<inputfileData> = [
     {
       title: "ID",
       dataIndex: "id",
       key: "id",
-      render: (text: number, record: inputfileData) => (
-        <Link
-          to={{ pathname: "/InputFileDefinition/change" }}
-          state={{ record }}
-          className="text-blue-600"
-        >
+      render: (text, record) => (
+        <Link to="/InputFileDefinition/change" state={{ record }}>
           {text}
         </Link>
       ),
     },
     { title: "TASK TYPE", dataIndex: "task_type", key: "task_type" },
-    {
-      title: "CAMPAIGN TYPE",
-      dataIndex: "campaign_type",
-      key: "campaign_type",
-    },
     { title: "THIRD PARTY", dataIndex: "third_party", key: "third_party" },
     {
       title: "USE TABU",
@@ -171,12 +153,16 @@ const InputFileDefinition = () => {
       key: "use_tabu",
       render: (val: boolean) => (val ? "Yes" : "No"),
     },
-    { title: "CREATED BY", dataIndex: "created_by_id", key: "created_by_id" },
-    { title: "EXECUTIONS", dataIndex: "executions", key: "executions" },
+    {
+      title: "CREATED BY",
+      dataIndex: "created_by",
+      key: "created_by",
+      render: (created_by) => created_by?.username,
+    },
     {
       title: "",
       key: "edit",
-      render: (_: any, record: inputfileData) => (
+      render: (_, record) => (
         <Button
           type="primary"
           onClick={() =>
@@ -190,21 +176,26 @@ const InputFileDefinition = () => {
     {
       title: "",
       key: "delete",
-      render: (_: any, record: inputfileData) => (
+      render: (_, record) => (
         <Popconfirm
-          title="Are you sure to delete this Log?"
+          title="Are you sure to delete this log?"
           onConfirm={() => handleDelete(record.id)}
           okText="Yes"
           cancelText="No"
         >
-          <Button icon={<Trash2 size={16} className="text-red-600" />} danger />
+          <Button icon={<Trash2 size={16} />} danger />
         </Popconfirm>
       ),
     },
   ];
 
+  const useTabuOptions = [
+    { label: "Yes", value: "Yes" },
+    { label: "No", value: "No" },
+  ];
+
   return (
-    <div className="">
+    <div>
       <HeadingWithButton
         heading="Select Input File Definition to change"
         buttonText="Add Input File Definition"
@@ -216,52 +207,44 @@ const InputFileDefinition = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
         <div className="lg:col-span-9 w-full">
           <Search
-            placeholder="Search credentials by third-party"
+            placeholder="Search by third-party"
             allowClear
             enterButton={<SearchOutlined />}
             className="mb-4 w-full"
             onSearch={(value) => setSearchText(value)}
           />
-
-          {/* <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-            <span className="text-sm text-gray-600">
-              {filteredData.length} credentials found
-            </span>
-            <Button icon={<DeleteOutlined />} danger>
-              Delete Selected
-            </Button>
-          </div> */}
-
-          <div className="overflow-x-auto">
-            <Table
-              columns={columns}
-              dataSource={filteredData}
-              // rowSelection={{ type: "checkbox" }}
-              bordered
-              loading={loading}
-              scroll={{ x: "max-content" }}
-            />
-          </div>
+          <Table
+            columns={columns}
+            dataSource={data} //why not filteredData
+            rowKey="id"
+            bordered
+            loading={loading}
+            scroll={{ x: "max-content" }}
+            // pagination={{ pageSize: 20, showSizeChanger: true }}
+          />
         </div>
 
-        <div className="lg:col-span-3 w-full">
-          <FileDDFilter
-            title="Filters"
-            showCounts={showCounts}
-            setShowCounts={setShowCounts}
-            selectLabel1="By Task Type"
-            selectLabel2="By Campaign Type"
-            selectLabel3="By Use Tabu"
-            selectedValue1={filtertask_type}
-            selectedValue2={filtercampaign_type}
-            selectedValue3={filteruse_tabu}
-            onSelectChange1={(value) => setFiltertask_type(value)}
-            onSelectChange2={(value) => setFiltercampaign_type(value)}
-            onSelectChange3={(value) => setFilteruse_tabu(value)}
-            selectOptions1={["All", "Prescreen", "Trigger"]}
-            selectOptions2={["All", "TransUnion", "Experian", "Other"]}
-            selectOptions3={["All", "Yes", "No"]}
-          />
+        <div className="lg:col-span-3 w-full space-y-4">
+          <FilterCardWrapper>
+            <FilterDropdown
+              title="By Task Type"
+              options={taskTypeFilters}
+              onChange={(value) => setSelectedTaskType(value)}
+              value={selectedTaskType}
+            />
+            <FilterDropdown
+              title="By Third Party"
+              options={thirdPartyFilters}
+              onChange={(value) => setSelectedThirdParty(value)}
+              value={selectedThirdParty}
+            />
+            <FilterDropdown
+              title="By Use Tabu"
+              options={useTabuOptions}
+              onChange={(value) => setSelectedUseTabu(value)}
+              value={selectedUseTabu}
+            />
+          </FilterCardWrapper>
         </div>
       </div>
     </div>

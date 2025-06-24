@@ -21,17 +21,17 @@ export const getFiles = async (): Promise<FileData[]> => {
   return res.data;
 };
 
-export const postFiles = async (payload: CreateFilePayload) => {
-  const res = await client.post("/files", payload);
-  return res?.data;
-};
+// export const postFiles = async (payload: CreateFilePayload) => {
+//   const res = await client.post("/files", payload);
+//   return res?.data;
+// };
 
-export const deleteFiles = async (id: number) => {
-  try {
-    await client.delete(`/files/${id}`);
-    return true;
-  } catch (error) {
-    console.error("Error while deleting credential.", error);
-    return false;
-  }
-};
+// export const deleteFiles = async (id: number) => {
+//   try {
+//     await client.delete(`/files/${id}`);
+//     return true;
+//   } catch (error) {
+//     console.error("Error while deleting credential.", error);
+//     return false;
+//   }
+// };

@@ -1,6 +1,8 @@
 import FilesForm from '../../components/Add-Form-Component/FilesForm';
+import { Form, message} from "antd";
 
 const ChangeFiles = () => {
+  const [form] = Form.useForm();
   const handleSubmit = (values: any) => {
     console.log('Form submitted:', values);
 
@@ -13,7 +15,7 @@ const ChangeFiles = () => {
   return (
       <div className="text-white">
         <h1 className="text-2xl text-black font-semibold mb-6">Change File</h1>
-        <FilesForm onSubmit={handleSubmit} userOptions={userOptions} />
+        <FilesForm form={form} onSubmit={handleSubmit} userOptions={userOptions} />
       </div>
   );
 };

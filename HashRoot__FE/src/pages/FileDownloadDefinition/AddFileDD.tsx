@@ -1,43 +1,56 @@
 import React, { useState } from "react";
-import { Form } from "antd";
-
+import { Form ,message} from "antd";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import client from "../../api/axiosInstance";
 import FileDownloadForm from "../../components/Add-Form-Component/FileDDForm";
 
 const AddFileDD: React.FC = () => {
   const [form] = Form.useForm();
   const [fileDD, setFileDD] = useState<any[]>([]);
+  const navigate = useNavigate();
 
-  const handleFinish = (values: any) => {
+
+  const handleFinish = async (values: any) => {
     console.log("Payload :", values);
 
-    // Here you could send this to your API if needed
-    // postFileDownloadDefinitions(values)
+    try {
+      const res = await client.post("/file-download-def", values);
 
-    
-    const newFileDD = {
-      key: fileDD.length + 1,
-      ...values,
-      created_at: new Date().toLocaleString(), 
-      updated_at: new Date().toLocaleString(), 
-    };
-    setFileDD([newFileDD, ...fileDD]);
+      const newfileDD = res.data;
 
-    form.resetFields();
+      newfileDD.key = fileDD.length + 1;
+      newfileDD.createdAt = new Date().toLocaleString();
+      newfileDD.updatedAt = new Date().toLocaleString();
+
+      setFileDD([newfileDD, ...fileDD]);
+
+      form.resetFields();
+message.success("File Download Definition  successfully added.");
+navigate("/FileDownloadDefinition"); 
+    } catch (error) {
+      console.error(error);
+      message.error("Failed to add file download definition.");
+    }
+
   };
-
   return (
     <div className="text-gray-900">
-      <h1 className="text-2xl font-semibold mb-6">
+       <div className="flex items-center gap-2 mb-6">
+              <ArrowLeftOutlined
+                className="text-xl cursor-pointer text-blue-600 hover:text-blue-800"
+                onClick={() => navigate("/FileDownloadDefinition")}
+              />
+      <h1 className="text-2xl font-semibold ">
         Add File Download Definition
       </h1>
+      </div>
 
       <div className="pr-4">
         <FileDownloadForm form={form} onFinish={handleFinish} />
       </div>
 
-      {/* Uncomment this if you want to show a table with added files
-      <Table dataSource={fileDD} columns={columns} pagination={{ pageSize: 5 }} />
-      */}
+    
     </div>
   );
 };

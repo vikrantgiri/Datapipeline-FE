@@ -5,6 +5,7 @@ import {
   EyeInvisibleOutlined,
   DownOutlined,
 } from "@ant-design/icons";
+import { getCredentialsFilters } from "../../api/filter-api";
 
 const { Option } = Select;
 

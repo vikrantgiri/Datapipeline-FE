@@ -2,7 +2,7 @@
 import client from "../axiosInstance";
 
 export interface CreateCredentialPayload {
-  third_party: string;
+  third_party?: string;
   username: string;
   password: string;
   port: number | null;
@@ -13,7 +13,7 @@ export interface CreateCredentialPayload {
 }
 
 export const getCredentials = async (): Promise<Credential[]> => {
-  const res = await client.get<Credential[]>(`/credentials`);
+  const res = await client.post<Credential[]>(`/credentials/filtered?skip=0&limit=100`);
   return res?.data;
 };
 

@@ -1,9 +1,9 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import AuthForm from '../components/AuthForm';
 import authImage from '../assets/auth-image3.webp';
 
 const Home = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  // const [isLogin, setIsLogin] = useState(true);
 
   return (
     <div className="min-h-screen flex">
@@ -18,7 +18,7 @@ const Home = () => {
 
      
       <div className="w-full md:w-1/2 flex items-center justify-center p-8">
-        <AuthForm isLogin={isLogin} toggleMode={() => setIsLogin(!isLogin)} />
+        <AuthForm  />
       </div>
     </div>
   );

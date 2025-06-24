@@ -3,22 +3,26 @@ import { type inputfileData } from "../../pages/Input-File-Definitions/data";
 
 
 export interface CreateInputFilesPayload {
-  key: string;
-  id: number;
-  task_type: string;
-  campaign_type: string;
-  third_party: string;
-  use_tabu: boolean;
-  created_by_id: number;
-  updated_at: string;
-  remote_path: string;
-  custom_filename: string | null;
-  max_column_size: number;
-  action: string;
+  key?: string;
+  id?: number;
+  task_type?: string;
+  campaign_type?: string;
+  third_party?: string;
+  use_tabu?: boolean;
+  created_by_id?: number;
+  updated_at?: string;
+  remote_path?: string;
+  custom_filename?: string | null;
+  max_column_size?: number;
+  action?: string;
+  bucketize?: string;
+  sql_script?:string;
 }
 
 export const getInputFiles = async (): Promise<inputfileData[]> => {
-  const res = await client.get<inputfileData[]>(`/input-file-def`);
+  const res = await client.post<inputfileData[]>(
+    `/input-file-def/filtered?skip=0&limit=100`
+  );
   return res.data;
 };
 

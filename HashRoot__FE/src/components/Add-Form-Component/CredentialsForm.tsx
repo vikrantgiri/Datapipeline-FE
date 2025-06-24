@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Select, Button, InputNumber } from "antd";
-
+import { useNavigate } from "react-router-dom";
 import client from "../../api/axiosInstance";
 
 const { Option } = Select;
@@ -15,13 +15,14 @@ const CredentialsForm: React.FC<CredentialsFormProps> = ({
   onFinish,
 }) => {
   const [thirdPartyOptions, setThirdPartyOptions] = useState<string[]>([]);
-  const [createdByOptions, setCreatedByOptions] = useState<any[]>([]);
+  // const [createdByOptions, setCreatedByOptions] = useState<any[]>([]);
+  // const navigate = useNavigate();
 
   useEffect(() => {
     
     const fetchThirdParties = async () => {
       try {
-        const res = await client.get("/credentials/get-third-party-filters");
+        const res = await client.get("/filter/get-third-party-filters");
 
         if (res?.data?.error == null) {
           const parsed = res.data.data.map(
@@ -37,21 +38,24 @@ const CredentialsForm: React.FC<CredentialsFormProps> = ({
     fetchThirdParties();
 
     
-    const fetchCreatedBy = async () => {
-      try {
+    // const fetchCreatedBy = async () => {
+    //   try {
        
-        const res = await client.get("/user/get-user-filters");
+    //     const res = await client.get("/user/get-user-filters");
 
-        if (res?.data?.error == null) {
-          setCreatedByOptions(res.data.data);
-          console.log("Created By options fetched!", res.data.data);
-        }
-      } catch (error) {
-        console.error("Error fetching created by options.", error);
-      }
-    };
-    fetchCreatedBy();
+    //     if (res?.data?.error == null) {
+    //       setCreatedByOptions(res.data.data);
+    //       console.log("Created By options fetched!", res.data.data);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching created by options.", error);
+    //   }
+    // };
+    // fetchCreatedBy();
   }, []);
+
+
+
 
   return (
     <>
@@ -109,10 +113,10 @@ const CredentialsForm: React.FC<CredentialsFormProps> = ({
           </Form.Item>
 
           <Form.Item name="port" label="Port">
-            <InputNumber min={0} max={65535} style={{ width: "100%" }} />
+            <InputNumber min={0} max={65535} style={{ width:'fit-content'}} />
           </Form.Item>
 
-          <Form.Item
+          {/* <Form.Item
             name="created_by_id"
             label="Created by"
             rules={[
@@ -126,16 +130,16 @@ const CredentialsForm: React.FC<CredentialsFormProps> = ({
                 </Option>
               ))}
             </Select>
-          </Form.Item>
+          </Form.Item> */}
         </Form>
       </div>
 
       <div className="flex gap-4 pt-4">
-        <Button type="primary" onClick={() => form.submit()}>
+        <Button type="primary" onClick={() => form.submit()}
+          >
           SAVE
         </Button>
-        <Button>Save and add another</Button>
-        <Button>Save and continue editing</Button>
+      
         <Button onClick={() => form.resetFields()}>
           Reset
         </Button>

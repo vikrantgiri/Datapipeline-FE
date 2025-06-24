@@ -61,7 +61,7 @@ const PrepMails = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await client.get(`/prep-mail`);
+        const res = await client.get(`/prep-mail?skip=0&limit=100`);
         console.log(res?.data?.data);
         setData(res?.data?.data?.data);
       } catch (error) {
@@ -106,7 +106,7 @@ const PrepMails = () => {
       render: (text: string, record: PrepMail) => (
         <Link
           to={{
-            pathname: "/PrepMails/change",
+            pathname: "",
           }}
           state={{ record }}
           className="text-blue-600"
@@ -154,29 +154,29 @@ const PrepMails = () => {
         </Link>
       ),
     },
-    {
-      title: "",
-      key: "edit",
-      render: (_: any) => (
-        <Button type="primary" onClick={() => navigate("/PrepMails/change")}>
-          Edit
-        </Button>
-      ),
-    },
-    {
-      title: "",
-      key: "delete",
-      render: (_, record) => (
-        <Popconfirm
-          title="Are you sure to delete this Log?"
-          onConfirm={() => handleDelete(record.id)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button icon={<Trash2 size={16} className="text-red-600" />} danger />
-        </Popconfirm>
-      ),
-    },
+    // {
+    //   title: "",
+    //   key: "edit",
+    //   render: (_: any) => (
+    //     <Button type="primary" onClick={() => navigate("/PrepMails/change")}>
+    //       Edit
+    //     </Button>
+    //   ),
+    // },
+    // {
+    //   title: "",
+    //   key: "delete",
+    //   render: (_, record) => (
+    //     <Popconfirm
+    //       title="Are you sure to delete this Log?"
+    //       onConfirm={() => handleDelete(record.id)}
+    //       okText="Yes"
+    //       cancelText="No"
+    //     >
+    //       <Button icon={<Trash2 size={16} className="text-red-600" />} danger />
+    //     </Popconfirm>
+    //   ),
+    // },
   ];
 
   return (

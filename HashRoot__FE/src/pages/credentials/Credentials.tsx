@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Button, Input, Table, message, Popconfirm } from "antd";
 import {
   PlusOutlined,
-  DeleteOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,8 +10,10 @@ import HeadingWithButton from "../../components/Heading-button";
 import CredentialsFilter from "../../components/Filter/CredentialsFilter";
 import { Trash2 } from "lucide-react";
 // import { getCredentials } from "../../api/getCredentials";
-// import { LeafyGreen } from "lucide-react";
 import client from "../../api/axiosInstance";
+import FilterDropdown from "../../components/Add-Form-Component/Filter-dropdown";
+import { getThirdPartyFilters } from "../../api/filter-api";
+import FilterCardWrapper from "../../components/Add-Form-Component/Filter-component/input";
 
 const { Search } = Input;
 
@@ -28,19 +29,24 @@ export interface Credential {
   created_by_id: number;
 }
 
-
-
 const Credentials = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Credential[]>([]);
 
   const [searchText, setSearchText] = useState("");
+  const [thirdParyFilters, setThirdPartyFilters] = useState();
+  const [selectedFilter, setSelectedFilter] = useState("");
   const [selectedSource, setSelectedSource] = useState("All");
-  
-  // const handleDelete = (id: number) => {
-  //   setData((prev) => prev.filter((item) => item.id !== id));
-  // };
+
+  // const [showCounts, setShowCounts] = useState(true);
+
+  const filtered = data.filter((item) => {
+    return (
+      item.name.toLowerCase().includes(searchText.toLowerCase()) &&
+      (selectedSource === "All" || item.third_party === selectedSource)
+    );
+  });
 
   const handleDelete = async (id: number) => {
     setLoading(true);
@@ -57,20 +63,24 @@ const Credentials = () => {
     }
   };
 
-
   useEffect(() => {
-
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await client.get("/credentials");
+        const res = await client.post(
+          "/credentials/filtered?skip=0&limit=100",
+          {
+            third_party: selectedFilter,
+          }
+        );
+
         console.log(res?.data?.data);
         setData(res?.data?.data?.data);
       } catch (error) {
         console.error("Failed to fetch credentials.", error);
         message.error("Failed to fetch credentials.");
 
-       
+        // fallback data if API fails
         const fallbackData: Credential[] = [
           {
             id: 1,
@@ -96,21 +106,31 @@ const Credentials = () => {
           },
         ];
 
+
         setData(fallbackData);
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [selectedFilter]);
 
-  // Filter if you wish to
-  // const filtered = data.filter(
-  //   (item) =>
-  //     item.name.toLowerCase().includes(searchText.toLowerCase()) &&
-  //     (selectedSource === "All" ||
-  //       item.third_party === selectedSource)
-  // );
+  console.log("SELECTED FILTER", selectedFilter);
+
+  useEffect(() => {
+    const fetchFilter = async () => {
+      const res = getThirdPartyFilters();
+      res
+        .then((data) => {
+          console.log(data);
+          setThirdPartyFilters(data?.data);
+        })
+        .catch((error) => {
+          throw error;
+        });
+    };
+    fetchFilter();
+  }, []);
 
   const columns: ColumnsType<Credential> = [
     {
@@ -128,7 +148,7 @@ const Credentials = () => {
     { title: "Database", dataIndex: "database", key: "database" },
     { title: "Username", dataIndex: "username", key: "username" },
     { title: "Created At", dataIndex: "created_at", key: "created_at" },
-    { title: "Updated At", dataIndex: "updated_at", key: "updated_at" },
+    // { title: "Updated At", dataIndex: "(updated_at)", key: "(updated_at)" },
     {
       title: "",
       key: "edit",
@@ -146,18 +166,16 @@ const Credentials = () => {
       key: "delete",
       render: (_, record) => (
         <Popconfirm
-          title="Are you sure to delete this Log?"
+          title="Are you sure to delete this credential?"
           onConfirm={() => handleDelete(record.id)}
           okText="Yes"
           cancelText="No"
         >
-          <Button icon={<Trash2 size={16} className="text-red-600" />} danger />
+          <Button icon={<Trash2 size={16} />} danger />
         </Popconfirm>
       ),
     },
   ];
-
-  
 
   return (
     <div>
@@ -176,17 +194,16 @@ const Credentials = () => {
             allowClear
             enterButton={<SearchOutlined />}
             className="mb-4 w-full"
-            onSearch={setSearchText}
+            onSearch={(value) => setSearchText(value)}
           />
 
           {/* <div className="flex justify-between mb-4">
             <span>{filtered.length} credentials found</span>
             <Button
-              onClick={() => message.info("Bulk delete not implemented")}
+              onClick={() => message.info("Bulk delete not implemented")} 
               icon={<DeleteOutlined />}
               danger
             >
-
               Delete Selected
             </Button>
           </div> */}
@@ -194,30 +211,40 @@ const Credentials = () => {
           <Table
             loading={loading}
             columns={columns}
-            dataSource={data}
+            dataSource={filtered}
             rowKey="id"
-            // rowSelection={{ type: "checkbox" }}
+            // pagination={{ pageSize: 20, showSizeChanger: true }}
             bordered
             scroll={{ x: "max-content" }}
           />
         </div>
 
         <div className="lg:col-span-3 w-full">
-          <CredentialsFilter
+          {/* <CredentialsFilter
             title="Filters"
-            showCounts={true}
-            setShowCounts={() => {}}
+            showCounts={showCounts}
+            setShowCounts={(val) => setShowCounts(val)}
             selectLabel="By Third Party"
             selectedValue={selectedSource}
-            onSelectChange={setSelectedSource}
-            selectOptions={[
-              "All",
-              "TransUnion",
-              "Experian",
-              "Snowflake",
-              "Other",
-            ]}
-          />
+            onSelectChange={(value) => setSelectedSource(value)}
+            // selectOptions={[
+            //   "All",
+            //   "TransUnion",
+            //   "Experian",
+            //   "Snowflake",
+            //   "Other",
+            // ]}
+          /> */}
+          <div className="lg:col-span-3 w-full">
+            <FilterCardWrapper>
+              <FilterDropdown
+                title="Third Pary"
+                options={thirdParyFilters}
+                onChange={(value) => setSelectedFilter(value)}
+                value={selectedFilter}
+              />
+            </FilterCardWrapper>
+          </div>
         </div>
       </div>
     </div>

@@ -1,132 +1,101 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Form, Input, Button, message } from "antd";
 
-interface AuthFormProps {
-  isLogin: boolean;
-  toggleMode: () => void;
-}
+import { postLogin } from "../api/login-api";
 
-const AuthForm = ({ isLogin, toggleMode }: AuthFormProps) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+const AuthForm = () => {
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  // const handleSubmit = async (values: {
+  //   username: string;
+  //   password: string;
+  // }) => {
+  //   setError("");
+  //   try {
 
-    if (!isLogin) {
-      if (password.length < 6) {
-        setError('Password must be at least 6 characters long.');
-        return;
-      }
-      if (password !== confirmPassword) {
-        setError('Passwords do not match.');
-        return;
-      }
-      console.log('Signing up with:', { name, email, password });
-    } else {
-      if (email === 'baish@04' && password === '123456') {
-        navigate('/dashboard');
+  //     const res = await postLogin(values);
+
+  //     if (res.success) {
+  //       message.success("Login successful!");
+  //       navigate("/dashboard");
+  //     } else {
+  //       setError(res.message ?? "Invalid credentials.");
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //     setError("An error occurred while logging in.");
+  //   }
+  // };
+
+  const handleSubmit = async (values: {
+    username: string;
+    password: string;
+  }) => {
+    setError("");
+    try {
+      const res = await postLogin(values);
+      console.log(res?.data);
+
+      if (res?.data?.access_token) {
+        localStorage.setItem("access_token", res?.data?.access_token);
+
+        message.success("Login successful!");
+        navigate("/dashboard");
       } else {
-        setError('Invalid email or password.');
-        return;
+        setError(res.message ?? "Invalid credentials.");
       }
+    } catch (err) {
+      console.error(err);
+      setError("An error occurred while logging in.");
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
+    <Form
+      name="login-form"
+      onFinish={handleSubmit}
+      layout="vertical"
+      className="bg-gray-50 p-20 rounded-lg w-full max-w-md m-6"
     >
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        {isLogin ? 'Login to your account' : 'Create an account'}
-      </h2>
-
-      {!isLogin && (
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-600">
-            Full Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-      )}
-
-      <div className="mb-4">
-        <label htmlFor="email" className="block text-sm font-medium text-gray-600">
-          Email
-        </label>
-        <input
-          type="email"
-          id="email"
-          className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-
-      <div className="mb-4">
-        <label htmlFor="password" className="block text-sm font-medium text-gray-600">
-          Password
-        </label>
-        <input
-          type="password"
-          id="password"
-          className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-
-      {!isLogin && (
-        <div className="mb-4">
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-600">
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            id="confirmPassword"
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
-      )}
+      <h2 className="text-2xl font-semibold mb-6">Login to your account</h2>
 
       {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
 
-      <button
-        type="submit"
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition"
+      <Form.Item
+        label="Username"
+        name="username"
+        rules={[{ required: true, message: "Please enter your username!" }]}
       >
-        {isLogin ? 'Login' : 'Sign Up'}
-      </button>
+        <Input
+          id="username"
+          aria-label="username"
+          placeholder="Enter your username"
+        />
+      </Form.Item>
 
-      <p className="mt-4 text-sm text-center text-gray-600">
-        {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
-        <button
-          type="button"
-          onClick={toggleMode}
-          className="text-blue-600 hover:underline"
-        >
-          {isLogin ? 'Sign up' : 'Log in'}
-        </button>
-      </p>
-    </form>
+      <Form.Item
+        label="Password"
+        name="password"
+        rules={[{ required: true, message: "Please enter your password!" }]}
+      >
+        <Input.Password
+          id="password"
+          aria-label="password"
+          placeholder="Enter your password"
+        />
+      </Form.Item>
+
+      <Button
+        type="primary"
+        htmlType="submit"
+        block
+        className="bg-blue-600 hover:bg-blue-700 font-semibold py-2 px-4 rounded-md transition"
+      >
+        Login
+      </Button>
+    </Form>
   );
 };
 

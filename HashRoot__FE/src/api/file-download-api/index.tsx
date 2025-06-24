@@ -1,7 +1,6 @@
 import client from "../axiosInstance";
 import { type FileDownloadDefinitionItem } from "../../pages/FileDownloadDefinition/data";
 
-
 export interface CreateFileDDPayload {
   key: string;
   name: string;
@@ -19,23 +18,30 @@ export interface CreateFileDDPayload {
   insertPostgres: string;
 }
 
-
 export const getFileDownloadDefinitions = async (): Promise<
   FileDownloadDefinitionItem[]
 > => {
-  const res = await client.get<FileDownloadDefinitionItem[]>(
-    `/file-download-def`
+  const res = await client.post<FileDownloadDefinitionItem[]>(
+    `/file-download-def/filtered?skip=0&limit=100`
   );
   return res.data;
 };
 
-
-export const postFileDownloadDefinitions = async (payload: CreateFileDDPayload) => {
+export const postFileDownloadDefinitions = async (
+  payload: CreateFileDDPayload
+) => {
   const res = await client.post("/file-download-def", payload);
   return res?.data;
 };
 
-
+export const putFileDownloadDefinitions = async (): Promise<
+  FileDownloadDefinitionItem[]
+> => {
+  const res = await client.put<FileDownloadDefinitionItem[]>(
+    `/file-download-def`
+  );
+  return res?.data;
+};
 
 export const deleteFileDownloadDefinitions = async (id: number) => {
   try {

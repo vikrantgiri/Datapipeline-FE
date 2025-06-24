@@ -1,16 +1,22 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState,useEffect } from "react";
-import { Button, Input, Table, Popconfirm,message } from "antd";
+import { useState, useEffect } from "react";
+import { Button, Input, Table, Popconfirm, message } from "antd";
 import {
   PlusOutlined,
   DeleteOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
+import type { ColumnsType } from "antd/es/table";
 import HeadingWithButton from "../../components/Heading-button";
 import FileDDFilter from "../../components/Filter/FileDDFilter";
 import { triggerLeadsData } from "./data";
 import { Trash2 } from "lucide-react";
 import client from "../../api/axiosInstance";
+import FilterCardWrapper from "../../components/Add-Form-Component/Filter-component/input";
+import FilterDropdown from "../../components/Add-Form-Component/Filter-dropdown";
+import { getThirdPartyFilters } from "../../api/filter-api";
+import { getCampaignFilters, getStatesFilters } from "../../api/filter-api";
+
 const { Search } = Input;
 
 export interface TriggerLeadItem {
@@ -30,53 +36,59 @@ const TriggerLeads = () => {
   const [searchText, setSearchText] = useState("");
   const [showCounts, setShowCounts] = useState(true);
 
-    const [data, setData] = useState<TriggerLeadItem[]>([]);
-    const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<TriggerLeadItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [thirdParyFilters, setThirdPartyFilters] = useState();
+  const [selectedFilter, setSelectedFilter] = useState("");
+  const [campaignTypeFilters, setCampaignTypeFilters] = useState();
+  const [selectedCampaignFilter, setSelectedCampaignFilter] = useState("");
+  const [stateFilters, setStateFilters] = useState();
+  const [selectedStateFilter, setSelectedStateFilter] = useState("");
 
-    // const handleDelete = (id: number) => {
-    //   setData((prev) => prev.filter((item) => item.id !== id));
-    // };
+  // const handleDelete = (id: number) => {
+  //   setData((prev) => prev.filter((item) => item.id !== id));
+  // };
 
-      const handleDelete = async (id: number) => {
-    setLoading(true);
-    try {
-      await client.delete(`/trigger-leads/${id}`);
-      setData((prev) => prev.filter((item) => item.id !== id));
+  //     const handleDelete = async (id: number) => {
+  //   setLoading(true);
+  //   try {
+  //     await client.delete(`/trigger-leads/${id}`);
+  //     setData((prev) => prev.filter((item) => item.id !== id));
 
-      message.success("Credential successfully deleted.");
-    } catch (error) {
-      console.error("Error while delete.", error);
-      message.error("Failed to delete credential.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     message.success("Credential successfully deleted.");
+  //   } catch (error) {
+  //     console.error("Error while delete.", error);
+  //     message.error("Failed to delete credential.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  const [selectedDataSource, setSelectedDataSource] = useState("All");
-  const [selectedLeadType, setSelectedLeadType] = useState("All");
-  const [selectedState, setSelectedState] = useState("All");
+  // const [selectedDataSource, setSelectedDataSource] = useState("All");
+  // const [selectedLeadType, setSelectedLeadType] = useState("All");
+  // const [selectedState, setSelectedState] = useState("All");
 
-  const filteredData = triggerLeadsData.filter((item) => {
-    const search = searchText.toLowerCase();
-    const matchesSearch =
-      item.firstName.toLowerCase().includes(search) ||
-      item.lastName.toLowerCase().includes(search) ||
-      item.state.toLowerCase().includes(search) ||
-      item.zip.includes(search);
+  // const filteredData = data.filter((item) => {
+  //   const search = searchText.toLowerCase();
+  //   const matchesSearch =
+  //     item.firstName.toLowerCase().includes(search) ||
+  //     item.lastName.toLowerCase().includes(search) ||
+  //     item.state.toLowerCase().includes(search) ||
+  //     item.zip.includes(search);
 
-    const matchesDataSource =
-      selectedDataSource === "All" || item.dataSource === selectedDataSource;
+  //   const matchesDataSource =
+  //     selectedDataSource === "All" || item.dataSource === selectedDataSource;
 
-    const matchesLeadType =
-      selectedLeadType === "All" || item.leadType === selectedLeadType;
+  //   const matchesLeadType =
+  //     selectedLeadType === "All" || item.leadType === selectedLeadType;
 
-    const matchesState =
-      selectedState === "All" || item.state === selectedState;
+  //   const matchesState =
+  //     selectedState === "All" || item.state === selectedState;
 
-    return (
-      matchesSearch && matchesDataSource && matchesLeadType && matchesState
-    );
-  });
+  //   return (
+  //     matchesSearch && matchesDataSource && matchesLeadType && matchesState
+  //   );
+  // });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,7 +96,14 @@ const TriggerLeads = () => {
       try {
         // throw new Error("Simulated failure");
 
-        const res = await client.get(`/trigger-leads`);
+        const res = await client.post(
+          `/trigger-leads/filtered?skip=0&limit=100`,
+          {
+            data_source: String(selectedFilter),
+            lead_type: String(selectedCampaignFilter),
+            us_states: String(selectedStateFilter),
+          }
+        );
         console.log(res?.data?.data);
         setData(res?.data?.data?.data);
       } catch (error) {
@@ -123,9 +142,31 @@ const TriggerLeads = () => {
     // };
     // console.log(data);
     fetchData();
+  }, [selectedFilter, selectedCampaignFilter, selectedStateFilter]);
+
+  console.log("SELECTED 3rd party FILTER", selectedFilter);
+
+  useEffect(() => {
+    const fetchFilters = async () => {
+      try {
+        const [thirdPartyRes, campaignRes, stateRes] = await Promise.all([
+          getThirdPartyFilters(),
+          getCampaignFilters(),
+          getStatesFilters(),
+        ]);
+
+        setThirdPartyFilters(thirdPartyRes?.data || []);
+        setCampaignTypeFilters(campaignRes?.data || []);
+        setStateFilters(stateRes?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch filters", error);
+      }
+    };
+
+    fetchFilters();
   }, []);
 
-  const columns = [
+  const columns: ColumnsType<TriggerLeadItem> = [
     {
       title: "ID",
       dataIndex: "id",
@@ -134,7 +175,7 @@ const TriggerLeads = () => {
       render: (text: string, record: any) => (
         <Link
           to={{
-            pathname: "/TriggerLeads/change",
+            pathname: "",
           }}
           state={{ record }}
           className="text-blue-600"
@@ -178,29 +219,6 @@ const TriggerLeads = () => {
       dataIndex: "created_at",
       key: "created_at",
     },
-    {
-      title: "",
-      key: "edit",
-      render: (_: any) => (
-        <Button type="primary" onClick={() => navigate("/TriggerLeads/change")}>
-          Edit
-        </Button>
-      ),
-    },
-    {
-      title: "",
-      key: "delete",
-      render: (_:any, record:any) => (
-        <Popconfirm
-          title="Are you sure to delete this Log?"
-          onConfirm={() => handleDelete(record.id)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button icon={<Trash2 size={16} className="text-red-600" />} danger />
-        </Popconfirm>
-      ),
-    },
   ];
 
   return (
@@ -236,84 +254,36 @@ const TriggerLeads = () => {
             <Table
               columns={columns}
               dataSource={data}
-              rowSelection={{ type: "checkbox" }}
               bordered
+              rowKey="id"
               loading={loading}
+              // pagination={{ pageSize: 20, showSizeChanger: true }}
               scroll={{ x: "max-content" }}
             />
           </div>
         </div>
 
         <div className="lg:col-span-3 w-full">
-          <FileDDFilter
-            title="Filters"
-            showCounts={showCounts}
-            setShowCounts={setShowCounts}
-            selectLabel1="By data source"
-            selectLabel2="By lead type"
-            selectLabel3="By state"
-            selectedValue1={selectedDataSource}
-            selectedValue2={selectedLeadType}
-            selectedValue3={selectedState}
-            onSelectChange1={(value) => setSelectedDataSource(value)}
-            onSelectChange2={(value) => setSelectedLeadType(value)}
-            onSelectChange3={(value) => setSelectedState(value)}
-            selectOptions1={["All", "TransUnion", "Experian", "unspecified"]}
-            selectOptions2={[
-              "All",
-              "HECM to HECM",
-              "First Time Reverse",
-              "Unspecified",
-            ]}
-            selectOptions3={[
-              "All",
-              "AK",
-              "AL",
-              "AR",
-              "AZ",
-              "CA",
-              "CO",
-              "CT",
-              "DC",
-              "DE",
-              "FL",
-              "GA",
-              "IA",
-              "ID",
-              "IL",
-              "IN",
-              "KS",
-              "KY",
-              "LA",
-              "MA",
-              "MD",
-              "ME",
-              "MI",
-              "MN",
-              "MO",
-              "MT",
-              "NC",
-              "NE",
-              "NH",
-              "NJ",
-              "NM",
-              "NV",
-              "NY",
-              "OH",
-              "OK",
-              "OR",
-              "PA",
-              "RI",
-              "SC",
-              "TN",
-              "TX",
-              "UT",
-              "VA",
-              "WA",
-              "WI",
-              "WY",
-            ]}
-          />
+          <FilterCardWrapper>
+            <FilterDropdown
+              title="By Data Source"
+              options={thirdParyFilters}
+              onChange={(value) => setSelectedFilter(value)}
+              value={selectedFilter}
+            />
+            <FilterDropdown
+              title="By Lead Type"
+              options={campaignTypeFilters}
+              onChange={(value) => setSelectedCampaignFilter(value)}
+              value={selectedCampaignFilter}
+            />
+            <FilterDropdown
+              title="By State"
+              options={stateFilters}
+              onChange={(value) => setSelectedStateFilter(value)}
+              value={selectedStateFilter}
+            />
+          </FilterCardWrapper>
         </div>
       </div>
     </div>
