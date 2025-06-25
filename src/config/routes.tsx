@@ -1,4 +1,3 @@
-import React from 'react'
 import { lazy } from 'react'
 import { PUBLIC_ROUTES, PROTECTED_ROUTES } from '../constants/routes'
 import type { RouteConfig } from '../types'
