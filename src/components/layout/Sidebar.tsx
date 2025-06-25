@@ -6,7 +6,6 @@ import {
   FolderOpen,
   FileText,
   Mail,
-  Zap,
   Target,
 } from 'lucide-react'
 
@@ -44,11 +43,11 @@ const Sidebar: React.FC = () => {
       label: 'Prep Mails',
       icon: <Mail size={18} />,
     },
-    {
-      path: PROTECTED_ROUTES.TASK_STATUS,
-      label: 'Task Status',
-      icon: <Zap size={18} />,
-    },
+    // {
+    //   path: PROTECTED_ROUTES.TASK_STATUS,
+    //   label: 'Task Status',
+    //   icon: <Zap size={18} />,
+    // },
     {
       path: PROTECTED_ROUTES.TRIGGER_LEADS,
       label: 'Trigger Leads',

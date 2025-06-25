@@ -191,6 +191,14 @@ const FileDownloadDefinition = () => {
     setSearchText(value)
   }
 
+  const handleDownloadTrigger = async (id: number) => {
+    try {
+      await client.get(`/file-download-def/download-trigger/${id}`)
+    } catch (error) {
+      console.error('Error while triggering file download', error)
+    }
+  }
+
   const columns: ColumnsType<FileDownloadDefinitionItem> = [
     {
       title: 'NAME',
@@ -317,7 +325,7 @@ const FileDownloadDefinition = () => {
             type='default'
             size='small'
             icon={<Download className='w-3 h-3' />}
-            onClick={() => window.open(record.remote_path, '_blank')}
+            onClick={() => handleDownloadTrigger(record.id!)}
           >
             Download
           </Button>

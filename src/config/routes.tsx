@@ -6,7 +6,7 @@ import type { RouteConfig } from '../types'
 const DashboardPage = lazy(
   () => import('../features/dashboard/components/DashboardPage')
 )
-const LoginPage = lazy(() => import('../features/auth/components/LoginPage'))
+const LoginPage = lazy(() => import('../pages/Home'))
 
 // Credentials
 const Credentials = lazy(() => import('../pages/credentials/Credentials'))
