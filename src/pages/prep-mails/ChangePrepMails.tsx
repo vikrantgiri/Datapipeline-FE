@@ -1,22 +1,22 @@
-import { Form } from "antd";
-import PrepMailsForm from "../../components/Add-Form-Component/PrepMailsForm";
+import { Form } from 'antd'
+import PrepMailsForm from '../../components/Add-Form-Component/PrepMailsForm'
 
 const ChangePrepMails = () => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   const handleSubmit = (values: any) => {
-    console.log("Submitted PrepMail values:", values);
-  };
+    console.log('Submitted PrepMail values:', values)
+  }
 
   return (
-    <div className="text-white">
-      <h1 className="text-2xl text-black font-semibold mb-6">
+    <div className='text-white'>
+      <h1 className='text-2xl text-black font-semibold mb-6'>
         Change Prep Mails
       </h1>
-      <div className="pr-4" />
+      <div className='pr-4' />
       <PrepMailsForm form={form} onFinish={handleSubmit} />
     </div>
-  );
-};
+  )
+}
 
-export default ChangePrepMails;
+export default ChangePrepMails

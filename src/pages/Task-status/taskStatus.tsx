@@ -1,249 +1,416 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState,useEffect } from "react";
-import { Button, Input, Table, Popconfirm } from "antd";
-import { DeleteOutlined, SearchOutlined } from "@ant-design/icons";
-import HeadingWithButton from "../../components/Heading-button";
-import FileDDFilter from "../../components/Filter/FileDDFilter";
-import { taskStatusData } from "./data";
-import { Trash2 } from "lucide-react";
-import client from "../../api/axiosInstance";
+import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useCallback } from 'react'
+import { Button, Input, Table, Popconfirm, Pagination, message } from 'antd'
+import { SearchOutlined } from '@ant-design/icons'
+import type { ColumnsType } from 'antd/es/table'
+import { Trash2, Edit } from 'lucide-react'
+import client from '../../api/axiosInstance'
 
-const { Search } = Input;
+const { Search } = Input
 
 export interface TaskStatusItem {
-  key: string;
-  id: number;
-  taskDefinition: string;
-  status: string;
-  createdAt: string;
-  createdBy: string;
-  updatedAt: string;
+  key: string
+  id: number
+  taskDefinition: string
+  status: string
+  createdAt: string
+  createdBy: string
+  updatedAt: string
+}
+
+interface PaginationData {
+  current: number
+  pageSize: number
+  total: number
+  skip: number
+  limit: number
 }
 
 const TaskStatus = () => {
-  const navigate = useNavigate();
-  const [searchText, setSearchText] = useState("");
-  const [showCounts, setShowCounts] = useState(true);
+  const navigate = useNavigate()
+  const [searchText, setSearchText] = useState('')
+  const [data, setData] = useState<TaskStatusItem[]>([])
+  const [loading, setLoading] = useState(false)
 
-  
-    const [data, setData] = useState<TaskStatusItem[]>([]);
-    const [loading, setLoading] = useState(false);
-   
-    const handleDelete = (id: number) => {
-      setData((prev) => prev.filter((item) => item.id !== id));
-    };
+  // Filter states
+  const [statusFilter, setStatusFilter] = useState('')
+  const [createdAtFilter, setCreatedAtFilter] = useState('')
 
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [createdAtFilter, setCreatedAtFilter] = useState("Any date");
+  // Pagination state
+  const [pagination, setPagination] = useState<PaginationData>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+    skip: 0,
+    limit: 10,
+  })
 
-  const filteredData = taskStatusData.filter((item) => {
-    const searchLower = searchText.toLowerCase();
-    const matchesSearch =
-      item.taskDefinition.toLowerCase().includes(searchLower) ||
-      item.status.toLowerCase().includes(searchLower) ||
-      item.createdBy.toLowerCase().includes(searchLower);
+  const fetchData = useCallback(
+    async (page: number = 1, pageSize: number = 10) => {
+      setLoading(true)
+      try {
+        const skip = (page - 1) * pageSize
+        const limit = pageSize
 
-    const matchesStatus =
-      statusFilter === "All" || item.status === statusFilter;
+        const res = await client.get(
+          `/task-status?skip=${skip}&limit=${limit}`,
+          {
+            params: {
+              status: statusFilter || undefined,
+              created_at: createdAtFilter || undefined,
+              search: searchText || undefined,
+            },
+          }
+        )
 
-   
-    const today = new Date().toISOString().split("T")[0]; 
-    const createdAt = item.createdAt;
+        const responseData = res?.data?.data
+        const rawData = responseData?.data || []
+        const total = responseData?.total || 0
 
-    let matchesDate = true;
-    if (createdAtFilter === "Today") {
-      matchesDate = createdAt === today;
-    } else if (createdAtFilter === "Past 7 Day") {
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      matchesDate = new Date(createdAt) >= sevenDaysAgo;
-    } else if (createdAtFilter === "This month") {
-      const createdDate = new Date(createdAt);
-      const now = new Date();
-      matchesDate =
-        createdDate.getMonth() === now.getMonth() &&
-        createdDate.getFullYear() === now.getFullYear();
-    } else if (createdAtFilter === "This Year") {
-      const createdDate = new Date(createdAt);
-      matchesDate = createdDate.getFullYear() === new Date().getFullYear();
-    }
+        if (Array.isArray(rawData)) {
+          setData(rawData)
 
-    return matchesSearch && matchesStatus && matchesDate;
-  });
-
+          // Update pagination state
+          setPagination(prev => ({
+            ...prev,
+            current: page,
+            pageSize,
+            total,
+            skip,
+            limit,
+          }))
+        }
+      } catch (error) {
+        console.error('Failed to fetch task status', error)
+        setData([])
+        message.error('Failed to fetch data')
+      } finally {
+        setLoading(false)
+      }
+    },
+    [statusFilter, createdAtFilter, searchText]
+  )
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        // throw new Error("Simulated failure");
+    fetchData(1, pagination.pageSize)
+  }, [fetchData, pagination.pageSize])
 
-        const res = await client.get(`/task-status`);
-        console.log(res?.data?.data);
-        setData(res?.data?.data?.data);
-      } catch (error) {
-        console.log("Failed to fetch task status", error);
-        const fallbackData: TaskStatusItem[] = [
-          {
-            key: "1",
-            id: 98,
-            taskDefinition: "TRIGGER - EXP- fallback",
-            status: "Completed",
-            createdAt: "May 29, 2025, 11:05 a.m.",
-            createdBy: "super",
-            updatedAt: "May 29, 2025, 11:06 a.m.",
-          },
-          {
-            key: "2",
-            id: 97,
-            taskDefinition: "TRIGGER - TU",
-            status: "Completed with errors",
-            createdAt: "May 5, 2025, 8:08 a.m.",
-            createdBy: "admin",
-            updatedAt: "May 5, 2025, 8:37 a.m.",
-          },
-        ];
-        setData(fallbackData);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Handle search with debounce
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchData(1, pagination.pageSize)
+    }, 500)
 
-    //   }
-    // };
-    // console.log(data);
-    fetchData();
-  }, []);
+    return () => clearTimeout(timeoutId)
+  }, [fetchData, pagination.pageSize])
 
-  const columns = [
+  const handleDelete = async (id: number) => {
+    setLoading(true)
+    try {
+      await client.delete(`/task-status/${id}`)
+      setData(prev => prev.filter(item => item.id !== id))
+      message.success('Task status successfully deleted.')
+
+      // Refresh current page data
+      fetchData(pagination.current, pagination.pageSize)
+    } catch (error) {
+      console.error('Error while deleting task status', error)
+      message.error('Failed to delete task status.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleTableChange = (page: number, pageSize: number) => {
+    fetchData(page, pageSize)
+  }
+
+  const handleSearch = (value: string) => {
+    setSearchText(value)
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return 'bg-green-100 text-green-800'
+      case 'in progress':
+        return 'bg-blue-100 text-blue-800'
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800'
+      case 'failed':
+      case 'completed with errors':
+        return 'bg-red-100 text-red-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const columns: ColumnsType<TaskStatusItem> = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
       width: 80,
       render: (text: string, record: any) => (
         <Link
-          to={{
-            pathname: "/TaskStatus/change",
-          }}
+          to='/TaskStatus/change'
           state={{ record }}
-          className="text-blue-600"
+          className='text-blue-600 hover:text-blue-800 font-medium'
         >
           {text}
         </Link>
       ),
     },
     {
-      title: "TASK DEFINITION",
-      dataIndex: "taskDefinition",
-      key: "taskDefinition",
+      title: 'TASK DEFINITION',
+      dataIndex: 'taskDefinition',
+      key: 'taskDefinition',
+      width: 200,
       render: (text: string, record: any) => (
         <Link
-          to={{
-            pathname: "/InputFileDefinition/change",
-          }}
+          to='/InputFileDefinition/change'
           state={{ record }}
-          className="text-blue-600"
+          className='text-blue-600 hover:text-blue-800 font-medium'
         >
           {text}
         </Link>
       ),
     },
-    { title: "STATUS", dataIndex: "status", key: "status" },
-    { title: "CREATED AT", dataIndex: "createdAt", key: "createdAt" },
-    { title: "CREATED BY", dataIndex: "createdBy", key: "createdBy" },
-    { title: "UPDATED AT", dataIndex: "updatedAt", key: "updatedAt" },
     {
-      title: "",
-      key: "edit",
-      render: (_: any) => (
-        <Button type="primary" onClick={() => navigate("/TaskStatus/change")}>
-          Edit
-        </Button>
-      ),
-    },
-    {
-      title: "",
-      key: "delete",
-      render: (_:any, record:any) => (
-        <Popconfirm
-          title="Are you sure to delete this Log?"
-          onConfirm={() => handleDelete(record.id)}
-          okText="Yes"
-          cancelText="No"
+      title: 'STATUS',
+      dataIndex: 'status',
+      key: 'status',
+      width: 150,
+      render: (status: string) => (
+        <span
+          className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(status)}`}
         >
-          <Button icon={<Trash2 size={16} className="text-red-600" />} danger />
-        </Popconfirm>
+          {status}
+        </span>
       ),
     },
-  ];
+    {
+      title: 'CREATED AT',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 150,
+      render: (text: string) => (
+        <span className='text-sm text-gray-600'>
+          {new Date(text).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </span>
+      ),
+    },
+    {
+      title: 'CREATED BY',
+      dataIndex: 'createdBy',
+      key: 'createdBy',
+      width: 120,
+    },
+    {
+      title: 'UPDATED AT',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      width: 150,
+      render: (text: string) => (
+        <span className='text-sm text-gray-600'>
+          {new Date(text).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </span>
+      ),
+    },
+    {
+      title: 'ACTIONS',
+      key: 'actions',
+      width: 120,
+      render: (_: any, record: any) => (
+        <div className='flex items-center space-x-2'>
+          <Button
+            type='primary'
+            size='small'
+            onClick={() =>
+              navigate('/TaskStatus/change', { state: { record } })
+            }
+          >
+            <Edit className='w-3 h-3 mr-1' />
+            Edit
+          </Button>
+          <Popconfirm
+            title='Are you sure to delete this task status?'
+            description='This action cannot be undone.'
+            onConfirm={() => handleDelete(record.id)}
+            okText='Yes'
+            cancelText='No'
+            okType='danger'
+          >
+            <Button icon={<Trash2 size={14} />} danger size='small' />
+          </Popconfirm>
+        </div>
+      ),
+    },
+  ]
+
+  const statusOptions = [
+    { label: 'All', value: '' },
+    { label: 'Pending', value: 'Pending' },
+    { label: 'In Progress', value: 'In Progress' },
+    { label: 'Completed', value: 'Completed' },
+    { label: 'Completed with errors', value: 'Completed with errors' },
+    { label: 'Failed', value: 'Failed' },
+  ]
+
+  const dateOptions = [
+    { label: 'Any date', value: '' },
+    { label: 'Today', value: 'Today' },
+    { label: 'Past 7 Days', value: 'Past 7 Day' },
+    { label: 'This month', value: 'This month' },
+    { label: 'This Year', value: 'This Year' },
+  ]
 
   return (
-    <div className="">
-      <HeadingWithButton heading="Select Task Status to change" />
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
-        <div className="lg:col-span-9 w-full">
-          <Search
-            placeholder="Search task status"
-            allowClear
-            enterButton={<SearchOutlined />}
-            className="mb-4 w-full"
-            onSearch={(value) => setSearchText(value)}
-          />
-
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-            <span className="text-sm text-gray-600">
-              {filteredData.length} task status record(s) found
-            </span>
-            <Button icon={<DeleteOutlined />} danger>
-              Delete Selected
-            </Button>
+    <div className='min-h-screen bg-gray-50 p-6'>
+      <div className='max-w-7xl mx-auto space-y-6'>
+        {/* Header */}
+        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
+          <div>
+            <h1 className='text-3xl font-bold text-gray-900'>Task Status</h1>
+            <p className='text-gray-600 mt-1'>
+              Monitor and manage task execution status
+            </p>
           </div>
-
-          <div className="overflow-x-auto">
-            <Table
-              columns={columns}
-              dataSource={data}
-              // rowSelection={{ type: "checkbox" }}
-              bordered
-              loading={loading}
-              scroll={{ x: "max-content" }}
-            />
-          </div>
+          <Link
+            to='/TaskStatus/add'
+            className='inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium mt-4 sm:mt-0'
+          >
+            Add Task Status
+          </Link>
         </div>
 
-        <div className="lg:col-span-3 w-full">
-          <FileDDFilter
-            title="Filters"
-            showCounts={showCounts}
-            setShowCounts={setShowCounts}
-            selectLabel1="By status"
-            selectLabel2="By created at"
-            selectedValue1={statusFilter}
-            selectedValue2={createdAtFilter}
-            onSelectChange1={(value) => setStatusFilter(value)}
-            onSelectChange2={(value) => setCreatedAtFilter(value)}
-            selectOptions1={[
-              "All",
-              "Pending",
-              "In Progress",
-              "Completed",
-              "Completed with errors",
-              "Failed",
-            ]}
-            selectOptions2={[
-              "Any date",
-              "Today",
-              "Past 7 Day",
-              "This month",
-              "This Year",
-            ]}
-          />
+        <div className='grid grid-cols-1 lg:grid-cols-4 gap-6'>
+          {/* Main Content */}
+          <div className='lg:col-span-3 space-y-6'>
+            {/* Search Bar */}
+            <div className='relative'>
+              <Search
+                placeholder='Search task status...'
+                allowClear
+                enterButton={<SearchOutlined />}
+                className='w-full'
+                onSearch={handleSearch}
+                onChange={e => setSearchText(e.target.value)}
+                value={searchText}
+              />
+            </div>
+
+            {/* Table */}
+            <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden'>
+              <Table
+                columns={columns}
+                dataSource={data}
+                rowKey='id'
+                loading={loading}
+                scroll={{ x: 'max-content' }}
+                pagination={false} // We'll handle pagination manually
+                size='middle'
+                className='custom-table'
+              />
+
+              {/* Custom Pagination */}
+              <div className='flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50'>
+                <div className='text-sm text-gray-600'>
+                  Showing {(pagination.current - 1) * pagination.pageSize + 1}{' '}
+                  to{' '}
+                  {Math.min(
+                    pagination.current * pagination.pageSize,
+                    pagination.total
+                  )}{' '}
+                  of {pagination.total} entries
+                </div>
+                <Pagination
+                  current={pagination.current}
+                  pageSize={pagination.pageSize}
+                  total={pagination.total}
+                  showSizeChanger
+                  onChange={handleTableChange}
+                  onShowSizeChange={handleTableChange}
+                  pageSizeOptions={['10', '20', '50', '100']}
+                  className='custom-pagination'
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Filters Sidebar */}
+          <div className='lg:col-span-1'>
+            <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6'>
+              <div className='flex items-center mb-4'>
+                <svg
+                  className='w-5 h-5 text-gray-500 mr-2'
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z'
+                  />
+                </svg>
+                <h3 className='text-lg font-medium text-gray-900'>Filters</h3>
+              </div>
+
+              <div className='space-y-4'>
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-2'>
+                    By Status
+                  </label>
+                  <select
+                    value={statusFilter}
+                    onChange={e => setStatusFilter(e.target.value)}
+                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200'
+                  >
+                    {statusOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-2'>
+                    By Created At
+                  </label>
+                  <select
+                    value={createdAtFilter}
+                    onChange={e => setCreatedAtFilter(e.target.value)}
+                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200'
+                  >
+                    {dateOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TaskStatus;
+export default TaskStatus

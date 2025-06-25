@@ -1,42 +1,41 @@
-import React from "react";
-import { Select } from "antd";
+import React from 'react'
+import { Select } from 'antd'
 import {
   EyeOutlined,
   EyeInvisibleOutlined,
   DownOutlined,
-} from "@ant-design/icons";
-import { getCredentialsFilters } from "../../api/filter-api";
+} from '@ant-design/icons'
 
-const { Option } = Select;
+const { Option } = Select
 
 interface FileDDFilterProps {
-  title?: string;
-  showCounts?: boolean;
-  setShowCounts: (value: boolean) => void;
+  title?: string
+  showCounts?: boolean
+  setShowCounts: (value: boolean) => void
 
-  selectLabel1?: string;
-  selectLabel2?: string;
-  selectLabel3?: string;
-  selectLabel4?: string;
+  selectLabel1?: string
+  selectLabel2?: string
+  selectLabel3?: string
+  selectLabel4?: string
 
-  selectedValue1?: string;
-  selectedValue2?: string;
-  selectedValue3?: string;
-  selectedValue4?: string;
+  selectedValue1?: string
+  selectedValue2?: string
+  selectedValue3?: string
+  selectedValue4?: string
 
-  onSelectChange1?: (value: string) => void;
-  onSelectChange2?: (value: string) => void;
-  onSelectChange3?: (value: string) => void;
-  onSelectChange4?: (value: string) => void;
+  onSelectChange1?: (value: string) => void
+  onSelectChange2?: (value: string) => void
+  onSelectChange3?: (value: string) => void
+  onSelectChange4?: (value: string) => void
 
-  selectOptions1: string[];
-  selectOptions2?: string[];
-  selectOptions3?: string[];
-  selectOptions4?: string[];
+  selectOptions1: string[]
+  selectOptions2?: string[]
+  selectOptions3?: string[]
+  selectOptions4?: string[]
 }
 
 const FileDDFilter: React.FC<FileDDFilterProps> = ({
-  title = "Filters",
+  title = 'Filters',
   showCounts = false,
   setShowCounts,
   selectLabel1,
@@ -65,31 +64,31 @@ const FileDDFilter: React.FC<FileDDFilterProps> = ({
     label &&
     options?.length > 0 && (
       <div>
-        <label className="block text-sm font-medium mb-1">{label}</label>
+        <label className='block text-sm font-medium mb-1'>{label}</label>
         <Select
           value={selected}
           onChange={onChange}
           suffixIcon={<DownOutlined />}
-          className="w-full"
+          className='w-full'
         >
-          {options.map((opt) => (
+          {options.map(opt => (
             <Option key={opt} value={opt}>
               {opt}
             </Option>
           ))}
         </Select>
       </div>
-    );
+    )
 
   return (
-    <div className="col-span-3">
-      <div className="bg-white p-4 shadow rounded border space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-md font-medium">{title}</h3>
+    <div className='col-span-3'>
+      <div className='bg-white p-4 shadow rounded border space-y-4'>
+        <div className='flex items-center justify-between'>
+          <h3 className='text-md font-medium'>{title}</h3>
           <button
             onClick={() => setShowCounts(!showCounts)}
-            className="text-gray-600 hover:text-gray-800"
-            title={showCounts ? "Hide Count" : "Show Count"}
+            className='text-gray-600 hover:text-gray-800'
+            title={showCounts ? 'Hide Count' : 'Show Count'}
           >
             {showCounts ? <EyeOutlined /> : <EyeInvisibleOutlined />}
           </button>
@@ -121,7 +120,7 @@ const FileDDFilter: React.FC<FileDDFilterProps> = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default FileDDFilter;
+export default FileDDFilter

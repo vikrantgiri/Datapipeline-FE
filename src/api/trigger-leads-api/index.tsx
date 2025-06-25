@@ -1,13 +1,14 @@
-import client from "../axiosInstance";
-import { type TriggerLeadItem } from "../../pages/Trigger-leads/data";
+import client from '../axiosInstance'
+import { type TriggerLeadItem } from '../../pages/Trigger-leads/data'
 
-export const getFileDownloadDefinitions = async (): Promise<TriggerLeadItem[]> => {
+export const getFileDownloadDefinitions = async (): Promise<
+  TriggerLeadItem[]
+> => {
   const res = await client.post<TriggerLeadItem[]>(
     `/trigger-leads/filtered?skip=0&limit=100`
-  );
-  return res.data;
-};
-
+  )
+  return res.data
+}
 
 // export const deleteFileDownloadDefinitions = async (id: number) => {
 //   try {

@@ -1,216 +1,282 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState,useEffect } from "react";
-import { Button, Table, Popconfirm,message } from "antd";
-import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
-import HeadingWithButton from "../../components/Heading-button/index";
-// import { mockPrepMails, type PrepMail } from "./data";
-import type { ColumnsType } from "antd/es/table";
-import { Trash2 } from "lucide-react";
-import client from "../../api/axiosInstance";
+import { Link } from 'react-router-dom'
+import { useState, useEffect, useCallback } from 'react'
+import { Table, Pagination, message, Input, Button } from 'antd'
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
+import { Play, Download } from 'lucide-react'
+import type { ColumnsType } from 'antd/es/table'
+import client from '../../api/axiosInstance'
 
-
+const { Search } = Input
 
 export interface PrepMail {
-  key: string;
-  id: number;
-  username?:string;
- created_at: string;
- created_by: string;
-  runTrigger: string;
-  downloadResult: string;
+  key: string
+  id: number
+  username?: string
+  created_at: string
+  created_by: string
+  runTrigger: string
+  downloadResult: string
+}
+
+interface PaginationData {
+  current: number
+  pageSize: number
+  total: number
+  skip: number
+  limit: number
 }
 
 const PrepMails = () => {
-  const navigate = useNavigate();
+  const [data, setData] = useState<PrepMail[]>([])
+  const [loading, setLoading] = useState(false)
+  const [searchText, setSearchText] = useState('')
 
-  const [searchText, setSearchText] = useState("");
-  const [selectedSource, setSelectedSource] = useState("All");
+  // Pagination state
+  const [pagination, setPagination] = useState<PaginationData>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+    skip: 0,
+    limit: 10,
+  })
 
-  // const data: PrepMail[] = mockPrepMails;
+  const fetchData = useCallback(
+    async (page: number = 1, pageSize: number = 10) => {
+      setLoading(true)
+      try {
+        const skip = (page - 1) * pageSize
+        const limit = pageSize
 
-    const [data, setData] = useState<PrepMail[]>([]);
-    const [loading, setLoading] = useState(false);
-    
-    // const handleDelete = (id: number) => {
-    //   setData((prev) => prev.filter((item) => item.id !== id));
-    // };
+        const res = await client.get(`/prep-mail?skip=${skip}&limit=${limit}`, {
+          params: {
+            search: searchText || undefined,
+          },
+        })
 
-      const handleDelete = async (id: number) => {
-    setLoading(true);
-    try {
-      await client.delete(`/prep-mail/${id}`);
-      setData((prev) => prev.filter((item) => item.id !== id));
+        const responseData = res?.data?.data
+        const rawData = responseData?.data || []
+        const total = responseData?.total || 0
 
-      message.success("Credential successfully deleted.");
-    } catch (error) {
-      console.error("Error while delete.", error);
-      message.error("Failed to delete credential.");
-    } finally {
-      setLoading(false);
-    }
-  };
+        if (Array.isArray(rawData)) {
+          setData(rawData)
 
-  const filteredData = data.filter((item) => {
-    const matchesSearch = item.id.toString().includes(searchText);
-    const matchesFilter =
-      selectedSource === "All" || item.created_by=== selectedSource;
-    return matchesSearch && matchesFilter;
-  });
+          // Update pagination state
+          setPagination(prev => ({
+            ...prev,
+            current: page,
+            pageSize,
+            total,
+            skip,
+            limit,
+          }))
+        }
+      } catch (error) {
+        console.error('Failed to fetch prep mails', error)
+        setData([])
+        message.error('Failed to fetch data')
+      } finally {
+        setLoading(false)
+      }
+    },
+    [searchText]
+  )
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await client.get(`/prep-mail?skip=0&limit=100`);
-        console.log(res?.data?.data);
-        setData(res?.data?.data?.data);
-      } catch (error) {
-        console.log("Failed to fetch prep mails", error);
-        const fallbackData: PrepMail[] = [
-          {
-            key: "1",
-            id: 1,
+    fetchData(1, pagination.pageSize)
+  }, [fetchData, pagination.pageSize])
 
-           created_at: "2024-05-22",
-           created_by: "System",
-            runTrigger: "Run Trigger",
-            downloadResult: "Download CSV",
-          },
-          {
-            key: "2",
-            id: 2,
+  // Handle search with debounce
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchData(1, pagination.pageSize)
+    }, 500)
 
-           created_at: "2024-05-21",
-           created_by: "Admin",
-            runTrigger: "Run Trigger",
-            downloadResult: "Download CSV",
-          },
-        ];
-        setData(fallbackData);
-      } finally {
-        setLoading(false);
+    return () => clearTimeout(timeoutId)
+  }, [fetchData, pagination.pageSize])
+
+  const handleTableChange = (page: number, pageSize: number) => {
+    fetchData(page, pageSize)
+  }
+
+  const handleSearch = (value: string) => {
+    setSearchText(value)
+  }
+
+  const handleRunTrigger = async () => {
+    try {
+      const res = await client.get('/prep-mail/run-trigger')
+      if (res.status === 200) {
+        message.success('Trigger run successfully')
+      } else {
+        message.error('Failed to run trigger')
       }
-    };
+    } catch (error) {
+      console.error('Failed to run trigger', error)
+    }
+  }
 
-    //   }
-    // };
-    // console.log(data);
-    fetchData();
-  }, []);
+  const handleDownloadCsv = async () => {
+    try {
+      const res = await client.get('/prep-mail/download-csv', {
+        responseType: 'blob',
+      })
+      if (res.status === 200) {
+        const blob = new Blob([res.data], { type: 'text/csv' })
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'prep-mail.csv'
+        a.click()
+        window.URL.revokeObjectURL(url)
+        message.success('CSV downloaded successfully')
+      } else {
+        message.error('Failed to download csv')
+      }
+    } catch (error) {
+      console.error('Failed to download csv', error)
+    }
+  }
 
   const columns: ColumnsType<PrepMail> = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      width: 80,
       render: (text: string, record: PrepMail) => (
         <Link
-          to={{
-            pathname: "",
-          }}
+          to='/PrepMails/change'
           state={{ record }}
-          className="text-blue-600"
+          className='text-blue-600 hover:text-blue-800 font-medium'
         >
           {text}
         </Link>
       ),
     },
     {
-      title: "CREATED BY",
-      dataIndex: "username",
-      key: "username",
-     
-    },
-    { title: "CREATED AT", dataIndex: "created_at", key: "created_at" },
-    {
-      title: "Run Trigger",
-      dataIndex: "runTrigger",
-      key: "runTrigger",
-      render: (_: any, record: PrepMail) => (
-        <Link
-          to={{
-            pathname: "/PrepMails/run-trigger",
-          }}
-          state={{ record }}
-          className="text-green-600 underline"
-        >
-          Run Trigger
-        </Link>
+      title: 'CREATED BY',
+      dataIndex: 'username',
+      key: 'username',
+      width: 150,
+      render: (username: string) => (
+        <span className='text-sm text-gray-700'>{username || 'System'}</span>
       ),
     },
     {
-      title: "Download Results",
-      dataIndex: "downloadResult",
-      key: "downloadResult",
-      render: (_: any, record: PrepMail) => (
-        <Link
-          to={{
-            pathname: "/PrepMails/download-results",
-          }}
-          state={{ record }}
-          className="text-blue-600 underline"
-        >
-          Download CSV
-        </Link>
+      title: 'CREATED AT',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      width: 150,
+      render: (text: string) => (
+        <span className='text-sm text-gray-600'>
+          {new Date(text).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </span>
       ),
     },
-    // {
-    //   title: "",
-    //   key: "edit",
-    //   render: (_: any) => (
-    //     <Button type="primary" onClick={() => navigate("/PrepMails/change")}>
-    //       Edit
-    //     </Button>
-    //   ),
-    // },
-    // {
-    //   title: "",
-    //   key: "delete",
-    //   render: (_, record) => (
-    //     <Popconfirm
-    //       title="Are you sure to delete this Log?"
-    //       onConfirm={() => handleDelete(record.id)}
-    //       okText="Yes"
-    //       cancelText="No"
-    //     >
-    //       <Button icon={<Trash2 size={16} className="text-red-600" />} danger />
-    //     </Popconfirm>
-    //   ),
-    // },
-  ];
+    {
+      title: 'ACTIONS',
+      key: 'actions',
+      width: 200,
+      render: () => (
+        <div className='flex items-center space-x-2'>
+          <Button
+            onClick={handleRunTrigger}
+            className='inline-flex items-center px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors duration-200'
+          >
+            <Play className='w-3 h-3 mr-1' />
+            Run Trigger
+          </Button>
+          <Button
+            onClick={handleDownloadCsv}
+            className='inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors duration-200'
+          >
+            <Download className='w-3 h-3 mr-1' />
+            Download CSV
+          </Button>
+        </div>
+      ),
+    },
+  ]
 
   return (
-    <div className="">
-      <HeadingWithButton
-        heading="Select prep mail to change"
-        // buttonText="Add Prep Mails"
-        buttonColor="primary"
-        buttonIcon={<PlusOutlined />}
-        to="/PrepMails/add"
-      />
-      <div className="lg:col-span-9 w-full">
-        {/* <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-          <span className="text-sm text-gray-600">
-            {filteredData.length} credentials found
-          </span>
-          <Button icon={<DeleteOutlined />} danger>
-            Delete Selected
-          </Button>
-        </div> */}
+    <div className='min-h-screen bg-gray-50 p-6'>
+      <div className='max-w-7xl mx-auto space-y-6'>
+        {/* Header */}
+        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
+          <div>
+            <h1 className='text-3xl font-bold text-gray-900'>Prep Mails</h1>
+            <p className='text-gray-600 mt-1'>
+              Manage and execute email preparation tasks
+            </p>
+          </div>
+          <Link
+            to='/PrepMails/add'
+            className='inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium mt-4 sm:mt-0'
+          >
+            <PlusOutlined className='mr-2' />
+            Add Prep Mail
+          </Link>
+        </div>
 
-        <div className="overflow-x-auto">
-          <Table
-            columns={columns}
-            dataSource={data}
-            // rowSelection={{ type: "checkbox" }}
-            bordered
-            loading={loading}
-            scroll={{ x: "max-content" }}
-          />
+        <div className='space-y-6'>
+          {/* Search Bar */}
+          <div className='relative'>
+            <Search
+              placeholder='Search prep mails...'
+              allowClear
+              enterButton={<SearchOutlined />}
+              className='w-full'
+              onSearch={handleSearch}
+              onChange={e => setSearchText(e.target.value)}
+              value={searchText}
+            />
+          </div>
+
+          {/* Table */}
+          <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden'>
+            <Table
+              columns={columns}
+              dataSource={data}
+              rowKey='id'
+              loading={loading}
+              scroll={{ x: 'max-content' }}
+              pagination={false} // We'll handle pagination manually
+              size='middle'
+              className='custom-table'
+            />
+
+            {/* Custom Pagination */}
+            <div className='flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50'>
+              <div className='text-sm text-gray-600'>
+                Showing {(pagination.current - 1) * pagination.pageSize + 1} to{' '}
+                {Math.min(
+                  pagination.current * pagination.pageSize,
+                  pagination.total
+                )}{' '}
+                of {pagination.total} entries
+              </div>
+              <Pagination
+                current={pagination.current}
+                pageSize={pagination.pageSize}
+                total={pagination.total}
+                showSizeChanger
+                onChange={handleTableChange}
+                onShowSizeChange={handleTableChange}
+                pageSizeOptions={['10', '20', '50', '100']}
+                className='custom-pagination'
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PrepMails;
+export default PrepMails

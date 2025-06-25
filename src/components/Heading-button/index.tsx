@@ -1,13 +1,13 @@
-import React from 'react';
-import { Button } from 'antd';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Button } from 'antd'
+import { Link } from 'react-router-dom'
 
 interface HeadingWithButtonProps {
-  heading: string;
-  buttonText?: string;
-  buttonColor?: 'default' | 'primary' | 'dashed' | 'link' | 'text';
-  buttonIcon?: React.ReactNode;
-  to?: string; 
+  heading: string
+  buttonText?: string
+  buttonColor?: 'default' | 'primary' | 'dashed' | 'link' | 'text'
+  buttonIcon?: React.ReactNode
+  to?: string
 }
 
 const HeadingWithButton: React.FC<HeadingWithButtonProps> = ({
@@ -21,14 +21,14 @@ const HeadingWithButton: React.FC<HeadingWithButtonProps> = ({
     <Button type={buttonColor} icon={buttonIcon}>
       {buttonText}
     </Button>
-  );
+  )
 
   return (
-    <div className="flex items-center justify-between mb-6">
-      <h1 className="text-xl font-semibold">{heading}</h1>
+    <div className='flex items-center justify-between mb-6'>
+      <h1 className='text-xl font-semibold'>{heading}</h1>
       {buttonText && (to ? <Link to={to}>{button}</Link> : button)}
     </div>
-  );
-};
+  )
+}
 
-export default HeadingWithButton;
+export default HeadingWithButton

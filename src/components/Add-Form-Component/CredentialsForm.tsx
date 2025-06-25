@@ -1,46 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { Form, Input, Select, Button, InputNumber } from "antd";
-import { useNavigate } from "react-router-dom";
-import client from "../../api/axiosInstance";
+import React, { useEffect, useState } from 'react'
+import { Form, Input, Select, Button, InputNumber } from 'antd'
+import client from '../../api/axiosInstance'
 
-const { Option } = Select;
+const { Option } = Select
 
 interface CredentialsFormProps {
-  form: any;
-  onFinish: (values: any) => void;
+  form: any
+  onFinish: (values: any) => void
 }
 
 const CredentialsForm: React.FC<CredentialsFormProps> = ({
   form,
   onFinish,
 }) => {
-  const [thirdPartyOptions, setThirdPartyOptions] = useState<string[]>([]);
-  // const [createdByOptions, setCreatedByOptions] = useState<any[]>([]);
-  // const navigate = useNavigate();
+  const [thirdPartyOptions, setThirdPartyOptions] = useState<string[]>([])
 
   useEffect(() => {
-    
     const fetchThirdParties = async () => {
       try {
-        const res = await client.get("/filter/get-third-party-filters");
+        const res = await client.get('/filter/get-third-party-filters')
 
         if (res?.data?.error == null) {
           const parsed = res.data.data.map(
             (item: any) => Object.values(item)[0]
-          );
-          setThirdPartyOptions(parsed);
-          console.log("Third Party options fetched!", parsed);
+          )
+          setThirdPartyOptions(parsed)
+          console.log('Third Party options fetched!', parsed)
         }
       } catch (error) {
-        console.error("Error fetching third-party options.", error);
+        console.error('Error fetching third-party options.', error)
       }
-    };
-    fetchThirdParties();
+    }
+    fetchThirdParties()
 
-    
     // const fetchCreatedBy = async () => {
     //   try {
-       
+
     //     const res = await client.get("/user/get-user-filters");
 
     //     if (res?.data?.error == null) {
@@ -52,68 +47,65 @@ const CredentialsForm: React.FC<CredentialsFormProps> = ({
     //   }
     // };
     // fetchCreatedBy();
-  }, []);
-
-
-
+  }, [])
 
   return (
     <>
-      <div className="max-h-[600px] overflow-y-auto p-4 bg-gray-50 rounded">
+      <div className='max-h-[600px] overflow-y-auto p-4 bg-gray-50 rounded'>
         <Form
           form={form}
-          layout="vertical"
-          onFinish={(values) => onFinish(values)}
-          className="space-y-4"
+          layout='vertical'
+          onFinish={values => onFinish(values)}
+          className='space-y-4'
         >
           <Form.Item
-            name="third_party"
-            label="Third Party"
-            rules={[{ required: true, message: "Please select a third party" }]}
+            name='third_party'
+            label='Third Party'
+            rules={[{ required: true, message: 'Please select a third party' }]}
           >
-            <Select placeholder="--------">
+            <Select placeholder='--------'>
               {thirdPartyOptions.map((item, index) => (
                 <Option key={index} value={item}>
-                    {item}
+                  {item}
                 </Option>
               ))}
             </Select>
           </Form.Item>
 
           <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true, message: "Please enter a name" }]}
+            name='name'
+            label='Name'
+            rules={[{ required: true, message: 'Please enter a name' }]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item name="host" label="Host">
+          <Form.Item name='host' label='Host'>
             <Input />
           </Form.Item>
 
-          <Form.Item name="database" label="Database">
+          <Form.Item name='database' label='Database'>
             <Input />
           </Form.Item>
 
           <Form.Item
-            name="username"
-            label="Username"
-            rules={[{ required: true, message: "Please enter a username" }]}
+            name='username'
+            label='Username'
+            rules={[{ required: true, message: 'Please enter a username' }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            name="password"
-            label="Password"
-            rules={[{ required: true, message: "Please enter a password" }]}
+            name='password'
+            label='Password'
+            rules={[{ required: true, message: 'Please enter a password' }]}
           >
             <Input.Password />
           </Form.Item>
 
-          <Form.Item name="port" label="Port">
-            <InputNumber min={0} max={65535} style={{ width:'fit-content'}} />
+          <Form.Item name='port' label='Port'>
+            <InputNumber min={0} max={65535} style={{ width: 'fit-content' }} />
           </Form.Item>
 
           {/* <Form.Item
@@ -134,19 +126,16 @@ const CredentialsForm: React.FC<CredentialsFormProps> = ({
         </Form>
       </div>
 
-      <div className="flex gap-4 pt-4">
-        <Button type="primary" onClick={() => form.submit()}
-          >
+      <div className='flex gap-4 pt-4'>
+        <Button type='primary' onClick={() => form.submit()}>
           SAVE
         </Button>
-      
-        <Button onClick={() => form.resetFields()}>
-          Reset
-        </Button>
+
+        <Button onClick={() => form.resetFields()}>Reset</Button>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default CredentialsForm;
+export default CredentialsForm
 //

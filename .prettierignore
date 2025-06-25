@@ -1,0 +1,11 @@
+# Ignore artifacts:
+build
+coverage
+
+# Ignore all CSS files:
+**/.git
+**/.svn
+**/.hg
+**/node_modules
+**/.svn
+**/.hg

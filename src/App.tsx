@@ -1,93 +1,120 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { Suspense } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 
-import Dashboard from "./pages/Dashboard";
-import Home from "./pages/Home";
-import Credentials from "../src/pages/credentials/Credentials";
-import AddCredentials from "../src/pages/credentials/AddCredentials";
-import FileDownloadDefinition from "./pages/FileDownloadDefinition/FileDD";
-import AddFileDD from "./pages/FileDownloadDefinition/AddFileDD";
-import Files from "./pages/Files/files";
-import InputFileDefinition from "./pages/Input-File-Definitions/InputFileDefinitions";
-import PrepMails from "./pages/prep-mails/prepMails";
-import TaskStatus from "./pages/Task-status/taskStatus";
-import TriggerLeads from "./pages/Trigger-leads/TriggerLeads";
-import AddFiles from "./pages/Files/AddFiles";
-import AddPrepMails from "./pages/prep-mails/AddPrepMails";
-import AddTriggerLeads from "./pages/Trigger-leads/AddTriggerLeads";
-import AddInputFileDefinition from "./pages/Input-File-Definitions/AddInputFileDefinition";
-import ChangeFileDD from "./pages/FileDownloadDefinition/ChangeFileDD";
-import ChangeCredentials from "./pages/credentials/changeCredentials";
-import ChangeInputFileDefinition from "./pages/Input-File-Definitions/ChangeInputFileDefinition";
-import ChangePrepMails from "./pages/prep-mails/ChangePrepMails";
-import ChangeTriggerLeads from "./pages/Trigger-leads/ChangeTriggerLeads";
-import ChangeTaskStatus from "./pages/Task-status/ChangeTaskStatus";
-import TaskLogFileDD from "./pages/TaskLogs/TaskLogFileDD";
-import TaskLogInputFileDefinition from "./pages/TaskLogs/TaskLogInputFileDefinition";
-import TaskLogPrepMailsDefinition from "./pages/TaskLogs/TaskLogPrepMails";
-import MainLayout from "./layout/MainLayout";
+// Layout components
+import MainLayout from './components/layout/MainLayout'
+import LoadingSpinner from './components/ui/LoadingSpinner'
+import NotFound from './components/feedback/NotFound'
+import AccessDenied from './components/feedback/AccessDenied'
+import ServerError from './components/feedback/ServerError'
+import ErrorFallback from './components/feedback/ErrorFallback'
+
+// Import route configuration
+import { publicRoutes, protectedRoutes, redirectRoutes } from './config/routes'
+
+// Import auth context
+import { AuthProvider } from './contexts/AuthContext'
+import { useAuth } from './hooks/useAuth'
+
+// Import constants
+import { ERROR_ROUTES } from './constants/routes'
+
+// Authentication guard component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <LoadingSpinner size='xl' fullScreen text='Checking authentication...' />
+    )
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to='/' replace />
+  }
+
+  return <>{children}</>
+}
+
+const AppRoutes = () => {
+  return (
+    <Routes>
+      {/* Public routes */}
+      {publicRoutes.map(route => (
+        <Route
+          key={route.path}
+          path={route.path}
+          element={
+            <Suspense
+              fallback={<LoadingSpinner size='lg' text='Loading page...' />}
+            >
+              {route.element}
+            </Suspense>
+          }
+        />
+      ))}
+
+      {/* Redirect routes for backward compatibility */}
+      {redirectRoutes.map(redirect => (
+        <Route
+          key={redirect.from}
+          path={redirect.from}
+          element={<Navigate to={redirect.to} replace />}
+        />
+      ))}
+
+      {/* Protected routes wrapped in MainLayout */}
+      <Route
+        element={
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
+        }
+      >
+        {protectedRoutes.map(route => (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={
+              <Suspense
+                fallback={<LoadingSpinner size='lg' text='Loading page...' />}
+              >
+                {route.element}
+              </Suspense>
+            }
+          />
+        ))}
+      </Route>
+
+      {/* Error routes */}
+      <Route path={ERROR_ROUTES.ACCESS_DENIED} element={<AccessDenied />} />
+      <Route path={ERROR_ROUTES.SERVER_ERROR} element={<ServerError />} />
+
+      {/* 404 - Not Found (catch all) */}
+      <Route path='*' element={<NotFound />} />
+    </Routes>
+  )
+}
 
 const App = () => {
   return (
-    <Routes>
-      {/* Public route */}
-      <Route path="/" element={<Home />} />
+    <ErrorBoundary
+      FallbackComponent={ErrorFallback}
+      onReset={() => {
+        // Reset the state of your app here
+        window.location.href = '/'
+      }}
+    >
+      <AuthProvider>
+        <Suspense
+          fallback={<LoadingSpinner size='xl' fullScreen text='Loading...' />}
+        >
+          <AppRoutes />
+        </Suspense>
+      </AuthProvider>
+    </ErrorBoundary>
+  )
+}
 
-      {/* Protected or admin routes wrapped in MainLayout */}
-      <Route element={<MainLayout />}>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/credentials" element={<Credentials />} />
-        <Route path="/credentials/add" element={<AddCredentials />} />
-        <Route path="/credentials/change" element={<ChangeCredentials />} />
-
-        <Route
-          path="/FileDownloadDefinition"
-          element={<FileDownloadDefinition />}
-        />
-        <Route path="/FileDownloadDefinition/add" element={<AddFileDD />} />
-        <Route
-          path="/FileDownloadDefinition/change"
-          element={<ChangeFileDD />}
-        />
-
-        <Route path="/Files" element={<Files />} />
-        <Route path="/Files/add" element={<AddFiles />} />
-
-        <Route path="/InputFileDefinitions" element={<InputFileDefinition />} />
-        <Route
-          path="/InputFileDefinition/add"
-          element={<AddInputFileDefinition />}
-        />
-        <Route
-          path="/InputFileDefinition/change"
-          element={<ChangeInputFileDefinition />}
-        />
-
-        <Route path="/PrepMails" element={<PrepMails />} />
-        <Route path="/PrepMails/add" element={<AddPrepMails />} />
-        <Route path="/PrepMails/change" element={<ChangePrepMails />} />
-
-        <Route path="/TaskStatus" element={<TaskStatus />} />
-        <Route path="/TaskStatus/change" element={<ChangeTaskStatus />} />
-
-        <Route path="/TriggerLeads" element={<TriggerLeads />} />
-        <Route path="/TriggerLeads/add" element={<AddTriggerLeads />} />
-        <Route path="/TriggerLeads/change" element={<ChangeTriggerLeads />} />
-
-        <Route
-          path="/TaskLog/FileDownloadDefinition"
-          element={<TaskLogFileDD />}
-        />
-        <Route
-          path="/TaskLog/InputFileDefinition"
-          element={<TaskLogInputFileDefinition />}
-        />
-        <Route
-          path="/TaskLog/PrepMailsDefinition"
-          element={<TaskLogPrepMailsDefinition />}
-        />
-      </Route>
-    </Routes>
-  );
-};
-
-export default App;
+export default App

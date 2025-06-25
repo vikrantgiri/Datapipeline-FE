@@ -1,11 +1,10 @@
-import client from "../axiosInstance";
-import { type PrepMail } from "../../pages/prep-mails/data";
+import client from '../axiosInstance'
+import { type PrepMail } from '../../pages/prep-mails/data'
 
 export const getPrepMails = async (): Promise<PrepMail[]> => {
-  const res = await client.get<PrepMail[]>(`/prep-mail?skip=0&limit=100`);
-  return res.data;
-};
-
+  const res = await client.get<PrepMail[]>(`/prep-mail?skip=0&limit=100`)
+  return res.data
+}
 
 // export const deletePrepMails = async (id: number) => {
 //   try {

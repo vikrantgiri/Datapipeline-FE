@@ -1,80 +1,59 @@
-import React, { useEffect, useState } from "react";
-import { Form, Input, Button, Select } from "antd";
+import React, { useEffect, useState } from 'react'
+import { Form, Input, Button, Select } from 'antd'
 
-import client from "../../api/axiosInstance";
+import client from '../../api/axiosInstance'
 
-const { Option } = Select;
+const { Option } = Select
 
 interface FileDownloadFormProps {
-  form: any;
-  onFinish: (values: any) => void;
-  initialValues?: any;
+  form: any
+  onFinish: (values: any) => void
+  initialValues?: any
 }
 
 const FileDownloadForm: React.FC<FileDownloadFormProps> = ({
   form,
   onFinish,
-  initialValues,
 }) => {
-  const [credentialsOptions, setCredentialsOptions] = useState<any[]>([]);
-  const [createdByOptions, setCreatedByOptions] = useState<any[]>([]);
+  const [credentialsOptions, setCredentialsOptions] = useState<any[]>([])
   useEffect(() => {
     const fetchCredentials = async () => {
       try {
-        const res = await client.get("/filter/get-credentials");
+        const res = await client.get('/filter/get-credentials')
 
         if (res?.data?.error == null) {
-          setCredentialsOptions(res.data.data);
+          setCredentialsOptions(res.data.data)
         }
       } catch (error) {
-        console.error("Error fetching credentials.", error);
+        console.error('Error fetching credentials.', error)
       }
-    };
-    fetchCredentials();
-
-    const fetchCreatedBy = async () => {
-      try {
-        const res = await client.get("/user/get-user-filters");
-
-        if (res?.data?.error == null) {
-          setCreatedByOptions(res.data.data);
-          console.log("Created By options fetched!", res.data.data);
-        }
-      } catch (error) {
-        console.error("Error fetching created by options.", error);
-      }
-    };
-    fetchCreatedBy();
-  }, []);
-
-  // if (initialValues) {
-  //   form.setFieldsValue(initialValues);
-  // }
-  // }, []);
+    }
+    fetchCredentials()
+  }, [])
 
   return (
     <>
-      <div className="max-h-[600px] overflow-y-auto p-4 bg-gray-50 rounded">
+      <div className='max-h-[600px] overflow-y-auto p-4 bg-gray-50 rounded'>
         <Form
           form={form}
-          layout="vertical"
-          onFinish={(values) => onFinish(values)}
+          layout='vertical'
+          onFinish={values => onFinish(values)}
         >
           <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true, message: "Please enter a name" }]}
+            name='name'
+            label='Name'
+            rules={[{ required: true, message: 'Please enter a name' }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            name="credentials_id"
-            label="Credentials"
-            rules={[{ required: true, message: "Please select credentials" }]}
+            name='credentials_id'
+            label='Credentials'
+            rules={[{ required: true, message: 'Please select credentials' }]}
           >
-            <Select placeholder="Select Credentials">
-              {credentialsOptions.map((item) => (
+            <Select placeholder='Select Credentials'>
+              {credentialsOptions.map(item => (
                 <Option key={item.id} value={item.id}>
                   {item.name}
                 </Option>
@@ -83,64 +62,64 @@ const FileDownloadForm: React.FC<FileDownloadFormProps> = ({
           </Form.Item>
 
           <Form.Item
-            name="remote_path"
-            label="Remote Path"
-            rules={[{ required: true, message: "Please enter a remote path" }]}
+            name='remote_path'
+            label='Remote Path'
+            rules={[{ required: true, message: 'Please enter a remote path' }]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item name="post_to_dc" label="Post to DC">
+          <Form.Item name='post_to_dc' label='Post to DC'>
             <Select>
               <Option value={true}>Yes</Option>
               <Option value={false}>No</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item name="dc_lead_token" label="DC Lead Token">
+          <Form.Item name='dc_lead_token' label='DC Lead Token'>
             <Input />
           </Form.Item>
 
-          <Form.Item name="dc_lead_key" label="DC Lead Key">
+          <Form.Item name='dc_lead_key' label='DC Lead Key'>
             <Input />
           </Form.Item>
 
-          <Form.Item name="post_to_call_shaper" label="Post to Call Shaper">
+          <Form.Item name='post_to_call_shaper' label='Post to Call Shaper'>
             <Select>
               <Option value={true}>Yes</Option>
               <Option value={false}>No</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item name="insert_to_postgres" label="Insert to Postgres">
+          <Form.Item name='insert_to_postgres' label='Insert to Postgres'>
             <Select>
               <Option value={true}>Yes</Option>
               <Option value={false}>No</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item name="append_placekey" label="Append PlaceKey">
+          <Form.Item name='append_placekey' label='Append PlaceKey'>
             <Select>
               <Option value={true}>Yes</Option>
               <Option value={false}>No</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item name="append_phone_no" label="Append Phone Number">
+          <Form.Item name='append_phone_no' label='Append Phone Number'>
             <Select>
               <Option value={true}>Yes</Option>
               <Option value={false}>No</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item name="append_email" label="Append Email">
+          <Form.Item name='append_email' label='Append Email'>
             <Select>
               <Option value={true}>Yes</Option>
               <Option value={false}>No</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item name="append_home_value" label="Append Home Value">
+          <Form.Item name='append_home_value' label='Append Home Value'>
             <Select>
               <Option value={true}>Yes</Option>
               <Option value={false}>No</Option>
@@ -149,27 +128,14 @@ const FileDownloadForm: React.FC<FileDownloadFormProps> = ({
         </Form>
       </div>
 
-      {/* <Form.Item
-        name="created_by_id"
-        label="Created by"
-        rules={[{ required: true, message: "Please select who created it" }]}
-      >
-        <Select placeholder="--------">
-          {createdByOptions.map((item) => (
-            <Option key={item.id} value={item.name}>
-              {item.username}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item> */}
-      <div className="flex gap-4 pt-4">
-        <Button type="primary" htmlType="submit" onClick={() => form.submit()}>
+      <div className='flex gap-4 pt-4'>
+        <Button type='primary' htmlType='submit' onClick={() => form.submit()}>
           Save
         </Button>
         <Button onClick={() => form.resetFields()}>Reset</Button>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default FileDownloadForm;
+export default FileDownloadForm

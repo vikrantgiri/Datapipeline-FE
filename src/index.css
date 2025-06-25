@@ -1,4 +1,5 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-.custom-table-header .ant-table-thead>tr>th {
-    @apply bg-blue-100 text-blue-900; }
+.custom-table-header .ant-table-thead > tr > th {
+  @apply bg-blue-100 text-blue-900;
+}

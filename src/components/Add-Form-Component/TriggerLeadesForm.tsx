@@ -1,6 +1,5 @@
-import React from 'react';
-import { Form, Input, Button, Select, Divider, DatePicker } from 'antd';
-
+import React from 'react'
+import { Form, Input, Button, Select, Divider, DatePicker } from 'antd'
 
 const fieldList = [
   { label: 'SSN', type: 'text' },
@@ -28,69 +27,60 @@ const fieldList = [
   { label: 'Experian identifier', type: 'text' },
   { label: 'Transunion identifier', type: 'text' },
   { label: 'Placekey', type: 'text' },
- 
- 
-];
+]
 
-const { Option } = Select;
+const { Option } = Select
 
 const TriggerLeadForm: React.FC = () => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   const handleFinish = (values: any) => {
-    console.log('Form submitted:', values);
-  };
+    console.log('Form submitted:', values)
+  }
 
   return (
     <>
-    
-    <div className="max-h-[600px] overflow-y-auto p-4 bg-white rounded ">
-    <Form
-      form={form}
-      layout="vertical"
-      onFinish={handleFinish}
-      className="max-w-4xl space-y-4"
-    >
-      {fieldList.map((field) => (
-        <Form.Item
-          key={field.label}
-          label={field.label}
-          name={field.label.replace(/\s+/g, '_').toLowerCase()}
+      <div className='max-h-[600px] overflow-y-auto p-4 bg-white rounded '>
+        <Form
+          form={form}
+          layout='vertical'
+          onFinish={handleFinish}
+          className='max-w-4xl space-y-4'
         >
-          {field.type === 'date' ? (
-            <DatePicker className="w-full" />
-          ) : (
-            <Input type={field.type} />
-          )}
-        </Form.Item>
+          {fieldList.map(field => (
+            <Form.Item
+              key={field.label}
+              label={field.label}
+              name={field.label.replace(/\s+/g, '_').toLowerCase()}
+            >
+              {field.type === 'date' ? (
+                <DatePicker className='w-full' />
+              ) : (
+                <Input type={field.type} />
+              )}
+            </Form.Item>
+          ))}
+          <Form.Item name='dataSource' label='Data source'>
+            <Select placeholder='unspecified'>
+              <Option value='TransUnion'>TransUnion</Option>
+              <Option value='Experian'>Experian</Option>
+              <Option value='Experian'>Unspecified</Option>
+            </Select>
+          </Form.Item>
 
-        
-      ))}
-      <Form.Item name="dataSource" label="Data source">
-                <Select placeholder="unspecified">
-                  <Option value="TransUnion">TransUnion</Option>
-                  <Option value="Experian">Experian</Option>
-                  <Option value="Experian">Unspecified</Option>
-</Select>
-      </Form.Item>
+          <Form.Item label='Lead type' name='leadType'>
+            <Select placeholder='unspecified'>
+              <Option value='hecm'>HECM to HECM</Option>
+              <Option value='firstTimeReverse'>First Time Reverse</Option>
+              <Option value='unspecified'>Unspecified</Option>
+            </Select>
+          </Form.Item>
 
-
-<Form.Item label="Lead type" name="leadType" >
-        <Select placeholder="unspecified">
-          <Option value="hecm">HECM to HECM</Option>
-          <Option value="firstTimeReverse">First Time Reverse</Option>
-          <Option value="unspecified">Unspecified</Option>
-        </Select>
-      </Form.Item>
-
-
-      <Divider />
-
-      
-    </Form>
-    </div>
-    <div className="flex gap-4">
-        <Button type="primary" htmlType="submit">
+          <Divider />
+        </Form>
+      </div>
+      <div className='flex gap-4'>
+        <Button type='primary' htmlType='submit'>
           SAVE
         </Button>
         <Button onClick={() => form.resetFields()}>Reset</Button>
@@ -98,8 +88,7 @@ const TriggerLeadForm: React.FC = () => {
         <Button>Save and Continue Editing</Button>
       </div>
     </>
+  )
+}
 
-  );
-};
-
-export default TriggerLeadForm;
+export default TriggerLeadForm

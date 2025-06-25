@@ -1,28 +1,28 @@
-import axios from "axios";
+import axios from 'axios'
 
 const client = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
-    "Content-Type": "application/json",
-    "ngrok-skip-browser-warning": "true",
+    'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true',
   },
-});
+})
 
 // Add a request interceptor to include the Authorization header
 client.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("access_token");
+  config => {
+    const token = localStorage.getItem('access_token')
 
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`
     }
 
-    return config;
+    return config
   },
-  (error) => {
-    return Promise.reject(error);
+  error => {
+    return Promise.reject(error)
   }
-);
+)
 
 // Export the configured instance
-export default client;
+export default client

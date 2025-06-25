@@ -1,63 +1,63 @@
+import React, { useEffect } from 'react'
+import { Form, Input, Button } from 'antd'
 
-import React, { useEffect } from 'react';
-import { Form, Input, Button } from 'antd';
-
-const TaskStatusForm: React.FC<{ onSubmit: (values: any) => void; initialValues?: any }> = ({
-  onSubmit,
-  initialValues,
-}) => {
-  const [form] = Form.useForm();
+const TaskStatusForm: React.FC<{
+  onSubmit: (values: any) => void
+  initialValues?: any
+}> = ({ onSubmit, initialValues }) => {
+  const [form] = Form.useForm()
 
   useEffect(() => {
     if (initialValues) {
-      form.setFieldsValue(initialValues);
+      form.setFieldsValue(initialValues)
     }
-  }, [initialValues, form]);
+  }, [initialValues, form])
 
   const handleFinish = (values: any) => {
-    onSubmit(values);
-  };
+    onSubmit(values)
+  }
 
   return (
-    <Form form={form} layout="vertical" onFinish={handleFinish}>
-      <Form.Item name="taskLog" label="Task Log" rules={[{ required: true }]}>
+    <Form form={form} layout='vertical' onFinish={handleFinish}>
+      <Form.Item name='taskLog' label='Task Log' rules={[{ required: true }]}>
         <Input />
       </Form.Item>
 
-      <Form.Item name="download" label="Download" rules={[{ required: true }]}>
+      <Form.Item name='download' label='Download' rules={[{ required: true }]}>
         <Input />
       </Form.Item>
 
-
-      <Form.Item name="createdAt" label="Created At">
+      <Form.Item name='createdAt' label='Created At'>
         <Input />
       </Form.Item>
 
-    <Form.Item name="updatedAt" label="Upadated At">
-        <Input  />
-      </Form.Item>
-
-      <Form.Item name="createdBy" label="Created By">
+      <Form.Item name='updatedAt' label='Upadated At'>
         <Input />
       </Form.Item>
 
-       <Form.Item name="status" label="Status" rules={[{ required: true }]}>
+      <Form.Item name='createdBy' label='Created By'>
         <Input />
       </Form.Item>
 
-    <Form.Item name="taskDefinition" label="Task definition" rules={[{ required: true }]}>
+      <Form.Item name='status' label='Status' rules={[{ required: true }]}>
         <Input />
       </Form.Item>
 
-
+      <Form.Item
+        name='taskDefinition'
+        label='Task definition'
+        rules={[{ required: true }]}
+      >
+        <Input />
+      </Form.Item>
 
       <Form.Item>
-        <Button type="primary" htmlType="submit">
+        <Button type='primary' htmlType='submit'>
           Save Changes
         </Button>
       </Form.Item>
     </Form>
-  );
-};
+  )
+}
 
-export default TaskStatusForm;
+export default TaskStatusForm
