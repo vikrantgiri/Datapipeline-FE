@@ -9,7 +9,7 @@ const LoginPage: React.FC = () => {
 
   // If user is authenticated, redirect to dashboard
   if (!loading && isAuthenticated) {
-    return <Navigate to={PROTECTED_ROUTES.DASHBOARD} replace />
+    return <Navigate to={PROTECTED_ROUTES.CREDENTIALS} replace />
   }
 
   // Show loading while checking authentication

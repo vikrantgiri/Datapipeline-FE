@@ -1,7 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { PROTECTED_ROUTES } from '../../constants/routes'
 import {
-  BarChart3,
   Shield,
   Download,
   FolderOpen,
@@ -15,11 +14,11 @@ const Sidebar: React.FC = () => {
   const location = useLocation()
 
   const menuItems = [
-    {
-      path: PROTECTED_ROUTES.DASHBOARD,
-      label: 'Dashboard',
-      icon: <BarChart3 size={18} />,
-    },
+    // {
+    //   path: PROTECTED_ROUTES.DASHBOARD,
+    //   label: 'Dashboard',
+    //   icon: <BarChart3 size={18} />,
+    // },
     {
       path: PROTECTED_ROUTES.CREDENTIALS,
       label: 'Credentials',

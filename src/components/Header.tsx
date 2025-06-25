@@ -22,7 +22,7 @@ const Header = () => {
           <Button
             type='text'
             onClick={logout}
-            className='text-white hover:text-[#A7E3E0] hover:bg-white/10 border-none flex items-center gap-2'
+            className='flex flex-row gap-2 hover:text-[#A7E3E0] transition-colors'
             icon={<LogOut size={16} />}
           >
             Logout
