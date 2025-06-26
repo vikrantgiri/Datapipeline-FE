@@ -60,7 +60,7 @@ const ChangeFileDD: React.FC = () => {
   }
 
   return (
-    <div className='text-black'>
+    <div className='text-black min-h-screen'>
       <div className='flex items-center gap-2 mb-6'>
         <ArrowLeftOutlined
           className='text-xl cursor-pointer text-blue-600 hover:text-blue-800'

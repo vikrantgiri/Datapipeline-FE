@@ -10,20 +10,6 @@ const AddInputFileDefinition: React.FC = () => {
   const [inputFiles, setInputFiles] = useState<any[]>([])
   const navigate = useNavigate()
 
-  // const handleFinish = (values: any) => {
-  //   console.log("Payload :", values);
-
-  //   const newInputFile = {
-  //     key: inputFiles.length + 1,
-  //     ...values,
-  //     created_at: new Date().toLocaleString(),
-  //     updated_at: new Date().toLocaleString(),
-  //   };
-  //   setInputFiles([newInputFile, ...inputFiles]);
-
-  //   form.resetFields();
-  // };
-
   const handleFinish = async (values: any) => {
     console.log('Payload :', values)
 
@@ -50,7 +36,7 @@ const AddInputFileDefinition: React.FC = () => {
   }
 
   return (
-    <div className='text-gray-900'>
+    <div className='text-gray-900 min-h-screen'>
       <div className='flex items-center gap-2 mb-6'>
         <ArrowLeftOutlined
           className='text-xl cursor-pointer text-blue-600 hover:text-blue-800'

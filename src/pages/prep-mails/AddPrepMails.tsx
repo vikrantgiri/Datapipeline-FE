@@ -9,7 +9,7 @@ const AddPrepMails = () => {
   }
 
   return (
-    <div className='text-white'>
+    <div className='text-white min-h-screen'>
       <h1 className='text-2xl text-black font-semibold mb-6'>Add Prep Mails</h1>
       <div className='pr-4' />
       <PrepMailsForm form={form} onFinish={handleSubmit} />

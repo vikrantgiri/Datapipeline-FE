@@ -47,7 +47,9 @@ const AppRoutes = () => {
           path={route.path}
           element={
             <Suspense
-              fallback={<LoadingSpinner size='lg' text='Loading page...' />}
+              fallback={
+                <LoadingSpinner fullScreen size='lg' text='Loading page...' />
+              }
             >
               {route.element}
             </Suspense>
@@ -78,7 +80,9 @@ const AppRoutes = () => {
             path={route.path}
             element={
               <Suspense
-                fallback={<LoadingSpinner size='lg' text='Loading page...' />}
+                fallback={
+                  <LoadingSpinner fullScreen size='lg' text='Loading page...' />
+                }
               >
                 {route.element}
               </Suspense>

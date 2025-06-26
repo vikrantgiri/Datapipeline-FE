@@ -2,7 +2,7 @@ import TriggerLeadForm from '../../components/Add-Form-Component/TriggerLeadesFo
 
 const ChangeTriggerLeads = () => {
   return (
-    <div className='text-white '>
+    <div className='text-white min-h-screen'>
       <h1 className='text-2xl text-black font-semibold mb-6'>
         Change Trigger Leads
       </h1>

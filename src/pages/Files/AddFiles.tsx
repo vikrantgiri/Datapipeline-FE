@@ -27,7 +27,7 @@ const AddFiles: React.FC = () => {
   const userOptions = ['admin', 'mikelyons', 'super', 'system', 'tylerplack']
 
   return (
-    <div className='text-white'>
+    <div className='text-white min-h-screen'>
       <h1 className='text-2xl text-black font-semibold mb-6'>Add File</h1>
 
       <FilesForm

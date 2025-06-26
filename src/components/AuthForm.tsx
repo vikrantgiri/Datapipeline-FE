@@ -123,7 +123,6 @@ const AuthForm = () => {
         type='primary'
         htmlType='submit'
         block
-        loading={loading}
         size='large'
         className='h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 border-0 rounded-lg font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]'
       >
