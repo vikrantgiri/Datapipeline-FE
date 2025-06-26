@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Button, Table, Popconfirm, Pagination, message, Input } from 'antd'
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import type { ColumnsType } from 'antd/es/table'
 import { Trash2, Download } from 'lucide-react'
@@ -33,8 +33,6 @@ const Files = () => {
   const [data, setData] = useState<FileData[]>([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
-  const [typeFilter, setTypeFilter] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
 
   // Pagination state
   const [pagination, setPagination] = useState<PaginationData>({
@@ -54,8 +52,6 @@ const Files = () => {
 
         const res = await client.get(`/file?skip=${skip}&limit=${limit}`, {
           params: {
-            type: typeFilter || undefined,
-            status: statusFilter || undefined,
             search: searchText || undefined,
           },
         })
@@ -85,7 +81,7 @@ const Files = () => {
         setLoading(false)
       }
     },
-    [typeFilter, statusFilter, searchText]
+    [searchText]
   )
 
   useEffect(() => {
@@ -236,150 +232,61 @@ const Files = () => {
     },
   ]
 
-  const typeOptions = [
-    { label: 'All', value: '' },
-    { label: 'CSV', value: 'CSV' },
-    { label: 'Excel', value: 'Excel' },
-    { label: 'JSON', value: 'JSON' },
-    { label: 'Unspecified', value: 'Unspecified' },
-  ]
-
-  const statusOptions = [
-    { label: 'All', value: '' },
-    { label: 'Pending', value: 'Pending' },
-    { label: 'Processing', value: 'Processing' },
-    { label: 'Processed', value: 'Processed' },
-    { label: 'Failed', value: 'Failed' },
-  ]
-
   return (
-    <div className='min-h-screen bg-gray-50 p-6'>
-      <div className='max-w-7xl mx-auto space-y-6'>
-        {/* Header */}
-        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
-          <div>
-            <h1 className='text-3xl font-bold text-gray-900'>Files</h1>
-            <p className='text-gray-600 mt-1'>Manage and view uploaded files</p>
-          </div>
-          <Link
-            to='/Files/add'
-            className='inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium mt-4 sm:mt-0'
-          >
-            <PlusOutlined className='mr-2' />
-            Upload File
-          </Link>
+    <div className='flex flex-col gap-6 min-h-screen'>
+      {/* Header */}
+      <div>
+        <h1 className='text-3xl font-bold text-gray-900'>Files</h1>
+        <p className='text-gray-600 mt-1'>Manage and view uploaded files</p>
+      </div>
+
+      <div className='lg:col-span-3 space-y-6'>
+        {/* Search Bar */}
+        <div className='relative'>
+          <Search
+            placeholder='Search files...'
+            allowClear
+            enterButton={<SearchOutlined />}
+            className='w-full'
+            onSearch={handleSearch}
+            onChange={e => setSearchText(e.target.value)}
+            value={searchText}
+          />
         </div>
 
-        <div className='grid grid-cols-1 lg:grid-cols-4 gap-6'>
-          {/* Main Content */}
-          <div className='lg:col-span-3 space-y-6'>
-            {/* Search Bar */}
-            <div className='relative'>
-              <Search
-                placeholder='Search files...'
-                allowClear
-                enterButton={<SearchOutlined />}
-                className='w-full'
-                onSearch={handleSearch}
-                onChange={e => setSearchText(e.target.value)}
-                value={searchText}
-              />
+        {/* Table */}
+        <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden'>
+          <Table
+            columns={columns}
+            dataSource={data}
+            rowKey='id'
+            loading={loading}
+            scroll={{ x: 'max-content' }}
+            pagination={false} // We'll handle pagination manually
+            size='middle'
+            className='custom-table'
+          />
+
+          {/* Custom Pagination */}
+          <div className='flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50'>
+            <div className='text-sm text-gray-600'>
+              Showing {(pagination.current - 1) * pagination.pageSize + 1} to{' '}
+              {Math.min(
+                pagination.current * pagination.pageSize,
+                pagination.total
+              )}{' '}
+              of {pagination.total} entries
             </div>
-
-            {/* Table */}
-            <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden'>
-              <Table
-                columns={columns}
-                dataSource={data}
-                rowKey='id'
-                loading={loading}
-                scroll={{ x: 'max-content' }}
-                pagination={false} // We'll handle pagination manually
-                size='middle'
-                className='custom-table'
-              />
-
-              {/* Custom Pagination */}
-              <div className='flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50'>
-                <div className='text-sm text-gray-600'>
-                  Showing {(pagination.current - 1) * pagination.pageSize + 1}{' '}
-                  to{' '}
-                  {Math.min(
-                    pagination.current * pagination.pageSize,
-                    pagination.total
-                  )}{' '}
-                  of {pagination.total} entries
-                </div>
-                <Pagination
-                  current={pagination.current}
-                  pageSize={pagination.pageSize}
-                  total={pagination.total}
-                  showSizeChanger
-                  onChange={handleTableChange}
-                  onShowSizeChange={handleTableChange}
-                  pageSizeOptions={['10', '20', '50', '100']}
-                  className='custom-pagination'
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Filters Sidebar */}
-          <div className='lg:col-span-1'>
-            <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6'>
-              <div className='flex items-center mb-4'>
-                <svg
-                  className='w-5 h-5 text-gray-500 mr-2'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z'
-                  />
-                </svg>
-                <h3 className='text-lg font-medium text-gray-900'>Filters</h3>
-              </div>
-
-              <div className='space-y-4'>
-                <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>
-                    By Type
-                  </label>
-                  <select
-                    value={typeFilter}
-                    onChange={e => setTypeFilter(e.target.value)}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200'
-                  >
-                    {typeOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>
-                    By Status
-                  </label>
-                  <select
-                    value={statusFilter}
-                    onChange={e => setStatusFilter(e.target.value)}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200'
-                  >
-                    {statusOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
+            <Pagination
+              current={pagination.current}
+              pageSize={pagination.pageSize}
+              total={pagination.total}
+              showSizeChanger
+              onChange={handleTableChange}
+              onShowSizeChange={handleTableChange}
+              pageSizeOptions={['10', '20', '50', '100']}
+              className='custom-pagination'
+            />
           </div>
         </div>
       </div>

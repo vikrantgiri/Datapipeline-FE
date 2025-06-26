@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect, useCallback } from 'react'
 import { Table, Pagination, message, Input, Button } from 'antd'
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined } from '@ant-design/icons'
 import { Play, Download } from 'lucide-react'
 import type { ColumnsType } from 'antd/es/table'
 import client from '../../api/axiosInstance'
@@ -205,73 +205,62 @@ const PrepMails = () => {
   ]
 
   return (
-    <div className='min-h-screen bg-gray-50 p-6'>
-      <div className='max-w-7xl mx-auto space-y-6'>
-        {/* Header */}
-        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
-          <div>
-            <h1 className='text-3xl font-bold text-gray-900'>Prep Mails</h1>
-            <p className='text-gray-600 mt-1'>
-              Manage and execute email preparation tasks
-            </p>
-          </div>
-          <Link
-            to='/PrepMails/add'
-            className='inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium mt-4 sm:mt-0'
-          >
-            <PlusOutlined className='mr-2' />
-            Add Prep Mail
-          </Link>
+    <div className='space-y-6 min-h-screen'>
+      {/* Header */}
+      <div>
+        <h1 className='text-3xl font-bold text-gray-900'>Prep Mails</h1>
+        <p className='text-gray-600 mt-1'>
+          Manage and execute email preparation tasks
+        </p>
+      </div>
+
+      <div className='space-y-6'>
+        {/* Search Bar */}
+        <div className='relative'>
+          <Search
+            placeholder='Search prep mails...'
+            allowClear
+            enterButton={<SearchOutlined />}
+            className='w-full'
+            onSearch={handleSearch}
+            onChange={e => setSearchText(e.target.value)}
+            value={searchText}
+          />
         </div>
 
-        <div className='space-y-6'>
-          {/* Search Bar */}
-          <div className='relative'>
-            <Search
-              placeholder='Search prep mails...'
-              allowClear
-              enterButton={<SearchOutlined />}
-              className='w-full'
-              onSearch={handleSearch}
-              onChange={e => setSearchText(e.target.value)}
-              value={searchText}
-            />
-          </div>
+        {/* Table */}
+        <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden'>
+          <Table
+            columns={columns}
+            dataSource={data}
+            rowKey='id'
+            loading={loading}
+            scroll={{ x: 'max-content' }}
+            pagination={false} // We'll handle pagination manually
+            size='middle'
+            className='custom-table'
+          />
 
-          {/* Table */}
-          <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden'>
-            <Table
-              columns={columns}
-              dataSource={data}
-              rowKey='id'
-              loading={loading}
-              scroll={{ x: 'max-content' }}
-              pagination={false} // We'll handle pagination manually
-              size='middle'
-              className='custom-table'
-            />
-
-            {/* Custom Pagination */}
-            <div className='flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50'>
-              <div className='text-sm text-gray-600'>
-                Showing {(pagination.current - 1) * pagination.pageSize + 1} to{' '}
-                {Math.min(
-                  pagination.current * pagination.pageSize,
-                  pagination.total
-                )}{' '}
-                of {pagination.total} entries
-              </div>
-              <Pagination
-                current={pagination.current}
-                pageSize={pagination.pageSize}
-                total={pagination.total}
-                showSizeChanger
-                onChange={handleTableChange}
-                onShowSizeChange={handleTableChange}
-                pageSizeOptions={['10', '20', '50', '100']}
-                className='custom-pagination'
-              />
+          {/* Custom Pagination */}
+          <div className='flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50'>
+            <div className='text-sm text-gray-600'>
+              Showing {(pagination.current - 1) * pagination.pageSize + 1} to{' '}
+              {Math.min(
+                pagination.current * pagination.pageSize,
+                pagination.total
+              )}{' '}
+              of {pagination.total} entries
             </div>
+            <Pagination
+              current={pagination.current}
+              pageSize={pagination.pageSize}
+              total={pagination.total}
+              showSizeChanger
+              onChange={handleTableChange}
+              onShowSizeChange={handleTableChange}
+              pageSizeOptions={['10', '20', '50', '100']}
+              className='custom-pagination'
+            />
           </div>
         </div>
       </div>
