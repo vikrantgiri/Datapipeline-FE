@@ -40,23 +40,8 @@ const ChangeInputFileDefinition = lazy(
 // Prep Mails
 const PrepMails = lazy(() => import('../pages/prep-mails/prepMails'))
 
-// Task Status
-const TaskStatus = lazy(() => import('../pages/Task-status/taskStatus'))
-const ChangeTaskStatus = lazy(
-  () => import('../pages/Task-status/ChangeTaskStatus')
-)
-
 // Trigger Leads
 const TriggerLeads = lazy(() => import('../pages/Trigger-leads/TriggerLeads'))
-
-// Task Logs
-const TaskLogFileDD = lazy(() => import('../pages/TaskLogs/TaskLogFileDD'))
-const TaskLogInputFileDefinition = lazy(
-  () => import('../pages/TaskLogs/TaskLogInputFileDefinition')
-)
-const TaskLogPrepMailsDefinition = lazy(
-  () => import('../pages/TaskLogs/TaskLogPrepMails')
-)
 
 // Public routes (no authentication required)
 export const publicRoutes: RouteConfig[] = [
@@ -164,20 +149,6 @@ export const protectedRoutes: RouteConfig[] = [
   },
 
   // Task Status
-  {
-    path: PROTECTED_ROUTES.TASK_STATUS,
-    element: <TaskStatus />,
-    title: 'Task Status',
-    requiresAuth: true,
-    breadcrumb: ['Task Status'],
-  },
-  {
-    path: PROTECTED_ROUTES.TASK_STATUS_CHANGE,
-    element: <ChangeTaskStatus />,
-    title: 'Change Task Status',
-    requiresAuth: true,
-    breadcrumb: ['Task Status', 'Change'],
-  },
 
   // Trigger Leads
   {
@@ -189,27 +160,6 @@ export const protectedRoutes: RouteConfig[] = [
   },
 
   // Task Logs
-  {
-    path: PROTECTED_ROUTES.TASK_LOG_FILE_DD,
-    element: <TaskLogFileDD />,
-    title: 'Task Log - File Download Definition',
-    requiresAuth: true,
-    breadcrumb: ['Task Logs', 'File Download Definition'],
-  },
-  {
-    path: PROTECTED_ROUTES.TASK_LOG_INPUT_FILE_DEFINITION,
-    element: <TaskLogInputFileDefinition />,
-    title: 'Task Log - Input File Definition',
-    requiresAuth: true,
-    breadcrumb: ['Task Logs', 'Input File Definition'],
-  },
-  {
-    path: PROTECTED_ROUTES.TASK_LOG_PREP_MAILS_DEFINITION,
-    element: <TaskLogPrepMailsDefinition />,
-    title: 'Task Log - Prep Mails Definition',
-    requiresAuth: true,
-    breadcrumb: ['Task Logs', 'Prep Mails Definition'],
-  },
 ]
 
 // Redirect routes (for backward compatibility and common patterns)
