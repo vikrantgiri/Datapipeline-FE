@@ -268,7 +268,7 @@ const Files = () => {
           />
 
           {/* Custom Pagination */}
-          <div className='flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50'>
+          <div className='flex items-center justify-between px-6 py-4 border-t border-gray-200 '>
             <div className='text-sm text-gray-600'>
               Showing {(pagination.current - 1) * pagination.pageSize + 1} to{' '}
               {Math.min(

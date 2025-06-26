@@ -51,7 +51,7 @@ const CredentialsForm: React.FC<CredentialsFormProps> = ({
 
   return (
     <>
-      <div className='max-h-[600px] overflow-y-auto p-4 bg-gray-50 rounded'>
+      <div className='max-h-[600px] overflow-y-auto p-4  rounded'>
         <Form
           form={form}
           layout='vertical'

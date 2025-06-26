@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const NotFound: React.FC = () => {
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50'>
+    <div className='flex flex-col items-center justify-center min-h-screen p-4 '>
       <div className='max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center'>
         <div className='mb-4'>
           <svg

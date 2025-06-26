@@ -36,7 +36,7 @@ const LoginForm: React.FC = () => {
       name='login-form'
       onFinish={handleSubmit}
       layout='vertical'
-      className='bg-gray-50 p-20 rounded-lg w-full max-w-md m-6'
+      className=' p-20 rounded-lg w-full max-w-md m-6'
     >
       <h2 className='text-2xl font-semibold mb-6'>Login to your account</h2>
 
