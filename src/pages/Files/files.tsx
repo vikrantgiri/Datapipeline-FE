@@ -50,7 +50,7 @@ const Files = () => {
         const skip = (page - 1) * pageSize
         const limit = pageSize
 
-        const res = await client.get(`/file?skip=${skip}&limit=${limit}`, {
+        const res = await client.post(`/file?skip=${skip}&limit=${limit}`, {
           params: {
             search: searchText || undefined,
           },
