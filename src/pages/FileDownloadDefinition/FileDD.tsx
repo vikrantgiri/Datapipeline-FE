@@ -6,6 +6,7 @@ import type { ColumnsType } from 'antd/es/table'
 import { Trash2, Edit, Download } from 'lucide-react'
 import client from '../../api/axiosInstance'
 import { getCredentialsFilters } from '../../api/filter-api'
+import FilterDropdown from '../../components/Add-Form-Component/Filter-dropdown'
 const { Search } = Input
 
 export interface FileDownloadDefinitionItem {
@@ -345,18 +346,15 @@ const FileDownloadDefinition = () => {
   ]
 
   const postDCOptions = [
-    { label: 'All', value: '' },
     { label: 'Yes', value: 'Yes' },
     { label: 'No', value: 'No' },
   ]
   const postCallShaperOptions = [
-    { label: 'All', value: '' },
     { label: 'Yes', value: 'Yes' },
     { label: 'No', value: 'No' },
   ]
 
   const InsertPGOptions = [
-    { label: 'All', value: '' },
     { label: 'Yes', value: 'Yes' },
     { label: 'No', value: 'No' },
   ]
@@ -458,74 +456,32 @@ const FileDownloadDefinition = () => {
               </div>
 
               <div className='space-y-4'>
-                <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>
-                    By Credentials
-                  </label>
-                  <select
-                    value={selectedCredential}
-                    onChange={e => setSelectedCredential(e.target.value)}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200'
-                  >
-                    <option value=''>All</option>
-                    {credentialsFilters.map((credential: any) => (
-                      <option key={credential.value} value={credential.value}>
-                        {credential.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <FilterDropdown
+                  title='By Task Type'
+                  options={[...credentialsFilters]}
+                  onChange={value => setSelectedCredential(value)}
+                  value={selectedCredential}
+                  type='id-value'
+                />
 
-                <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>
-                    By Post DC
-                  </label>
-                  <select
-                    value={filterPostDC}
-                    onChange={e => setFilterPostDC(e.target.value)}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200'
-                  >
-                    {postDCOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>
-                    By Post Call Shaper
-                  </label>
-                  <select
-                    value={filterPostCallShaper}
-                    onChange={e => setFilterPostCallShaper(e.target.value)}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200'
-                  >
-                    {postCallShaperOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>
-                    By Insert Postgres
-                  </label>
-                  <select
-                    value={filterInsertPostgres}
-                    onChange={e => setFilterInsertPostgres(e.target.value)}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200'
-                  >
-                    {InsertPGOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <FilterDropdown
+                  title='By Post DC'
+                  options={[...postDCOptions]}
+                  onChange={value => setFilterPostDC(value)}
+                  value={filterPostDC}
+                />
+                <FilterDropdown
+                  title='By Post Call Shaper'
+                  options={[...postCallShaperOptions]}
+                  onChange={value => setFilterPostCallShaper(value)}
+                  value={filterPostCallShaper}
+                />
+                <FilterDropdown
+                  title='By Insert Postgres'
+                  options={[...InsertPGOptions]}
+                  onChange={value => setFilterInsertPostgres(value)}
+                  value={filterInsertPostgres}
+                />
               </div>
             </div>
           </div>
