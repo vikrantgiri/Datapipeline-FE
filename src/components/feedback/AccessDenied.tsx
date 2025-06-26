@@ -33,7 +33,7 @@ const AccessDenied: React.FC = () => {
 
         <div className='space-y-3'>
           <Link
-            to={PROTECTED_ROUTES.DASHBOARD}
+            to={PROTECTED_ROUTES.CREDENTIALS}
             className='block w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200'
           >
             Go to Dashboard

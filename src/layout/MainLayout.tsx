@@ -3,13 +3,13 @@ import Footer from '../components/Footer'
 import Sidebar from '../components/Sidebar'
 import { Outlet } from 'react-router-dom'
 
-const MainLayout = () => {
+const MainLayout: React.FC = () => {
   return (
-    <div className='flex flex-col min-h-screen w-full'>
+    <div className='flex flex-col justify-between min-h-screen w-full bg-gray-800'>
       <Header />
-      <div className='flex w-full'>
+      <div className='flex h-full w-full px-4'>
         <Sidebar />
-        <div className='p-4 w-full h-full'>
+        <div className='p-4 w-full h-full rounded-xl bg-white overflow-hidden'>
           <Outlet />
         </div>
       </div>

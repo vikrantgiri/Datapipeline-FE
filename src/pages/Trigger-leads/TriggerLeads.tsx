@@ -308,28 +308,19 @@ const TriggerLeads = () => {
               <div className='space-y-4'>
                 <FilterDropdown
                   title='By Data Source'
-                  options={[
-                    { label: 'All', value: '' },
-                    ...(thirdParyFilters || []),
-                  ]}
+                  options={[...(thirdParyFilters || [])]}
                   onChange={value => setSelectedFilter(value)}
                   value={selectedFilter}
                 />
                 <FilterDropdown
                   title='By Lead Type'
-                  options={[
-                    { label: 'All', value: '' },
-                    ...(campaignTypeFilters || []),
-                  ]}
+                  options={[...(campaignTypeFilters || [])]}
                   onChange={value => setSelectedCampaignFilter(value)}
                   value={selectedCampaignFilter}
                 />
                 <FilterDropdown
                   title='By State'
-                  options={[
-                    { label: 'All', value: '' },
-                    ...(stateFilters || []),
-                  ]}
+                  options={[...(stateFilters || [])]}
                   onChange={value => setSelectedStateFilter(value)}
                   value={selectedStateFilter}
                 />

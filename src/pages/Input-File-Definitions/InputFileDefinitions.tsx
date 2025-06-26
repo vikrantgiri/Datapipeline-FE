@@ -366,13 +366,13 @@ const InputFileDefinition = () => {
               <div className='space-y-4'>
                 <FilterDropdown
                   title='By Task Type'
-                  options={[{ label: 'All', value: '' }, ...taskTypeFilters]}
+                  options={[...taskTypeFilters]}
                   onChange={value => setSelectedTaskType(value)}
                   value={selectedTaskType}
                 />
                 <FilterDropdown
                   title='By Third Party'
-                  options={[{ label: 'All', value: '' }, ...thirdPartyFilters]}
+                  options={[...thirdPartyFilters]}
                   onChange={value => setSelectedThirdParty(value)}
                   value={selectedThirdParty}
                 />

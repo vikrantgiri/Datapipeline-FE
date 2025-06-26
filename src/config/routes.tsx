@@ -3,9 +3,6 @@ import { PUBLIC_ROUTES, PROTECTED_ROUTES } from '../constants/routes'
 import type { RouteConfig } from '../types'
 
 // Lazy load all page components
-const DashboardPage = lazy(
-  () => import('../features/dashboard/components/DashboardPage')
-)
 const LoginPage = lazy(() => import('../pages/Home'))
 
 // Credentials
@@ -87,14 +84,6 @@ export const publicRoutes: RouteConfig[] = [
 
 // Protected routes (authentication required)
 export const protectedRoutes: RouteConfig[] = [
-  {
-    path: PROTECTED_ROUTES.DASHBOARD,
-    element: <DashboardPage />,
-    title: 'Dashboard',
-    requiresAuth: true,
-    breadcrumb: ['Dashboard'],
-  },
-
   // Credentials Management
   {
     path: PROTECTED_ROUTES.CREDENTIALS,
@@ -273,10 +262,8 @@ export const protectedRoutes: RouteConfig[] = [
 export const redirectRoutes = [
   { from: PUBLIC_ROUTES.LOGIN, to: PUBLIC_ROUTES.HOME },
   { from: PUBLIC_ROUTES.AUTH, to: PUBLIC_ROUTES.HOME },
-  { from: '/admin', to: PROTECTED_ROUTES.DASHBOARD },
   { from: '/home', to: PUBLIC_ROUTES.HOME },
   { from: '/index', to: PUBLIC_ROUTES.HOME },
-  { from: '/main', to: PROTECTED_ROUTES.DASHBOARD },
 ]
 
 // Helper function to get route by path

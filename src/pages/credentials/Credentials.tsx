@@ -323,10 +323,7 @@ const Credentials = () => {
               <div className='space-y-4'>
                 <FilterDropdown
                   title='By Third Party'
-                  options={[
-                    { label: 'All', value: '' },
-                    ...(thirdParyFilters || []),
-                  ]}
+                  options={[...(thirdParyFilters || [])]}
                   onChange={value => setSelectedFilter(value)}
                   value={selectedFilter}
                 />

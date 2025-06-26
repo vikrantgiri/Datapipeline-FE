@@ -7,7 +7,7 @@ const Home = () => {
 
   // If user is authenticated, redirect to dashboard
   if (!loading && isAuthenticated) {
-    return <Navigate to='/dashboard' replace />
+    return <Navigate to='/credentials' replace />
   }
 
   // Show loading while checking authentication

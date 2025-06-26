@@ -1,104 +1,77 @@
-import type { FC } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { PROTECTED_ROUTES } from '../constants/routes'
+import {
+  Shield,
+  Download,
+  FolderOpen,
+  FileText,
+  Mail,
+  Target,
+} from 'lucide-react'
 
-const Sidebar: FC = () => {
+const Sidebar: React.FC = () => {
   const location = useLocation()
-  const [openDropdown, setOpenDropdown] = useState(false)
 
   const menuItems = [
-    { label: 'Credentials', path: '/credentials' },
-    { label: 'File Download Definitions', path: '/FileDownloadDefinition' },
-    { label: 'Files', path: '/files' },
-    { label: 'Input File Definitions', path: '/InputFileDefinitions' },
-    { label: 'Prep mails', path: '/PrepMails' },
-    // { label: "Task Statuses", path: "/TaskStatus" },
-    { label: 'Trigger Leads', path: '/TriggerLeads' },
     {
-      label: 'Task Logs',
-      path: '/TaskLogs',
-      children: [
-        {
-          label: 'File Download Definition',
-          path: '/TaskLog/FileDownloadDefinition',
-        },
-        {
-          label: 'Input File Definition',
-          path: '/TaskLog/InputFileDefinition',
-        },
-        {
-          label: 'Prep Mils',
-          path: '/TaskLog/PrepMailsDefinition',
-        },
-      ],
+      path: PROTECTED_ROUTES.CREDENTIALS,
+      label: 'Credentials',
+      icon: <Shield size={18} />,
+    },
+    {
+      path: PROTECTED_ROUTES.FILE_DOWNLOAD_DEFINITION,
+      label: 'File Download Definition',
+      icon: <Download size={18} />,
+    },
+    {
+      path: PROTECTED_ROUTES.FILES,
+      label: 'Files',
+      icon: <FolderOpen size={18} />,
+    },
+    {
+      path: PROTECTED_ROUTES.INPUT_FILE_DEFINITIONS,
+      label: 'Input File Definitions',
+      icon: <FileText size={18} />,
+    },
+    {
+      path: PROTECTED_ROUTES.PREP_MAILS,
+      label: 'Prep Mails',
+      icon: <Mail size={18} />,
+    },
+    // {
+    //   path: PROTECTED_ROUTES.TASK_STATUS,
+    //   label: 'Task Status',
+    //   icon: <Zap size={18} />,
+    // },
+    {
+      path: PROTECTED_ROUTES.TRIGGER_LEADS,
+      label: 'Trigger Leads',
+      icon: <Target size={18} />,
     },
   ]
 
-  useEffect(() => console.log(openDropdown), [openDropdown])
-
   return (
-    <div className='bg-gradient-to-b from-gray-50 to-white border-r shadow-sm p-6 min-h-screen min-w-80'>
-      <h2 className='text-2xl font-semibold text-gray-800 mb-8'>Admin Panel</h2>
-      <ul className='space-y-4'>
+    <aside className='bg-gray-800 text-white w-96 min-h-screen p-4'>
+      <nav className='flex flex-col gap-2'>
         {menuItems.map(item => {
-          const isActive = location.pathname.startsWith(item.path)
-          const hasChildren = !!item.children
-
+          const isActive = location.pathname === item.path
           return (
-            <li key={item.label}>
-              <div
-                className={`flex justify-between items-center px-3 py-2 rounded-md transition 
-  ${
-    isActive
-      ? 'bg-blue-100 text-blue-800 font-medium'
-      : 'hover:bg-gray-100 text-gray-700'
-  }`}
-              >
-                {hasChildren ? (
-                  <button
-                    onClick={() => setOpenDropdown(prev => !prev)}
-                    className='flex items-center gap-2 w-full text-left'
-                  >
-                    {item.label}
-                    <span>{openDropdown ? '▾' : '▸'}</span>
-                  </button>
-                ) : (
-                  <Link
-                    to={item.path}
-                    className='flex items-center gap-2 w-full'
-                  >
-                    {item.label}
-                  </Link>
-                )}
-              </div>
-
-              {hasChildren && openDropdown && (
-                <ul className='pl-6 mt-2 space-y-2'>
-                  {item.children.map(sub => {
-                    const isSubActive = location.pathname.startsWith(sub.path)
-                    return (
-                      <li key={sub.label}>
-                        <Link
-                          to={sub.path}
-                          className={`block px-3 py-2 rounded-md text-sm transition 
-                          ${
-                            isSubActive
-                              ? 'bg-blue-100 text-blue-800 font-medium'
-                              : 'hover:bg-gray-100 text-gray-700'
-                          }`}
-                        >
-                          {sub.label}
-                        </Link>
-                      </li>
-                    )
-                  })}
-                </ul>
-              )}
-            </li>
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${
+                isActive
+                  ? 'bg-blue-600 text-white shadow-lg'
+                  : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+              }`}
+            >
+              <span className='mr-3 flex-shrink-0'>{item.icon}</span>
+              <span className='font-medium'>{item.label}</span>
+            </Link>
           )
         })}
-      </ul>
-    </div>
+      </nav>
+    </aside>
   )
 }
 

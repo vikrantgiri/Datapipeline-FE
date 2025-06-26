@@ -7,7 +7,6 @@ export const PUBLIC_ROUTES = {
 
 // Protected routes
 export const PROTECTED_ROUTES = {
-  DASHBOARD: '/dashboard',
   CREDENTIALS: '/credentials',
   CREDENTIALS_ADD: '/credentials/add',
   CREDENTIALS_CHANGE: '/credentials/change',

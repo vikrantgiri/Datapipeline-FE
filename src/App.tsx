@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 
 // Layout components
-import MainLayout from './components/layout/MainLayout'
+import MainLayout from './layout/MainLayout'
 import LoadingSpinner from './components/ui/LoadingSpinner'
 import NotFound from './components/feedback/NotFound'
 import AccessDenied from './components/feedback/AccessDenied'

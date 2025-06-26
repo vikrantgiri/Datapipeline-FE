@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
     setIsAuthenticated(true)
     message.success('Login successful!')
-    navigate(PROTECTED_ROUTES.DASHBOARD)
+    navigate(PROTECTED_ROUTES.CREDENTIALS)
   }
 
   const logout = () => {
