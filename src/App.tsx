@@ -19,6 +19,7 @@ import { useAuth } from './hooks/useAuth'
 
 // Import constants
 import { ERROR_ROUTES } from './constants/routes'
+import { ToastContainer } from 'react-toastify'
 
 // Authentication guard component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -117,6 +118,7 @@ const App = () => {
           <AppRoutes />
         </Suspense>
       </AuthProvider>
+      <ToastContainer />
     </ErrorBoundary>
   )
 }

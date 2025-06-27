@@ -3,7 +3,7 @@ import { Button, Table, Popconfirm, Pagination, message, Input } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import type { ColumnsType } from 'antd/es/table'
-import { Trash2, Download } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import client from '../../api/axiosInstance'
 
 const { Search } = Input
@@ -145,7 +145,7 @@ const Files = () => {
       width: 200,
       render: (text: string, record: FileData) => (
         <Link
-          to='/Files/change'
+          to=''
           state={{ record }}
           className='text-blue-600 hover:text-blue-800 font-medium'
         >
@@ -198,21 +198,21 @@ const Files = () => {
         <span className='text-sm text-gray-700'>{user?.username}</span>
       ),
     },
-    {
-      title: 'DOWNLOAD',
-      dataIndex: 'download',
-      key: 'download',
-      width: 120,
-      render: (text: string) => (
-        <Button
-          type='link'
-          icon={<Download className='w-4 h-4' />}
-          className='text-blue-600 hover:text-blue-800 p-0 h-auto'
-        >
-          {text || 'Download'}
-        </Button>
-      ),
-    },
+    // {
+    //   title: 'DOWNLOAD',
+    //   dataIndex: 'download',
+    //   key: 'download',
+    //   width: 120,
+    //   render: (text: string) => (
+    //     <Button
+    //       type='link'
+    //       icon={<Download className='w-4 h-4' />}
+    //       className='text-blue-600 hover:text-blue-800 p-0 h-auto'
+    //     >
+    //       {text || 'Download'}
+    //     </Button>
+    //   ),
+    // },
     {
       title: 'ACTIONS',
       key: 'actions',

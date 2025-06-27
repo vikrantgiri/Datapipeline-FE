@@ -7,11 +7,11 @@ import { Trash2, Edit, Download } from 'lucide-react'
 import client from '../../api/axiosInstance'
 import { getCredentialsFilters } from '../../api/filter-api'
 import FilterDropdown from '../../components/Add-Form-Component/Filter-dropdown'
+import { toast } from 'react-toastify'
 const { Search } = Input
 
 export interface FileDownloadDefinitionItem {
   id: number
-  // key: string;
   name?: string
   credentials?: {
     id?: number
@@ -54,10 +54,6 @@ const FileDownloadDefinition = () => {
     { [key: string]: string }[]
   >([])
   const [selectedCredential, setSelectedCredential] = useState<string>('')
-  // const [selectedFilter, setSelectedFilter] = useState<string>("All");
-
-  // const [filterCredentials, setFilterCredentials] = useState();
-
   const [filterPostDC, setFilterPostDC] = useState('')
   const [filterPostCallShaper, setFilterPostCallShaper] = useState('')
   const [filterInsertPostgres, setFilterInsertPostgres] = useState('')
@@ -194,7 +190,10 @@ const FileDownloadDefinition = () => {
 
   const handleDownloadTrigger = async (id: number) => {
     try {
-      await client.get(`/file-download-def/download-trigger/${id}`)
+      const res = await client.get(`/file-download-def/download-trigger/${id}`)
+      if (res.status === 200) {
+        toast.success('File download trigger running')
+      }
     } catch (error) {
       console.error('Error while triggering file download', error)
     }

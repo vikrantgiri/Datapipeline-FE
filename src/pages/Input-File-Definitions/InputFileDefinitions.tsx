@@ -161,8 +161,10 @@ const InputFileDefinition = () => {
 
   const handleRunTrigger = async (id: number) => {
     try {
-      await client.get(`/input-file-def/run-trigger/${id}`)
-      message.success('Trigger run successfully.')
+      const res = await client.get(`/input-file-def/run-trigger/${id}`)
+      if (res.status === 200) {
+        message.success('Trigger run successfully.')
+      }
     } catch (error) {
       console.error('Error while running trigger.', error)
       message.error('Failed to run trigger.')

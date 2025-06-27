@@ -5,6 +5,8 @@ import { SearchOutlined } from '@ant-design/icons'
 import { Play, Download } from 'lucide-react'
 import type { ColumnsType } from 'antd/es/table'
 import client from '../../api/axiosInstance'
+import { toast } from 'react-toastify'
+import LoadingOverlay from '../../components/loading-overlay'
 
 const { Search } = Input
 
@@ -30,6 +32,7 @@ const PrepMails = () => {
   const [data, setData] = useState<PrepMail[]>([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
+  const [triggerLoading, setTriggerLoading] = useState(false)
 
   // Pagination state
   const [pagination, setPagination] = useState<PaginationData>({
@@ -102,20 +105,25 @@ const PrepMails = () => {
     setSearchText(value)
   }
 
-  const handleRunTrigger = async () => {
+  const handleRunTrigger = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    setTriggerLoading(true)
     try {
+      toast.success('Trigger running')
       const res = await client.get('/prep-mail/run-trigger')
       if (res.status === 200) {
-        message.success('Trigger run successfully')
-      } else {
-        message.error('Failed to run trigger')
+        toast.success('Trigger run successfully')
       }
     } catch (error) {
       console.error('Failed to run trigger', error)
+      toast.error('Failed to run trigger')
+    } finally {
+      setTriggerLoading(false)
     }
   }
 
-  const handleDownloadCsv = async () => {
+  const handleDownloadCsv = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
     try {
       const res = await client.get('/prep-mail/download-csv', {
         responseType: 'blob',
@@ -128,12 +136,11 @@ const PrepMails = () => {
         a.download = 'prep-mail.csv'
         a.click()
         window.URL.revokeObjectURL(url)
-        message.success('CSV downloaded successfully')
-      } else {
-        message.error('Failed to download csv')
+        toast.success('CSV downloaded successfully')
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to download csv', error)
+      toast.error(error?.response?.data?.message || 'Failed to download csv')
     }
   }
 
@@ -203,6 +210,10 @@ const PrepMails = () => {
       ),
     },
   ]
+
+  if (triggerLoading) {
+    return <LoadingOverlay />
+  }
 
   return (
     <div className='space-y-6 min-h-screen'>
