@@ -152,7 +152,7 @@ const PrepMails = () => {
       width: 80,
       render: (text: string, record: PrepMail) => (
         <Link
-          to='/PrepMails/change'
+          to=''
           state={{ record }}
           className='text-blue-600 hover:text-blue-800 font-medium'
         >
