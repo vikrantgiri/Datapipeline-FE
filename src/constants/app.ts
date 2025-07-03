@@ -1,6 +1,6 @@
 // Application constants
 export const APP_CONFIG = {
-  NAME: 'HashRoot Data Pipeline',
+  NAME: 'South River',
   VERSION: '1.0.0',
   DESCRIPTION: 'Data Pipeline Management System',
   AUTHOR: 'HashRoot',

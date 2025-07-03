@@ -42,7 +42,7 @@ const ChangeCredentials: React.FC = () => {
       message.error('Failed to update credential.')
     }
   }
-
+  
   return (
     <div className='text-black min-h-screen'>
       <div className='flex items-center gap-2 mb-6'>

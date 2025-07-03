@@ -8,7 +8,8 @@ const Header: React.FC = () => {
 
   return (
     <header className='bg-gray-800 text-gray-300 p-6 flex justify-between items-center'>
-      <h1 className='text-xl font-bold'>HashRoot</h1>
+      {/* <h1 className='text-xl font-bold'>Sourth River</h1> */}
+      <img src='/images/Logo.png' alt='South River' className='w-35 h-18' />
       <nav className='space-x-4 w-fit flex items-center'>
         <Link
           to={PUBLIC_ROUTES.HOME}

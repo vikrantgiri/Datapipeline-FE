@@ -37,9 +37,29 @@ const Home = () => {
           <div className='absolute inset-0 bg-gradient-to-br from-blue-600/90 to-indigo-800/90'></div>
           <div className='relative z-10 text-center text-white px-12'>
             <div className='mb-8'>
-              <h1 className='text-5xl font-bold mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent'>
-                Data Pipeline
+              {/* <h1 className='text-5xl font-bold mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent'>
+              <img src='/images/Logo.png' alt='South River' className='w-28 h-18 flex justify-center items-center' />
+                South River
               </h1>
+              <h4 className='text-4xl font-bold mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent'>
+                Data Pipeline
+              </h4> */}
+
+              <div className=' flex flex-col items-center justify-center'>
+                <img
+                  src='/images/Logo.png'
+                  alt='South River'
+                  className=' mr-15 mb-4'
+                />
+                {/* <h1 className='text-5xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent'>
+                  South River
+                </h1> */}
+                  {/* <h4 className='text-3xl font-semibold text-blue-100 mt-2'>
+                    Data Pipeline
+                  </h4> */}
+
+              </div>
+
               <p className='text-xl text-blue-100 leading-relaxed max-w-md mx-auto'>
                 Streamline your data workflows with our powerful and intuitive
                 pipeline management platform
@@ -92,9 +112,7 @@ const Home = () => {
                   />
                 </svg>
               </div>
-              <h2 className='text-3xl font-bold text-gray-900 mb-2'>
-                Welcome Back
-              </h2>
+              <h2 className='text-3xl font-bold text-gray-900 mb-2'>Welcome</h2>
               <p className='text-gray-600'>
                 Sign in to your account to continue
               </p>
