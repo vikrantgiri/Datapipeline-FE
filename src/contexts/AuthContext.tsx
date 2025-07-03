@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { message } from 'antd'
 import { storage } from '../utils/storage'
 import { PUBLIC_ROUTES, PROTECTED_ROUTES } from '../constants/routes'
+import { setGlobalLogout } from '../api/axiosInstance'
 import type { User, AuthState } from '../types'
 
 interface AuthContextType extends AuthState {
@@ -54,6 +55,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     message.success('Logged out successfully')
     navigate(PUBLIC_ROUTES.HOME)
   }
+
+  // Register logout function with axios interceptor
+  useEffect(() => {
+    setGlobalLogout(logout)
+  }, [logout])
 
   const value: AuthContextType = {
     isAuthenticated,
