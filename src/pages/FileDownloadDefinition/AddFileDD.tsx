@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import client from '../../api/axiosInstance'
 import FileDownloadForm from '../../components/Add-Form-Component/FileDDForm'
+import { PROTECTED_ROUTES } from '../../constants/routes'
 
 const AddFileDD: React.FC = () => {
   const [form] = Form.useForm()
@@ -26,7 +27,7 @@ const AddFileDD: React.FC = () => {
 
       form.resetFields()
       message.success('File Download Definition  successfully added.')
-      navigate('/FileDownloadDefinition')
+      navigate(PROTECTED_ROUTES.FILE_DOWNLOAD_DEFINITION)
     } catch (error) {
       console.error(error)
       message.error('Failed to add file download definition.')
@@ -37,7 +38,7 @@ const AddFileDD: React.FC = () => {
       <div className='flex items-center gap-2 mb-6'>
         <ArrowLeftOutlined
           className='text-xl cursor-pointer text-blue-600 hover:text-blue-800'
-          onClick={() => navigate('/FileDownloadDefinition')}
+          onClick={() => navigate(PROTECTED_ROUTES.FILE_DOWNLOAD_DEFINITION)}
         />
         <h1 className='text-2xl font-semibold '>
           Add File Download Definition

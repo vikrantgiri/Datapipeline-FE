@@ -4,10 +4,10 @@ import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import type { ColumnsType } from 'antd/es/table'
 import { Trash2 } from 'lucide-react'
-
 import client from '../../api/axiosInstance'
 import FilterDropdown from '../../components/Add-Form-Component/Filter-dropdown'
 import { getTaskTypeFilters, getThirdPartyFilters } from '../../api/filter-api'
+import { PROTECTED_ROUTES } from '../../constants/routes'
 
 const { Search } = Input
 
@@ -186,7 +186,10 @@ const InputFileDefinition = () => {
       key: 'id',
       width: 80,
       render: (text, record) => (
-        <Link to='/InputFileDefinition/change' state={{ record }}>
+        <Link
+          to={`${PROTECTED_ROUTES.INPUT_FILE_DEFINITION_CHANGE}`}
+          state={{ record }}
+        >
           {text}
         </Link>
       ),
@@ -243,7 +246,9 @@ const InputFileDefinition = () => {
             type='primary'
             size='small'
             onClick={() =>
-              navigate('/InputFileDefinition/change', { state: { record } })
+              navigate(`${PROTECTED_ROUTES.INPUT_FILE_DEFINITION_CHANGE}`, {
+                state: { record },
+              })
             }
           >
             Edit
@@ -264,14 +269,13 @@ const InputFileDefinition = () => {
   ]
 
   const useTabuOptions = [
-    { label: 'All', value: '' },
     { label: 'Yes', value: 'Yes' },
     { label: 'No', value: 'No' },
   ]
 
   return (
     <div className='min-h-screen'>
-      <div className='space-y-6'>
+      <div className='flex flex-col gap-6'>
         {/* Header */}
         <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
           <div>
@@ -283,7 +287,7 @@ const InputFileDefinition = () => {
             </p>
           </div>
           <Link
-            to='/InputFileDefinition/add'
+            to={PROTECTED_ROUTES.INPUT_FILE_DEFINITION_ADD}
             className='inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium mt-4 sm:mt-0'
           >
             <PlusOutlined className='mr-2' />

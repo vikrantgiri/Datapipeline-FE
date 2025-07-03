@@ -4,6 +4,7 @@ import InputFileForm from '../../components/Add-Form-Component/InputFileDForm'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import client from '../../api/axiosInstance'
+import { PROTECTED_ROUTES } from '../../constants/routes'
 
 const ChangeInputFileDefinition: React.FC = () => {
   const [form] = Form.useForm()
@@ -42,7 +43,7 @@ const ChangeInputFileDefinition: React.FC = () => {
       const res = await client.put(`/input-file-def/${record.id}`, values)
       message.success('Input File Definition updated successfully.')
       if (res.status == 200) {
-        navigate('/InputFileDefinitions')
+        navigate(PROTECTED_ROUTES.INPUT_FILE_DEFINITIONS)
       }
     } catch (error) {
       console.error('Failed to update.', error)
@@ -55,7 +56,7 @@ const ChangeInputFileDefinition: React.FC = () => {
       <div className='flex items-center gap-2 mb-6'>
         <ArrowLeftOutlined
           className='text-xl cursor-pointer text-blue-600 hover:text-blue-800'
-          onClick={() => navigate('/InputFileDefinitions')}
+          onClick={() => navigate('/input-file-definitions')}
         />
         <h1 className='text-2xl font-semibold '>
           Change Input File Definition

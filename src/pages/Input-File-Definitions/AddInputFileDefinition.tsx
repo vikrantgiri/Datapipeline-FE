@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import InputFileForm from '../../components/Add-Form-Component/InputFileDForm'
 import client from '../../api/axiosInstance'
+import { PROTECTED_ROUTES } from '../../constants/routes'
 
 const AddInputFileDefinition: React.FC = () => {
   const [form] = Form.useForm()
@@ -28,7 +29,7 @@ const AddInputFileDefinition: React.FC = () => {
 
       message.success('File Download Definition  successfully added.')
 
-      navigate('/InputFileDefinitions')
+      navigate(`${PROTECTED_ROUTES.INPUT_FILE_DEFINITIONS}`)
     } catch (error) {
       console.error(error)
       message.error('Failed to add file download definition.')
@@ -40,7 +41,7 @@ const AddInputFileDefinition: React.FC = () => {
       <div className='flex items-center gap-2 mb-6'>
         <ArrowLeftOutlined
           className='text-xl cursor-pointer text-blue-600 hover:text-blue-800'
-          onClick={() => navigate('/InputFileDefinition')}
+          onClick={() => navigate(PROTECTED_ROUTES.INPUT_FILE_DEFINITIONS)}
         />
         <h1 className='text-2xl font-semibold '>Add Input File Definition</h1>
       </div>

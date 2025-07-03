@@ -8,6 +8,7 @@ import client from '../../api/axiosInstance'
 import { getCredentialsFilters } from '../../api/filter-api'
 import FilterDropdown from '../../components/Add-Form-Component/Filter-dropdown'
 import { toast } from 'react-toastify'
+import { PROTECTED_ROUTES } from '../../constants/routes'
 const { Search } = Input
 
 export interface FileDownloadDefinitionItem {
@@ -166,7 +167,7 @@ const FileDownloadDefinition = () => {
   const handleDelete = async (id: number) => {
     setLoading(true)
     try {
-      await client.delete(`/file-download-def/${id}`)
+      await client.post(`/file-download-def/${id}`)
       setData(prev => prev.filter(item => item.id !== id))
       message.success('File download definition successfully deleted.')
 
@@ -207,7 +208,7 @@ const FileDownloadDefinition = () => {
       width: 150,
       render: (text, record) => (
         <Link
-          to='/FileDownloadDefinition/change'
+          to={PROTECTED_ROUTES.FILE_DOWNLOAD_DEFINITION_CHANGE}
           state={{ record }}
           className='text-blue-600 hover:text-blue-800 font-medium'
         >
@@ -315,7 +316,9 @@ const FileDownloadDefinition = () => {
             type='primary'
             size='small'
             onClick={() =>
-              navigate('/FileDownloadDefinition/change', { state: { record } })
+              navigate(`${PROTECTED_ROUTES.FILE_DOWNLOAD_DEFINITION_CHANGE}`, {
+                state: { record },
+              })
             }
           >
             <Edit className='w-3 h-3 mr-1' />
@@ -360,7 +363,7 @@ const FileDownloadDefinition = () => {
 
   return (
     <div className='min-h-screen '>
-      <div className='space-y-6'>
+      <div className=' flex flex-col gap-6'>
         {/* Header */}
         <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
           <div>
@@ -372,7 +375,7 @@ const FileDownloadDefinition = () => {
             </p>
           </div>
           <Link
-            to='/FileDownloadDefinition/add'
+            to={PROTECTED_ROUTES.FILE_DOWNLOAD_DEFINITION_ADD}
             className='inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium mt-4 sm:mt-0'
           >
             <PlusOutlined className='mr-2' />

@@ -4,6 +4,7 @@ import FileDownloadForm from '../../components/Add-Form-Component/FileDDForm'
 import { Form, message } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import client from '../../api/axiosInstance'
+import { PROTECTED_ROUTES } from '../../constants/routes'
 
 const ChangeFileDD: React.FC = () => {
   const location = useLocation()
@@ -17,11 +18,9 @@ const ChangeFileDD: React.FC = () => {
   //       ...record,
   //       credentials: record.credentials?.name,
   //       user: record.user?.username,
-  //     });
+  //     })
   //   }
-  // }, [record]);
-
-  console.log(record)
+  // }, [record])
 
   const getElementById = useCallback(
     async (id: any) => {
@@ -43,16 +42,16 @@ const ChangeFileDD: React.FC = () => {
   )
 
   useEffect(() => {
-    if (record?.key) {
-      getElementById(record.key)
+    if (record?.id) {
+      getElementById(record.id)
     }
   }, [record?.key, getElementById])
 
   const handleFinish = async (values: any) => {
     try {
-      await client.put(`/file-download-def/${record.key}`, values)
+      await client.put(`/file-download-def/${record.id}`, values)
       message.success('File Download Definition updated successfully.')
-      navigate('/FileDownloadDefinition')
+      navigate(PROTECTED_ROUTES.FILE_DOWNLOAD_DEFINITION)
     } catch (error) {
       console.error('Failed to update.', error)
       message.error('Failed to update File Download Definition.')
@@ -64,7 +63,7 @@ const ChangeFileDD: React.FC = () => {
       <div className='flex items-center gap-2 mb-6'>
         <ArrowLeftOutlined
           className='text-xl cursor-pointer text-blue-600 hover:text-blue-800'
-          onClick={() => navigate('/FileDownloadDefinition')}
+          onClick={() => navigate('/file-download-definitions')}
         />
         <h1 className='text-2xl text-black font-semibold '>
           Change File Download Definition

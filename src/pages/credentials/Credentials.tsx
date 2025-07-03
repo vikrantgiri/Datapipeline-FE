@@ -7,8 +7,10 @@ import { Trash2, Edit } from 'lucide-react'
 import client from '../../api/axiosInstance'
 import FilterDropdown from '../../components/Add-Form-Component/Filter-dropdown'
 import { getThirdPartyFilters } from '../../api/filter-api'
+import { PROTECTED_ROUTES } from '../../constants/routes'
 
 const { Search } = Input
+
 
 export interface Credential {
   id: number
@@ -148,7 +150,7 @@ const Credentials = () => {
       width: 150,
       render: (text, record) => (
         <Link
-          to='/credentials/change'
+          to={PROTECTED_ROUTES.CREDENTIALS_CHANGE}
           state={{ record }}
           className='text-blue-600 hover:text-blue-800 font-medium'
         >
@@ -205,7 +207,7 @@ const Credentials = () => {
             type='primary'
             size='small'
             onClick={() =>
-              navigate('/credentials/change', { state: { record } })
+              navigate(PROTECTED_ROUTES.FILE_DOWNLOAD_DEFINITION_CHANGE, { state: { record } })
             }
           >
             <Edit className='w-3 h-3 mr-1' />

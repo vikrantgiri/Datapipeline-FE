@@ -20,7 +20,7 @@ const Sidebar: React.FC = () => {
     },
     {
       path: PROTECTED_ROUTES.FILE_DOWNLOAD_DEFINITION,
-      label: 'File Download Definition',
+      label: 'File Download Definitions',
       icon: <Download size={18} />,
     },
     {

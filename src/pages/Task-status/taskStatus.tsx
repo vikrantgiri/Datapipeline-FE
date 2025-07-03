@@ -168,7 +168,7 @@ const TaskStatus = () => {
       width: 200,
       render: (text: string, record: any) => (
         <Link
-          to='/InputFileDefinition/change'
+          to='/input-file-definitions/change'
           state={{ record }}
           className='text-blue-600 hover:text-blue-800 font-medium'
         >
