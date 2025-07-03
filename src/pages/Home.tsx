@@ -54,10 +54,9 @@ const Home = () => {
                 {/* <h1 className='text-5xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent'>
                   South River
                 </h1> */}
-                  {/* <h4 className='text-3xl font-semibold text-blue-100 mt-2'>
+                {/* <h4 className='text-3xl font-semibold text-blue-100 mt-2'>
                     Data Pipeline
                   </h4> */}
-
               </div>
 
               <p className='text-xl text-blue-100 leading-relaxed max-w-md mx-auto'>

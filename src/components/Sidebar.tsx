@@ -9,7 +9,6 @@ import {
   Target,
 } from 'lucide-react'
 
-
 const Sidebar: React.FC = () => {
   const location = useLocation()
 
