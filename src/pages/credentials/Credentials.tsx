@@ -11,7 +11,6 @@ import { PROTECTED_ROUTES } from '../../constants/routes'
 
 const { Search } = Input
 
-
 export interface Credential {
   id: number
   name: string
@@ -207,7 +206,9 @@ const Credentials = () => {
             type='primary'
             size='small'
             onClick={() =>
-              navigate(PROTECTED_ROUTES.FILE_DOWNLOAD_DEFINITION_CHANGE, { state: { record } })
+              navigate(PROTECTED_ROUTES.FILE_DOWNLOAD_DEFINITION_CHANGE, {
+                state: { record },
+              })
             }
           >
             <Edit className='w-3 h-3 mr-1' />
