@@ -45,7 +45,7 @@ const ChangeFileDD: React.FC = () => {
     if (record?.id) {
       getElementById(record.id)
     }
-  }, [record?.key, getElementById])
+  }, [record?.key, getElementById, record?.id])
 
   const handleFinish = async (values: any) => {
     try {

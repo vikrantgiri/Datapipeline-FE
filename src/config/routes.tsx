@@ -43,6 +43,10 @@ const PrepMails = lazy(() => import('../pages/prep-mails/prepMails'))
 // Trigger Leads
 const TriggerLeads = lazy(() => import('../pages/Trigger-leads/TriggerLeads'))
 
+const TriggerLeadsById = lazy(
+  () => import('../pages/Trigger-leads/TriggerLeadByID')
+)
+
 // Public routes (no authentication required)
 export const publicRoutes: RouteConfig[] = [
   {
@@ -155,6 +159,14 @@ export const protectedRoutes: RouteConfig[] = [
     path: PROTECTED_ROUTES.TRIGGER_LEADS,
     element: <TriggerLeads />,
     title: 'Trigger Leads',
+    requiresAuth: true,
+    breadcrumb: ['Trigger Leads'],
+  },
+
+  {
+    path: PROTECTED_ROUTES.TRIGGER_LEADS_BY_ID,
+    element: <TriggerLeadsById />,
+    title: 'Trigger Leads By ID',
     requiresAuth: true,
     breadcrumb: ['Trigger Leads'],
   },

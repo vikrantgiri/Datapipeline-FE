@@ -7,6 +7,7 @@ import client from '../../api/axiosInstance'
 import FilterDropdown from '../../components/Add-Form-Component/Filter-dropdown'
 import { getThirdPartyFilters } from '../../api/filter-api'
 import { getCampaignFilters, getStatesFilters } from '../../api/filter-api'
+import { PROTECTED_ROUTES } from '../../constants/routes'
 
 const { Search } = Input
 
@@ -75,7 +76,6 @@ const TriggerLeads = () => {
 
         if (Array.isArray(rawData)) {
           setData(rawData)
-
           // Update pagination state
           setPagination(prev => ({
             ...prev,
@@ -146,9 +146,7 @@ const TriggerLeads = () => {
       width: 80,
       render: (text: string, record: any) => (
         <Link
-          to={{
-            pathname: '',
-          }}
+          to={PROTECTED_ROUTES.TRIGGER_LEADS_BY_ID}
           state={{ record }}
           className='text-blue-600 hover:text-blue-800 font-medium'
         >

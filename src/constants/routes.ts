@@ -19,6 +19,7 @@ export const PROTECTED_ROUTES = {
   INPUT_FILE_DEFINITION_CHANGE: '/input-file-definition/change',
   PREP_MAILS: '/prep-mail',
   TRIGGER_LEADS: '/trigger-leads',
+  TRIGGER_LEADS_BY_ID: '/trigger-leads/ID',
 } as const
 
 // Error routes
