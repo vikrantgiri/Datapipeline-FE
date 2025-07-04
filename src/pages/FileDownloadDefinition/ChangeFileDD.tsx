@@ -1,16 +1,18 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import FileDownloadForm from '../../components/Add-Form-Component/FileDDForm'
 import { Form, message } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import client from '../../api/axiosInstance'
 import { PROTECTED_ROUTES } from '../../constants/routes'
+import { LoadingSpinner } from '../../components/ui'
 
 const ChangeFileDD: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { record } = location.state || {}
   const [form] = Form.useForm()
+  const [loading, setLoading] = useState<boolean>(false)
 
   // useEffect(() => {
   //   if (record) {
@@ -24,6 +26,7 @@ const ChangeFileDD: React.FC = () => {
 
   const getElementById = useCallback(
     async (id: any) => {
+      setLoading(true)
       try {
         const res = await client.get(`/file-download-def/${id}`)
         const item = res.data.data
@@ -36,6 +39,8 @@ const ChangeFileDD: React.FC = () => {
       } catch (error) {
         console.error('Failed to fetch.', error)
         message.error('Failed to fetch.')
+      } finally {
+        setLoading(false)
       }
     },
     [form]
@@ -60,6 +65,11 @@ const ChangeFileDD: React.FC = () => {
 
   return (
     <div className='text-black min-h-screen'>
+      {loading && (
+        <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center'>
+          <LoadingSpinner fullScreen />
+        </div>
+      )}
       <div className='flex items-center gap-2 mb-6'>
         <ArrowLeftOutlined
           className='text-xl cursor-pointer text-blue-600 hover:text-blue-800'
