@@ -167,7 +167,7 @@ const FileDownloadDefinition = () => {
   const handleDelete = async (id: number) => {
     setLoading(true)
     try {
-      await client.post(`/file-download-def/${id}`)
+      await client.delete(`/file-download-def/${id}`)
       setData(prev => prev.filter(item => item.id !== id))
       message.success('File download definition successfully deleted.')
 
