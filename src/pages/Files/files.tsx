@@ -3,7 +3,8 @@ import { Button, Table, Popconfirm, Pagination, message, Input } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import type { ColumnsType } from 'antd/es/table'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Download } from 'lucide-react'
+import { toast } from 'react-toastify'
 import client from '../../api/axiosInstance'
 
 const { Search } = Input
@@ -137,6 +138,28 @@ const Files = () => {
     }
   }
 
+  const handleDownloadCsv = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    try {
+      const res = await client.get('/files/download-csv', {
+        responseType: 'blob',
+      })
+      if (res.status === 200) {
+        const blob = new Blob([res.data], { type: 'text/csv' })
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'prep-mail.csv'
+        a.click()
+        window.URL.revokeObjectURL(url)
+        toast.success('CSV downloaded successfully')
+      }
+    } catch (error: any) {
+      console.error('Failed to download csv', error)
+      toast.error(error?.response?.data?.message || 'Failed to download csv')
+    }
+  }
+
   const columns: ColumnsType<FileData> = [
     {
       title: 'FILE',
@@ -218,16 +241,25 @@ const Files = () => {
       key: 'actions',
       width: 100,
       render: (_, record) => (
-        <Popconfirm
-          title='Are you sure to delete this file?'
-          description='This action cannot be undone.'
-          onConfirm={() => handleDelete(record.id)}
-          okText='Yes'
-          cancelText='No'
-          okType='danger'
-        >
-          <Button icon={<Trash2 size={14} />} danger size='small' />
-        </Popconfirm>
+        <div className='flex items-center space-x-2'>
+          <Button
+            onClick={handleDownloadCsv}
+            className='inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors duration-200'
+          >
+            <Download className='w-3 h-3 mr-1' />
+            Download CSV
+          </Button>
+          <Popconfirm
+            title='Are you sure to delete this file download definition?'
+            description='This action cannot be undone.'
+            onConfirm={() => handleDelete(record.id!)}
+            okText='Yes'
+            cancelText='No'
+            okType='danger'
+          >
+            <Button icon={<Trash2 size={14} />} danger size='small' />
+          </Popconfirm>
+        </div>
       ),
     },
   ]

@@ -8,6 +8,7 @@ import client from '../../api/axiosInstance'
 import FilterDropdown from '../../components/Add-Form-Component/Filter-dropdown'
 import { getTaskTypeFilters, getThirdPartyFilters } from '../../api/filter-api'
 import { PROTECTED_ROUTES } from '../../constants/routes'
+import { toast } from 'react-toastify'
 
 const { Search } = Input
 
@@ -164,10 +165,12 @@ const InputFileDefinition = () => {
       const res = await client.get(`/input-file-def/run-trigger/${id}`)
       if (res.status === 200) {
         message.success('Trigger run successfully.')
+        toast.success('Input file trigger running')
       }
     } catch (error) {
       console.error('Error while running trigger.', error)
       message.error('Failed to run trigger.')
+      toast.error('Failed to run trigger')
     }
   }
 

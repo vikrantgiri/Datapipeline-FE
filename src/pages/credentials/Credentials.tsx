@@ -206,7 +206,7 @@ const Credentials = () => {
             type='primary'
             size='small'
             onClick={() =>
-              navigate(PROTECTED_ROUTES.FILE_DOWNLOAD_DEFINITION_CHANGE, {
+              navigate(PROTECTED_ROUTES.CREDENTIALS_CHANGE, {
                 state: { record },
               })
             }

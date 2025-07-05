@@ -66,7 +66,7 @@ const ChangeInputFileDefinition: React.FC = () => {
       <div className='flex items-center gap-2 mb-6'>
         <ArrowLeftOutlined
           className='text-xl cursor-pointer text-blue-600 hover:text-blue-800'
-          onClick={() => navigate('/input-file-definitions')}
+          onClick={() => navigate(PROTECTED_ROUTES.INPUT_FILE_DEFINITIONS)}
         />
         <h1 className='text-2xl font-semibold '>
           Change Input File Definition

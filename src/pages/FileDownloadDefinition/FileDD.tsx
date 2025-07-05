@@ -197,6 +197,7 @@ const FileDownloadDefinition = () => {
       }
     } catch (error) {
       console.error('Error while triggering file download', error)
+      toast.error('Failed to run trigger')
     }
   }
 

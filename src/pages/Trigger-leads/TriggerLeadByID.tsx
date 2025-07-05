@@ -134,10 +134,12 @@ const TriggerLeadByID: React.FC = () => {
         console.log('API Response:', item)
 
         // Remove ID field from the data
-        const { id: itemId, ...dataWithoutId } = item
+        const { id: itemId, created_at, updated_at, ...filteredData } = item
+        setLeadData(filteredData)
+        form.setFieldsValue(filteredData)
         console.log(itemId)
-        setLeadData(dataWithoutId)
-        form.setFieldsValue(dataWithoutId)
+        console.log(created_at)
+        console.log(updated_at)
       } catch (err) {
         console.error('Failed to fetch lead data:', err)
         setError('Failed to fetch lead data. Please try again.')

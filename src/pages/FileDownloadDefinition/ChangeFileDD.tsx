@@ -73,7 +73,7 @@ const ChangeFileDD: React.FC = () => {
       <div className='flex items-center gap-2 mb-6'>
         <ArrowLeftOutlined
           className='text-xl cursor-pointer text-blue-600 hover:text-blue-800'
-          onClick={() => navigate('/file-download-definitions')}
+          onClick={() => navigate(PROTECTED_ROUTES.FILE_DOWNLOAD_DEFINITION)}
         />
         <h1 className='text-2xl text-black font-semibold '>
           Change File Download Definition
