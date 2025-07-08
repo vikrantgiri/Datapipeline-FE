@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { Button,Table, Pagination, Spin, Alert,Tag } from 'antd'
+import { Button, Table, Pagination, Spin, Alert, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { PROTECTED_ROUTES } from '../../constants/routes'
-import {  useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import client from '../../api/axiosInstance'
 
 interface LogEntry {
@@ -36,42 +36,38 @@ const ActivityLog: React.FC = () => {
     limit: 10,
   })
 
-  const fetchLogs = useCallback(
-    async (page = 1, pageSize = 10) => {
-      setLoading(true)
-      try {
-        const skip = (page - 1) * pageSize
-        const limit = pageSize
-  
-        const response = await client.get(`/logs`, {
-          params: { skip, limit },
-        })
-  
-        console.log('API response:', response.data.data.data) 
-        const raw = response?.data?.data?.data || []
-        const total = response?.data?.data?.total
-        
-        if (Array.isArray(raw)) {
-          setLogs(raw)
-          setPagination(prev => ({
-            ...prev,
-            current: page,
-            pageSize,
-            total,
-            skip,
-            limit,
-          }))
-        }
-      } catch (err) {
-        console.error('Error fetching logs:', err)
-        setError('Failed to fetch logs')
-      } finally {
-        setLoading(false)
+  const fetchLogs = useCallback(async (page = 1, pageSize = 10) => {
+    setLoading(true)
+    try {
+      const skip = (page - 1) * pageSize
+      const limit = pageSize
+
+      const response = await client.get(`/logs`, {
+        params: { skip, limit },
+      })
+
+      console.log('API response:', response.data.data.data)
+      const raw = response?.data?.data?.data || []
+      const total = response?.data?.data?.total
+
+      if (Array.isArray(raw)) {
+        setLogs(raw)
+        setPagination(prev => ({
+          ...prev,
+          current: page,
+          pageSize,
+          total,
+          skip,
+          limit,
+        }))
       }
-    },
-    []
-  )
-  
+    } catch (err) {
+      console.error('Error fetching logs:', err)
+      setError('Failed to fetch logs')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
     fetchLogs(1, pagination.pageSize)
@@ -83,17 +79,16 @@ const ActivityLog: React.FC = () => {
 
   const columns: ColumnsType<LogEntry> = [
     {
-        title: 'S.No.',
-        key: 'serial',
-        render: (_: any, __: any, index: number) =>
-          (pagination.current - 1) * pagination.pageSize + index + 1,
-      },
-    
+      title: 'S.No.',
+      key: 'serial',
+      render: (_: any, __: any, index: number) =>
+        (pagination.current - 1) * pagination.pageSize + index + 1,
+    },
+
     {
       title: 'Trigger Name',
       dataIndex: 'trigger_name',
       key: 'trigger_name',
-    
     },
     {
       title: 'Status',
@@ -104,42 +99,42 @@ const ActivityLog: React.FC = () => {
           status === 'SUCCESS'
             ? 'green'
             : status === 'FAILED'
-            ? 'red'
-            : 'orange'
+              ? 'red'
+              : 'orange'
         return <Tag color={color}>{status}</Tag>
       },
     },
     {
-        title: 'Started At',
-        dataIndex: 'started_at',
-        key: 'started_at',
-        render: (started_at: string) =>
-          new Date(started_at).toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'long',  
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-          }),
-      },
-      {
-        title: 'Ended At',
-        dataIndex: 'ended_at',
-        key: 'ended_at',
-        render: (ended_at: string | null) =>
-          ended_at
-            ? new Date(ended_at).toLocaleString('en-US', {
-                year: 'numeric',
-                month: 'long',  
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-              })
-            : 'In Progress',
-      },
-      
+      title: 'Started At',
+      dataIndex: 'started_at',
+      key: 'started_at',
+      render: (started_at: string) =>
+        new Date(started_at).toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }),
+    },
+    {
+      title: 'Ended At',
+      dataIndex: 'ended_at',
+      key: 'ended_at',
+      render: (ended_at: string | null) =>
+        ended_at
+          ? new Date(ended_at).toLocaleString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+            })
+          : 'In Progress',
+    },
+
     // {
     //   title: 'ID',
     //   dataIndex: 'id',
@@ -147,23 +142,23 @@ const ActivityLog: React.FC = () => {
     //   render: (id: string) => <code style={{ fontSize: 12 }}>{id}</code>,
     // },
     {
-        title: 'ACTIONS',
-        key: 'actions',
-        width: 200,
-        render: (_, record) => (
+      title: 'ACTIONS',
+      key: 'actions',
+      width: 200,
+      render: (_, record) => (
         <Button
-        type='primary'
-        size='small'
-        onClick={() =>
-          navigate(`${PROTECTED_ROUTES.ACTIVITY_LOG_BY_ID}`, {
-            state: { record: { run_id: record.id } },
-          })
-        }
-      >
-        Open
-      </Button>
-        )
-    }
+          type='primary'
+          size='small'
+          onClick={() =>
+            navigate(`${PROTECTED_ROUTES.ACTIVITY_LOG_BY_ID}`, {
+              state: { record: { run_id: record.id } },
+            })
+          }
+        >
+          Open
+        </Button>
+      ),
+    },
   ]
 
   return (

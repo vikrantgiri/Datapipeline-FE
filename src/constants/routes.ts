@@ -21,7 +21,7 @@ export const PROTECTED_ROUTES = {
   TRIGGER_LEADS: '/trigger-leads',
   TRIGGER_LEADS_BY_ID: '/trigger-leads/ID',
   ACTIVITY_LOG: '/activity-log',
-  ACTIVITY_LOG_BY_ID: '/activity-log/ID'
+  ACTIVITY_LOG_BY_ID: '/activity-log/ID',
 } as const
 
 // Error routes

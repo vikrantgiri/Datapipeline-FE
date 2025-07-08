@@ -56,7 +56,7 @@ const ActivityLogByID: React.FC = () => {
       render: (value: string) =>
         new Date(value).toLocaleString('en-US', {
           year: 'numeric',
-          month: 'long', 
+          month: 'long',
           day: 'numeric',
           hour: '2-digit',
           minute: '2-digit',
@@ -124,40 +124,38 @@ const ActivityLogByID: React.FC = () => {
           scroll={{ x: '100%', y: 500 }}
           size='middle'
         /> */}
-<Table
-  dataSource={logs}
-  columns={columns}
-  rowKey="id"
-  pagination={false}
-  scroll={{ x: '100%', y: 500 }}
-  size="middle"
-  components={{
-    body: {
-      cell: (props) => (
-        <td
-          {...props}
-          style={{
-            ...props.style,
-            borderBottom: 'none',
+        <Table
+          dataSource={logs}
+          columns={columns}
+          rowKey='id'
+          pagination={false}
+          scroll={{ x: '100%', y: 500 }}
+          size='middle'
+          components={{
+            body: {
+              cell: props => (
+                <td
+                  {...props}
+                  style={{
+                    ...props.style,
+                    borderBottom: 'none',
+                  }}
+                />
+              ),
+            },
+            header: {
+              cell: props => (
+                <th
+                  {...props}
+                  style={{
+                    ...props.style,
+                    borderBottom: 'none',
+                  }}
+                />
+              ),
+            },
           }}
         />
-      ),
-    },
-    header: {
-      cell: (props) => (
-        <th
-          {...props}
-          style={{
-            ...props.style,
-            borderBottom: 'none', 
-          }}
-        />
-      ),
-    },
-  }}
-/>
-
-
       </div>
     </div>
   )

@@ -47,9 +47,7 @@ const TriggerLeadsById = lazy(
   () => import('../pages/Trigger-leads/TriggerLeadByID')
 )
 
-const ActivityLog = lazy(
-  () => import('../pages/Activity-logs/ActivityLog')
-)
+const ActivityLog = lazy(() => import('../pages/Activity-logs/ActivityLog'))
 const ActivityLogByID = lazy(
   () => import('../pages/Activity-logs/ActivityLogBYID')
 )
@@ -195,7 +193,6 @@ export const protectedRoutes: RouteConfig[] = [
     requiresAuth: true,
     breadcrumb: ['Activity Logs'],
   },
-
 ]
 
 // Redirect routes (for backward compatibility and common patterns)
