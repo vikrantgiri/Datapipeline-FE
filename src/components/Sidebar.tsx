@@ -7,6 +7,7 @@ import {
   FileText,
   Mail,
   Target,
+  Activity,
 } from 'lucide-react'
 
 const Sidebar: React.FC = () => {
@@ -47,6 +48,11 @@ const Sidebar: React.FC = () => {
       path: PROTECTED_ROUTES.TRIGGER_LEADS,
       label: 'Trigger Leads',
       icon: <Target size={18} />,
+    },
+    {
+      path: PROTECTED_ROUTES.ACTIVITY_LOG,
+      label: 'Activity Logs',
+      icon: <Activity size={18} />,
     },
   ]
 

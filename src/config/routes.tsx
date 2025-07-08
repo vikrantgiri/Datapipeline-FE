@@ -47,6 +47,13 @@ const TriggerLeadsById = lazy(
   () => import('../pages/Trigger-leads/TriggerLeadByID')
 )
 
+const ActivityLog = lazy(
+  () => import('../pages/Activity-logs/ActivityLog')
+)
+const ActivityLogByID = lazy(
+  () => import('../pages/Activity-logs/ActivityLogBYID')
+)
+
 // Public routes (no authentication required)
 export const publicRoutes: RouteConfig[] = [
   {
@@ -172,6 +179,23 @@ export const protectedRoutes: RouteConfig[] = [
   },
 
   // Task Logs
+
+  {
+    path: PROTECTED_ROUTES.ACTIVITY_LOG,
+    element: <ActivityLog />,
+    title: 'Activity Logs',
+    requiresAuth: true,
+    breadcrumb: ['Activity Logs'],
+  },
+
+  {
+    path: PROTECTED_ROUTES.ACTIVITY_LOG_BY_ID,
+    element: <ActivityLogByID />,
+    title: 'Activity Logs By ID',
+    requiresAuth: true,
+    breadcrumb: ['Activity Logs'],
+  },
+
 ]
 
 // Redirect routes (for backward compatibility and common patterns)
