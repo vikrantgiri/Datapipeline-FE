@@ -50,3 +50,9 @@ export const PERMISSIONS = {
   DELETE: 'delete',
   ADMIN: 'admin',
 } as const
+
+export const TRIGGER_ENTITIES = {
+  FILE_DOWNLOAD_DEFINITION: 'file-download-def',
+  INPUT_FILE_DEFINITION: 'input-file-def',
+  PREP_MAIL: 'prep-mail',
+} as const

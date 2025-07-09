@@ -157,8 +157,6 @@ export const protectedRoutes: RouteConfig[] = [
     breadcrumb: ['Prep Mails'],
   },
 
-  // Task Status
-
   // Trigger Leads
   {
     path: PROTECTED_ROUTES.TRIGGER_LEADS,
@@ -176,18 +174,45 @@ export const protectedRoutes: RouteConfig[] = [
     breadcrumb: ['Trigger Leads'],
   },
 
-  // Task Logs
-
   {
-    path: PROTECTED_ROUTES.ACTIVITY_LOG,
+    path: PROTECTED_ROUTES.ACTIVITY_LOG_BY_FDD,
     element: <ActivityLog />,
-    title: 'Activity Logs',
+    title: 'Activity Logs By File Download Definition',
     requiresAuth: true,
     breadcrumb: ['Activity Logs'],
   },
 
   {
-    path: PROTECTED_ROUTES.ACTIVITY_LOG_BY_ID,
+    path: PROTECTED_ROUTES.ACTIVITY_LOG_BY_PREP_MAIL,
+    element: <ActivityLog />,
+    title: 'Activity Logs By Prep Mail',
+    requiresAuth: true,
+    breadcrumb: ['Activity Logs'],
+  },
+
+  {
+    path: PROTECTED_ROUTES.ACTIVITY_LOG_BY_INPUT_FILE_DEFINITION,
+    element: <ActivityLog />,
+    title: 'Activity Logs By Input File Definition',
+    requiresAuth: true,
+    breadcrumb: ['Activity Logs'],
+  },
+  {
+    path: PROTECTED_ROUTES.FDD_ACTIVITY_LOG_BY_ID,
+    element: <ActivityLogByID />,
+    title: 'Activity Logs By ID',
+    requiresAuth: true,
+    breadcrumb: ['Activity Logs'],
+  },
+  {
+    path: PROTECTED_ROUTES.INPUT_FILE_DEFINITION_ACTIVITY_LOG_BY_ID,
+    element: <ActivityLogByID />,
+    title: 'Activity Logs By ID',
+    requiresAuth: true,
+    breadcrumb: ['Activity Logs'],
+  },
+  {
+    path: PROTECTED_ROUTES.PREP_MAIL_ACTIVITY_LOG_BY_ID,
     element: <ActivityLogByID />,
     title: 'Activity Logs By ID',
     requiresAuth: true,

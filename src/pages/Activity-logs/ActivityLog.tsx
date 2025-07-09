@@ -2,8 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { Button, Table, Pagination, Spin, Alert, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { PROTECTED_ROUTES } from '../../constants/routes'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import client from '../../api/axiosInstance'
+import { TRIGGER_ENTITIES } from '../../constants/app'
 
 interface LogEntry {
   trigger_name: string
@@ -23,6 +24,11 @@ interface PaginationData {
 }
 
 const ActivityLog: React.FC = () => {
+  const location = useLocation()
+  const path = location.pathname.split('/').pop()
+  const entityHeading = path
+    ?.replace(/-/g, ' ')
+    .replace(/\b\w/g, char => char.toUpperCase())
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -36,37 +42,43 @@ const ActivityLog: React.FC = () => {
     limit: 10,
   })
 
-  const fetchLogs = useCallback(async (page = 1, pageSize = 10) => {
-    setLoading(true)
-    try {
-      const skip = (page - 1) * pageSize
-      const limit = pageSize
+  const fetchLogs = useCallback(
+    async (page = 1, pageSize = 10) => {
+      setLoading(true)
+      try {
+        const skip = (page - 1) * pageSize
+        const limit = pageSize
 
-      const response = await client.get(`/logs`, {
-        params: { skip, limit },
-      })
+        const response = await client.post(
+          `/logs?skip=${skip}&limit=${limit}`,
+          {
+            entity_type: path,
+          }
+        )
 
-      const raw = response?.data?.data?.data || []
-      const total = response?.data?.data?.total
+        const raw = response?.data?.data?.data || []
+        const total = response?.data?.data?.total
 
-      if (Array.isArray(raw)) {
-        setLogs(raw)
-        setPagination(prev => ({
-          ...prev,
-          current: page,
-          pageSize,
-          total,
-          skip,
-          limit,
-        }))
+        if (Array.isArray(raw)) {
+          setLogs(raw)
+          setPagination(prev => ({
+            ...prev,
+            current: page,
+            pageSize,
+            total,
+            skip,
+            limit,
+          }))
+        }
+      } catch (err) {
+        console.error('Error fetching logs:', err)
+        setError('Failed to fetch logs')
+      } finally {
+        setLoading(false)
       }
-    } catch (err) {
-      console.error('Error fetching logs:', err)
-      setError('Failed to fetch logs')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+    },
+    [path]
+  )
 
   useEffect(() => {
     fetchLogs(1, pagination.pageSize)
@@ -74,6 +86,31 @@ const ActivityLog: React.FC = () => {
 
   const handleTableChange = (page: number, pageSize: number) => {
     fetchLogs(page, pageSize)
+  }
+
+  const handleOpenLog = (id: string) => {
+    if (path === TRIGGER_ENTITIES.FILE_DOWNLOAD_DEFINITION) {
+      navigate(PROTECTED_ROUTES.FDD_ACTIVITY_LOG_BY_ID.replace(':id', id), {
+        state: { record: { run_id: id } },
+      })
+    } else if (path === TRIGGER_ENTITIES.INPUT_FILE_DEFINITION) {
+      navigate(
+        PROTECTED_ROUTES.INPUT_FILE_DEFINITION_ACTIVITY_LOG_BY_ID.replace(
+          ':id',
+          id
+        ),
+        {
+          state: { record: { run_id: id } },
+        }
+      )
+    } else if (path === TRIGGER_ENTITIES.PREP_MAIL) {
+      navigate(
+        PROTECTED_ROUTES.PREP_MAIL_ACTIVITY_LOG_BY_ID.replace(':id', id),
+        {
+          state: { record: { run_id: id } },
+        }
+      )
+    }
   }
 
   const columns: ColumnsType<LogEntry> = [
@@ -148,11 +185,7 @@ const ActivityLog: React.FC = () => {
         <Button
           type='primary'
           size='small'
-          onClick={() =>
-            navigate(`${PROTECTED_ROUTES.ACTIVITY_LOG_BY_ID}`, {
-              state: { record: { run_id: record.id } },
-            })
-          }
+          onClick={() => handleOpenLog(record.id)}
         >
           Open
         </Button>
@@ -164,7 +197,9 @@ const ActivityLog: React.FC = () => {
     <div className='space-y-6 p-4'>
       {/* Header */}
       <div>
-        <h1 className='text-3xl font-bold text-gray-900'>Activity Logs</h1>
+        <h1 className='text-3xl font-bold text-gray-900'>
+          Activity Logs By {entityHeading}
+        </h1>
         <p className='text-gray-600 mt-1'>List of recent trigger runs</p>
       </div>
 

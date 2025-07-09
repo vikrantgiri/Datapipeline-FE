@@ -1,3 +1,5 @@
+import { TRIGGER_ENTITIES } from './app'
+
 // Public routes
 export const PUBLIC_ROUTES = {
   HOME: '/',
@@ -20,8 +22,12 @@ export const PROTECTED_ROUTES = {
   PREP_MAILS: '/prep-mail',
   TRIGGER_LEADS: '/trigger-leads',
   TRIGGER_LEADS_BY_ID: '/trigger-leads/ID',
-  ACTIVITY_LOG: '/activity-log',
-  ACTIVITY_LOG_BY_ID: '/activity-log/ID',
+  ACTIVITY_LOG_BY_FDD: `/activity-log/${TRIGGER_ENTITIES.FILE_DOWNLOAD_DEFINITION}`,
+  FDD_ACTIVITY_LOG_BY_ID: `/activity-log/${TRIGGER_ENTITIES.FILE_DOWNLOAD_DEFINITION}/:id`,
+  INPUT_FILE_DEFINITION_ACTIVITY_LOG_BY_ID: `/activity-log/${TRIGGER_ENTITIES.INPUT_FILE_DEFINITION}/:id`,
+  PREP_MAIL_ACTIVITY_LOG_BY_ID: `/activity-log/${TRIGGER_ENTITIES.PREP_MAIL}/:id`,
+  ACTIVITY_LOG_BY_INPUT_FILE_DEFINITION: `/activity-log/${TRIGGER_ENTITIES.INPUT_FILE_DEFINITION}`,
+  ACTIVITY_LOG_BY_PREP_MAIL: `/activity-log/${TRIGGER_ENTITIES.PREP_MAIL}`,
 } as const
 
 // Error routes

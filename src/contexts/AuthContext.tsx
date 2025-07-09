@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react'
+import React, { createContext, useState, useEffect, useCallback } from 'react'
 import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { message } from 'antd'
@@ -37,24 +37,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(false)
   }, [])
 
-  const login = (token: string, userData?: User) => {
-    storage.setToken(token)
-    if (userData) {
-      storage.setUser(userData)
-      setUser(userData)
-    }
-    setIsAuthenticated(true)
-    message.success('Login successful!')
-    navigate(PROTECTED_ROUTES.CREDENTIALS)
-  }
+  const login = useCallback(
+    (token: string, userData?: User) => {
+      storage.setToken(token)
+      if (userData) {
+        storage.setUser(userData)
+        setUser(userData)
+      }
+      setIsAuthenticated(true)
+      message.success('Login successful!')
+      navigate(PROTECTED_ROUTES.CREDENTIALS)
+    },
+    [navigate]
+  )
 
-  const logout = () => {
+  const logout = useCallback(() => {
     storage.clearAuth()
     setIsAuthenticated(false)
     setUser(null)
     message.success('Logged out successfully')
     navigate(PUBLIC_ROUTES.HOME)
-  }
+  }, [navigate])
 
   // Register logout function with axios interceptor
   useEffect(() => {
