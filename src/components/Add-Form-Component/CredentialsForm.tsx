@@ -25,7 +25,6 @@ const CredentialsForm: React.FC<CredentialsFormProps> = ({
             (item: any) => Object.values(item)[0]
           )
           setThirdPartyOptions(parsed)
-          console.log('Third Party options fetched!', parsed)
         }
       } catch (error) {
         console.error('Error fetching third-party options.', error)

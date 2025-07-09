@@ -49,7 +49,7 @@ const ChangeCredentials: React.FC = () => {
   }
 
   return (
-    <div className='text-black min-h-screen'>
+    <div className='text-black '>
       {loading && (
         <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center'>
           <LoadingSpinner fullScreen />

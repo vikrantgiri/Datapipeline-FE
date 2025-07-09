@@ -131,15 +131,11 @@ const TriggerLeadByID: React.FC = () => {
         const res = await client.get(`/trigger-leads/${id}`)
         const item = res.data.data
 
-        console.log('API Response:', item)
-
         // Remove ID field from the data
         const { id: itemId, created_at, updated_at, ...filteredData } = item
         setLeadData(filteredData)
         form.setFieldsValue(filteredData)
-        console.log(itemId)
-        console.log(created_at)
-        console.log(updated_at)
+        console.log(itemId,created_at, updated_at)
       } catch (err) {
         console.error('Failed to fetch lead data:', err)
         setError('Failed to fetch lead data. Please try again.')
@@ -288,7 +284,7 @@ const TriggerLeadByID: React.FC = () => {
   }
 
   return (
-    <div className=' bg-gradient-to-br min-h-screen'>
+    <div className=' bg-gradient-to-br '>
       <div className='mx-auto'>
         {/* Header */}
         <Card className='mb-6 border-0' style={{ borderRadius: '16px' }}>

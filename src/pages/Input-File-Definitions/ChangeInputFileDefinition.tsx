@@ -20,12 +20,10 @@ const ChangeInputFileDefinition: React.FC = () => {
       try {
         const res = await client.get(`/input-file-def/${id}`)
         const item = res.data.data
-        console.log(item)
         form.setFieldsValue({
           ...item,
           credentials: item.credentials?.name,
         })
-        console.log(form.getFieldsValue())
         message.success('Record fetched.')
       } catch (error) {
         console.error('Failed to fetch.', error)
@@ -57,7 +55,7 @@ const ChangeInputFileDefinition: React.FC = () => {
   }
 
   return (
-    <div className='text-black min-h-screen'>
+    <div className='text-black '>
       {loading && (
         <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center'>
           <LoadingSpinner fullScreen />

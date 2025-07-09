@@ -46,7 +46,6 @@ const ActivityLog: React.FC = () => {
         params: { skip, limit },
       })
 
-      console.log('API response:', response.data.data.data)
       const raw = response?.data?.data?.data || []
       const total = response?.data?.data?.total
 
@@ -162,7 +161,7 @@ const ActivityLog: React.FC = () => {
   ]
 
   return (
-    <div className='space-y-6 min-h-screen p-4'>
+    <div className='space-y-6 p-4'>
       {/* Header */}
       <div>
         <h1 className='text-3xl font-bold text-gray-900'>Activity Logs</h1>

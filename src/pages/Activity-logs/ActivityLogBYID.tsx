@@ -1,11 +1,15 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import { Table, Tag, Typography, Button, Spin, Alert } from 'antd'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
+import { Table, Tag, Button, Spin, Alert } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import client from '../../api/axiosInstance'
 import type { ColumnsType } from 'antd/es/table'
-
-const { Title } = Typography
+import {
+  createWebSocket,
+  addMessageListener,
+  removeMessageListener,
+  closeWebSocket,
+} from '../../api/webSocketInstance'
 
 interface LogEntry {
   id: number
@@ -19,33 +23,142 @@ const ActivityLogByID: React.FC = () => {
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [status, setStatus] = useState<string | null>(null)
+
+  // Use useRef to maintain counter across renders
+  const messageCounterRef = useRef(0)
+  // Ref for the scrollable table container
+  const tableContainerRef = useRef<HTMLDivElement>(null)
 
   const location = useLocation()
   const navigate = useNavigate()
   const { record } = location.state || {}
 
-  const fetchLogsByRunId = useCallback(async (runId: string) => {
-    try {
-      const res = await client.get(`/logs/${runId}`)
-      const data: LogEntry[] = res.data.data || []
-      console.log('Logs by ID:', data)
-      setLogs(data)
-    } catch (err) {
-      console.error('Failed to fetch logs by run ID:', err)
-      setError('Failed to fetch log entries.')
-    } finally {
-      setLoading(false)
-    }
+  const fetchLogs = useCallback(async (runId: string) => {
+    const res = await client.get(`/logs/${runId}`)
+    return res.data.data || []
+  }, [])
+
+  const fetchRunStatus = useCallback(async (runId: string) => {
+    const res = await client.get(`/logs/run-status/${runId}`)
+    return res.data?.data
   }, [])
 
   useEffect(() => {
-    if (record?.run_id) {
-      fetchLogsByRunId(record.run_id)
-    } else {
+    if (!record?.run_id) {
       setError('No run ID provided')
       setLoading(false)
+      return
     }
-  }, [record?.run_id, fetchLogsByRunId])
+
+    const runId = record.run_id
+
+    const loadData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        const currentStatus = await fetchRunStatus(runId)
+        setStatus(currentStatus)
+
+        if (currentStatus === 'RUNNING') {
+          createWebSocket(runId)
+
+          const handleMessage = (data: string) => {
+            try {
+              const parsed = JSON.parse(data)
+
+              // Check if it's a valid log entry object
+              if (
+                parsed &&
+                typeof parsed === 'object' &&
+                parsed.run_id &&
+                parsed.log_message &&
+                parsed.created_at
+              ) {
+                setLogs(prev => [...prev, parsed])
+                return
+              } else {
+                console.warn(
+                  '⚠️ Skipped JSON message - not a valid LogEntry object:',
+                  parsed
+                )
+                return
+              }
+            } catch {
+              // Not JSON, treat as plain text log message
+              console.info('📝 Processing plain text log message:', data)
+
+              // Determine log level based on message content
+              const determineLogLevel = (
+                message: string
+              ): 'INFO' | 'WARNING' | 'ERROR' => {
+                const lowerMessage = message.toLowerCase()
+
+                if (
+                  lowerMessage.includes('error') ||
+                  lowerMessage.includes('failed') ||
+                  lowerMessage.includes('exception')
+                ) {
+                  return 'ERROR'
+                }
+                if (
+                  lowerMessage.includes('warning') ||
+                  lowerMessage.includes('warn') ||
+                  lowerMessage.includes('deprecated')
+                ) {
+                  return 'WARNING'
+                }
+                return 'INFO'
+              }
+
+              // Generate truly unique ID using counter
+              messageCounterRef.current += 1
+              const uniqueId = Date.now() * 1000 + messageCounterRef.current
+
+              // Create a log entry from the plain text message
+              const logEntry: LogEntry = {
+                id: uniqueId,
+                run_id: record.run_id,
+                log_message: data,
+                log_level: determineLogLevel(data),
+                created_at: new Date().toISOString(),
+              }
+
+              setLogs(prev => [...prev, logEntry])
+            }
+          }
+
+          addMessageListener(handleMessage)
+
+          return () => {
+            removeMessageListener(handleMessage)
+            closeWebSocket()
+          }
+        } else {
+          const logData = await fetchLogs(runId)
+          setLogs(logData)
+        }
+      } catch (err) {
+        console.error('Error loading logs:', err)
+        setError('Failed to load logs or connect to WebSocket')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    const cleanup = loadData()
+    return () => {
+      cleanup?.then?.(cb => cb?.())
+    }
+  }, [record?.run_id, fetchLogs, fetchRunStatus])
+
+  useEffect(() => {
+    if (tableContainerRef.current) {
+      tableContainerRef.current.scrollTop =
+        tableContainerRef.current.scrollHeight
+    }
+  }, [logs])
 
   const columns: ColumnsType<LogEntry> = [
     {
@@ -107,54 +220,32 @@ const ActivityLogByID: React.FC = () => {
   }
 
   return (
-    <div className='w-full'>
-      <div className='flex items-center justify-between mb-4 px-4'>
-        <Title level={3}>Log Details</Title>
+    <div className='space-y-6'>
+      <div className='flex items-center justify-between px-4'>
+        <h1 className='text-3xl font-bold text-gray-900'>Log Details</h1>
         <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>
           Back
         </Button>
       </div>
 
-      <div className='bg-white rounded-lg shadow  mx-4'>
-        {/* <Table
-          dataSource={logs}
-          columns={columns}
-          rowKey='id'
-          pagination={false}
-          scroll={{ x: '100%', y: 500 }}
-          size='middle'
-        /> */}
+      {status === 'RUNNING' && (
+        <div className='px-4'>
+          <Tag color='processing'>Live Log Stream Active</Tag>
+        </div>
+      )}
+
+      <div
+        ref={tableContainerRef}
+        style={{ maxHeight: 600, overflowY: 'auto' }}
+        className='bg-white rounded-lg shadow mx-4'
+      >
         <Table
           dataSource={logs}
           columns={columns}
           rowKey='id'
           pagination={false}
-          scroll={{ x: '100%', y: 500 }}
+          scroll={{ x: '100%' }}
           size='middle'
-          components={{
-            body: {
-              cell: props => (
-                <td
-                  {...props}
-                  style={{
-                    ...props.style,
-                    borderBottom: 'none',
-                  }}
-                />
-              ),
-            },
-            header: {
-              cell: props => (
-                <th
-                  {...props}
-                  style={{
-                    ...props.style,
-                    borderBottom: 'none',
-                  }}
-                />
-              ),
-            },
-          }}
         />
       </div>
     </div>

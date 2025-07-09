@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom'
 
 const MainLayout: React.FC = () => {
   return (
-    <div className='flex flex-col justify-between min-h-screen w-full bg-gray-800'>
+    <div className='flex flex-col justify-between h-screen w-full bg-gray-800'>
       <Header />
       <div className='flex h-full w-full px-4'>
         <Sidebar />

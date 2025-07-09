@@ -265,7 +265,7 @@ const Files = () => {
   ]
 
   return (
-    <div className='flex flex-col gap-6 min-h-screen'>
+    <div className='flex flex-col gap-6 '>
       {/* Header */}
       <div>
         <h1 className='text-3xl font-bold text-gray-900'>Files</h1>

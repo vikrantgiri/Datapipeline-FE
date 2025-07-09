@@ -57,7 +57,7 @@ const Sidebar: React.FC = () => {
   ]
 
   return (
-    <aside className='bg-gray-800 text-white w-96 min-h-screen p-4'>
+    <aside className='bg-gray-800 text-white w-96 p-4'>
       <nav className='flex flex-col gap-2'>
         {menuItems.map(item => {
           const isActive = location.pathname === item.path

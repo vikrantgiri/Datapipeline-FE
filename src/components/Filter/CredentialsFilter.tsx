@@ -34,7 +34,6 @@ const CredentialsFilter: React.FC<CredentialsFilterProps> = ({
       setLoading(true)
       try {
         const res = await getThirdPartyFilters()
-        console.log('Third-party filters API response:', res)
 
         const rawData = res?.data as { [key: string]: string }[]
 

@@ -36,7 +36,6 @@ const InputFileForm: React.FC<InputFileFormProps> = ({
             (item: any) => Object.values(item)[0]
           )
           setTaskTypeOptions(parsed)
-          console.log('Task type options fetched!', parsed)
         }
       } catch (error) {
         console.error('Error fetching task type options.', error)
@@ -53,7 +52,6 @@ const InputFileForm: React.FC<InputFileFormProps> = ({
             (item: any) => Object.values(item)[0]
           )
           setCampaignTypeOptions(parsed)
-          console.log('campaign type options fetched!', parsed)
         }
       } catch (error) {
         console.error('Error fetching campaign type options.', error)
@@ -70,7 +68,6 @@ const InputFileForm: React.FC<InputFileFormProps> = ({
             (item: any) => Object.values(item)[0]
           )
           setThirdPartyOptions(parsed)
-          console.log('Third Party options fetched!', parsed)
         }
       } catch (error) {
         console.error('Error fetching third-party options.', error)
@@ -84,7 +81,6 @@ const InputFileForm: React.FC<InputFileFormProps> = ({
 
         if (res?.data?.error == null) {
           setCredentialsOptions(res.data.data)
-          console.log('Credentials fetched!', res.data.data)
         }
       } catch (error) {
         console.error('Error fetching .', error)

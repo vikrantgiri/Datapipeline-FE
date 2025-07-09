@@ -30,7 +30,6 @@ const ChangeFileDD: React.FC = () => {
       try {
         const res = await client.get(`/file-download-def/${id}`)
         const item = res.data.data
-        console.log(item)
         form.setFieldsValue({
           ...item,
           credentials: item?.credentials?.id,
@@ -64,7 +63,7 @@ const ChangeFileDD: React.FC = () => {
   }
 
   return (
-    <div className='text-black min-h-screen'>
+    <div className='text-black '>
       {loading && (
         <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center'>
           <LoadingSpinner fullScreen />

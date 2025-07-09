@@ -363,7 +363,7 @@ const FileDownloadDefinition = () => {
   ]
 
   return (
-    <div className='min-h-screen '>
+    <div className=' '>
       <div className=' flex flex-col gap-6'>
         {/* Header */}
         <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>

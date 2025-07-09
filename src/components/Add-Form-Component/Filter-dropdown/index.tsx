@@ -33,7 +33,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
             <>
               {options?.map((item, index) => {
                 const [key, value] = Object.entries(item)[0] // get the first key-value pair from each object
-                console.log('key', key)
+                console.log(key)
                 return (
                   <Option key={index} value={value}>
                     {value}

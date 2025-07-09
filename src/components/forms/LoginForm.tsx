@@ -15,7 +15,6 @@ const LoginForm: React.FC = () => {
 
     try {
       const res = await postLogin(values)
-      console.log(res?.data)
 
       if (res?.data?.access_token) {
         // Use the auth context login function

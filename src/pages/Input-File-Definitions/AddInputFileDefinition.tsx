@@ -12,8 +12,6 @@ const AddInputFileDefinition: React.FC = () => {
   const navigate = useNavigate()
 
   const handleFinish = async (values: any) => {
-    console.log('Payload :', values)
-
     try {
       const res = await client.post('/input-file-def', values)
 
@@ -37,7 +35,7 @@ const AddInputFileDefinition: React.FC = () => {
   }
 
   return (
-    <div className='text-gray-900 min-h-screen'>
+    <div className='text-gray-900 '>
       <div className='flex items-center gap-2 mb-6'>
         <ArrowLeftOutlined
           className='text-xl cursor-pointer text-blue-600 hover:text-blue-800'
