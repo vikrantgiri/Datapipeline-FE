@@ -4,12 +4,11 @@ let socket: WebSocket | null = null
 let listeners: MessageCallback[] = []
 
 const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
-const WS_URL = `${wsProtocol}://${window.location.host}/api/v1`
+const WS_URL = `${wsProtocol}://${window.location.host}:8000/api/v1`
 
 export const createWebSocket = (run_id: string): WebSocket => {
   if (!socket || socket.readyState === WebSocket.CLOSED) {
     socket = new WebSocket(WS_URL + `/logs?run_id=${run_id}`)
-    console.log(WS_URL + `/logs?run_id=${run_id}`)
 
     socket.onopen = () => {
       console.log('✅ WebSocket connected')
