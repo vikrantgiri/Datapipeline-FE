@@ -117,11 +117,11 @@ const TriggerLeadByID: React.FC = () => {
       } else {
         categories.other.push([key, value])
       }
+
     })
 
     return categories
   }
-
   const getElementById = useCallback(
     async (id: number) => {
       try {

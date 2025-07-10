@@ -7,9 +7,9 @@ const MainLayout: React.FC = () => {
   return (
     <div className='flex flex-col justify-between h-screen w-full bg-gray-800'>
       <Header />
-      <div className='flex h-full w-full px-4'>
+      <div className='flex h-full w-full '>
         <Sidebar />
-        <div className='p-10 w-full h-full rounded-xl bg-white overflow-hidden'>
+        <div className='p-10 w-full h-full rounded-xl bg-white overflow-scroll'>
           <Outlet />
         </div>
       </div>
