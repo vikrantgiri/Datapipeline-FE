@@ -117,7 +117,6 @@ const TriggerLeadByID: React.FC = () => {
       } else {
         categories.other.push([key, value])
       }
-
     })
 
     return categories

@@ -9,7 +9,7 @@ const MainLayout: React.FC = () => {
       <Header />
       <div className='flex h-full w-full '>
         <Sidebar />
-        <div className='p-10 w-full h-full rounded-xl bg-white overflow-scroll'>
+        <div className='px-10 py-6 w-full h-full rounded-xl bg-white overflow-scroll'>
           <Outlet />
         </div>
       </div>

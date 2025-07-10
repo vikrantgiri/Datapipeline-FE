@@ -40,43 +40,37 @@ const PrepMails = () => {
     limit: 10,
   })
 
-  const fetchLogs = useCallback(
-    async (page = 1, pageSize = 10) => {
-      setLogsLoading(true)
-      try {
-        const skip = (page - 1) * pageSize
-        const limit = pageSize
+  const fetchLogs = useCallback(async (page = 1, pageSize = 10) => {
+    setLogsLoading(true)
+    try {
+      const skip = (page - 1) * pageSize
+      const limit = pageSize
 
-        const response = await client.post(
-          `/logs?skip=${skip}&limit=${limit}`,
-          {
-            entity_type: 'prep-mail', // Using the prep-mail entity
-          }
-        )
+      const response = await client.post(`/logs?skip=${skip}&limit=${limit}`, {
+        entity_type: 'prep-mail', // Using the prep-mail entity
+      })
 
-        const raw = response?.data?.data?.data || []
-        const total = response?.data?.data?.total
+      const raw = response?.data?.data?.data || []
+      const total = response?.data?.data?.total
 
-        if (Array.isArray(raw)) {
-          setLogs(raw)
-          setLogsPagination(prev => ({
-            ...prev,
-            current: page,
-            pageSize,
-            total,
-            skip,
-            limit,
-          }))
-        }
-      } catch (err) {
-        console.error('Error fetching logs:', err)
-        message.error('Failed to fetch activity logs')
-      } finally {
-        setLogsLoading(false)
+      if (Array.isArray(raw)) {
+        setLogs(raw)
+        setLogsPagination(prev => ({
+          ...prev,
+          current: page,
+          pageSize,
+          total,
+          skip,
+          limit,
+        }))
       }
-    },
-    []
-  )
+    } catch (err) {
+      console.error('Error fetching logs:', err)
+      message.error('Failed to fetch activity logs')
+    } finally {
+      setLogsLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
     fetchLogs(1, logsPagination.pageSize)
@@ -128,15 +122,10 @@ const PrepMails = () => {
   }
 
   const handleOpenLog = (id: string) => {
-    navigate(
-      PROTECTED_ROUTES.PREP_MAIL_ACTIVITY_LOG_BY_ID.replace(':id', id),
-      {
-        state: { record: { run_id: id } },
-      }
-    )
+    navigate(PROTECTED_ROUTES.PREP_MAIL_ACTIVITY_LOG_BY_ID.replace(':id', id), {
+      state: { record: { run_id: id } },
+    })
   }
-
-
 
   const activityLogColumns: ColumnsType<LogEntry> = [
     {
@@ -230,21 +219,23 @@ const PrepMails = () => {
     <div className='space-y-6'>
       {/* Header */}
       <div className='flex items-center justify-between'>
-  <div>
-    <h1 className='text-3xl font-bold text-gray-900'>Prep Mail Activity Logs</h1>
-    <p className='text-gray-600 mt-1'>
-      Monitor and manage email preparation trigger activities
-    </p>
-  </div>
-  <div className='space-x-2'>
-  <Button
-  onClick={handleRunTrigger}
-  loading={triggerLoading}
-  className='!bg-blue-600 !hover:bg-blue-700 !text-white !border-blue-600 !hover:!border-blue-700'
->
-  <Play className='w-4 h-4 mr-2' />
-  Run Trigger
-</Button>
+        <div>
+          <h1 className='text-3xl font-bold text-gray-900'>
+            Prep Mail Activity Logs
+          </h1>
+          <p className='text-gray-600 mt-1'>
+            Monitor and manage email preparation trigger activities
+          </p>
+        </div>
+        <div className='space-x-2'>
+          <Button
+            onClick={handleRunTrigger}
+            loading={triggerLoading}
+            className='!bg-blue-600 !hover:bg-blue-700 !text-white !border-blue-600 !hover:!border-blue-700'
+          >
+            <Play className='w-4 h-4 mr-2' />
+            Run Trigger
+          </Button>
           <Button
             onClick={handleDownloadCsv}
             className='!bg-blue-600 !hover:bg-blue-700 !text-white !border-blue-600 !hover:!border-blue-700'
@@ -252,10 +243,8 @@ const PrepMails = () => {
             <Download className='w-4 h-4 mr-2' />
             Download CSV
           </Button>
-          
-  </div>
-</div>
-
+        </div>
+      </div>
 
       {/* Activity Logs Table */}
       <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden'>
@@ -273,7 +262,8 @@ const PrepMails = () => {
         {/* Custom Pagination for Activity Logs */}
         <div className='flex items-center justify-between px-6 py-4 border-t border-gray-200'>
           <div className='text-sm text-gray-600'>
-            Showing {(logsPagination.current - 1) * logsPagination.pageSize + 1} to{' '}
+            Showing {(logsPagination.current - 1) * logsPagination.pageSize + 1}{' '}
+            to{' '}
             {Math.min(
               logsPagination.current * logsPagination.pageSize,
               logsPagination.total
