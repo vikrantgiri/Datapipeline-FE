@@ -12,7 +12,6 @@ const AddSnowflake: React.FC = () => {
 
   const handleFinish = async (values: any) => {
     try {
-
       console.log('Submitting payload:', values)
       // Format the time field if it's present
       const payload = {

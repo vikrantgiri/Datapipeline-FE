@@ -48,7 +48,7 @@ const ChangeSnowflake: React.FC = () => {
     try {
       await client.put(`/snowflake-scripts/script/${record.id}`, {
         ...values,
-        
+
         scheduled: values.scheduled,
       })
       message.success('Snowflake record updated successfully.')
