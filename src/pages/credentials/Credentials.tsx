@@ -230,7 +230,7 @@ const Credentials = () => {
   ]
 
   return (
-    <div className=''>
+    
       <div className='flex flex-col gap-6'>
         {/* Header */}
         <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
@@ -335,7 +335,7 @@ const Credentials = () => {
           </div>
         </div>
       </div>
-    </div>
+    
   )
 }
 

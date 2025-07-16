@@ -363,7 +363,7 @@ const FileDownloadDefinition = () => {
   ]
 
   return (
-    <div className=' '>
+    
       <div className=' flex flex-col gap-6'>
         {/* Header */}
         <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
@@ -490,7 +490,7 @@ const FileDownloadDefinition = () => {
           </div>
         </div>
       </div>
-    </div>
+   
   )
 }
 

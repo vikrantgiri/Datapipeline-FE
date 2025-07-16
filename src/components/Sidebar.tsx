@@ -77,6 +77,11 @@ const Sidebar: React.FC = () => {
       icon: <Target size={18} />,
     },
     {
+      path: PROTECTED_ROUTES.SNOWFLAKE,
+      label: 'Snowflake',
+      icon: <Target size={18} />,
+    },
+    {
       label: 'Activity Logs',
       icon: <Activity size={18} />,
       children: [

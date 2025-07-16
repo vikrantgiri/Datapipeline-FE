@@ -47,6 +47,10 @@ const TriggerLeadsById = lazy(
   () => import('../pages/Trigger-leads/TriggerLeadByID')
 )
 
+const Snowflake = lazy(() => import('../pages/snowflake/snowflake'))
+const AddSnowflake = lazy(() => import('../pages/snowflake/AddSnowflake'))
+const ChangeSnowflake = lazy(() => import('../pages/snowflake/ChangeSnowflake'))
+
 const ActivityLog = lazy(() => import('../pages/Activity-logs/ActivityLog'))
 const ActivityLogByID = lazy(
   () => import('../pages/Activity-logs/ActivityLogBYID')
@@ -174,6 +178,47 @@ export const protectedRoutes: RouteConfig[] = [
     breadcrumb: ['Trigger Leads'],
   },
 
+  //snowflake
+  {
+    path: PROTECTED_ROUTES.SNOWFLAKE,
+    element: <Snowflake />,
+    title: 'Snowflake',
+    requiresAuth: true,
+    breadcrumb: ['Snowflake'],
+  },
+  {
+    path: PROTECTED_ROUTES.SNOWFLAKE_ADD,
+    element: <AddSnowflake />,
+    title: 'Snowflake',
+    requiresAuth: true,
+    breadcrumb: ['Snowflake'],
+  },
+  {
+    path: PROTECTED_ROUTES.SNOWFLAKE_CHANGE,
+    element: <ChangeSnowflake />,
+    title: 'Snowflake',
+    requiresAuth: true,
+    breadcrumb: ['Snowflake'],
+  },
+
+  {
+    path: PROTECTED_ROUTES.SNOWFLAKE_ADD,
+    element: <AddSnowflake />,
+    title: 'Add Snowflake',
+    requiresAuth: true,
+
+    breadcrumb: ['Snowflake', 'Add'],
+  },
+  {
+    path: PROTECTED_ROUTES.SNOWFLAKE_CHANGE,
+    element: <ChangeSnowflake />,
+    title: 'Change Snowflake',
+    requiresAuth: true,
+
+    breadcrumb: ['Snowflake', 'Change'],
+  },
+
+  //activity logs
   {
     path: PROTECTED_ROUTES.ACTIVITY_LOG_BY_FDD,
     element: <ActivityLog />,
