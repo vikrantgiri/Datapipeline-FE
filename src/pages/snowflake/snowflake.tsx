@@ -98,7 +98,7 @@ const SnowFlake = () => {
         `/snowflake-scripts/${id}/run-snowflake-script`
       )
       if (response.status === 200) {
-        toast.success('Script run successfully.')
+        toast.success('Script is running.')
       } else {
         toast.error('Failed to run script.')
       }
