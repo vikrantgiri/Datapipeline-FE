@@ -70,8 +70,8 @@ const SnowFlake = () => {
   )
 
   useEffect(() => {
-    fetchData(pagination.current, pagination.pageSize)
-  }, [fetchData, pagination])
+    fetchData(1, pagination.pageSize)
+  }, [fetchData, pagination.pageSize])
 
   const handleTableChange = (page: number, pageSize: number) => {
     fetchData(page, pageSize)
@@ -99,7 +99,6 @@ const SnowFlake = () => {
       )
       if (response.status === 200) {
         toast.success('Script run successfully.')
-        fetchData(pagination.current, pagination.pageSize)
       } else {
         toast.error('Failed to run script.')
       }
