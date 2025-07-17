@@ -263,6 +263,20 @@ export const protectedRoutes: RouteConfig[] = [
     requiresAuth: true,
     breadcrumb: ['Activity Logs'],
   },
+  {
+    path: PROTECTED_ROUTES.ACTIVITY_LOG_BY_SNOWFLAKE_SCRIPT,
+    element: <ActivityLog />,
+    title: 'Activity Logs By Snowflake Script',
+    requiresAuth: true,
+    breadcrumb: ['Activity Logs'],
+  },
+  {
+    path: PROTECTED_ROUTES.ACTIVITY_LOG_BY_SNOWFLAKE_SCRIPT_BY_ID,
+    element: <ActivityLogByID />,
+    title: 'Activity Logs By Snowflake Script By ID',
+    requiresAuth: true,
+    breadcrumb: ['Activity Logs'],
+  },
 ]
 
 // Redirect routes (for backward compatibility and common patterns)

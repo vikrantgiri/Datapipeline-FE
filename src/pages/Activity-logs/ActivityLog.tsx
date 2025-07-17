@@ -110,6 +110,16 @@ const ActivityLog: React.FC = () => {
           state: { record: { run_id: id } },
         }
       )
+    } else if (path === TRIGGER_ENTITIES.SNOWFLAKE) {
+      navigate(
+        PROTECTED_ROUTES.ACTIVITY_LOG_BY_SNOWFLAKE_SCRIPT_BY_ID.replace(
+          ':id',
+          id
+        ),
+        {
+          state: { record: { run_id: id } },
+        }
+      )
     }
   }
 

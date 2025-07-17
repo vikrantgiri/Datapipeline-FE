@@ -51,8 +51,10 @@ export const PERMISSIONS = {
   ADMIN: 'admin',
 } as const
 
+// Trigger entities
 export const TRIGGER_ENTITIES = {
   FILE_DOWNLOAD_DEFINITION: 'file-download-def',
   INPUT_FILE_DEFINITION: 'input-file-def',
   PREP_MAIL: 'prep-mail',
+  SNOWFLAKE: 'snowflake-script',
 } as const

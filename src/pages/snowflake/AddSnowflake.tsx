@@ -19,7 +19,7 @@ const AddSnowflake: React.FC = () => {
         time: values.time?.toISOString(),
       }
 
-      await client.post('/snowflake-scripts/create', payload)
+      await client.post('/snowflake-scripts', payload)
 
       message.success('Snowflake record added successfully.')
       navigate(PROTECTED_ROUTES.SNOWFLAKE)

@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from 'react'
-import { Table, message, Pagination, Tooltip, Popconfirm, Button } from 'antd'
+import { Table, Pagination, Tooltip, Popconfirm, Button } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { PlusOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { Trash2, Edit } from 'lucide-react'
 import { PROTECTED_ROUTES } from '../../constants/routes'
 import client from '../../api/axiosInstance'
+import { toast } from 'react-toastify'
 
 export interface SnowflakeData {
   id: number
@@ -42,7 +43,7 @@ const SnowFlake = () => {
         const skip = (page - 1) * pageSize
         const limit = pageSize
 
-        const response = await client.get('/snowflake-scripts/', {
+        const response = await client.get('/snowflake-scripts', {
           params: { skip, limit },
         })
 
@@ -60,7 +61,7 @@ const SnowFlake = () => {
         }))
       } catch (error) {
         console.error('Failed to fetch snowflake data:', error)
-        message.error('Failed to load snowflake data.')
+        toast.error('Failed to load snowflake data.')
       } finally {
         setLoading(false)
       }
@@ -70,7 +71,7 @@ const SnowFlake = () => {
 
   useEffect(() => {
     fetchData(pagination.current, pagination.pageSize)
-  }, [fetchData, pagination.current, pagination.pageSize])
+  }, [fetchData, pagination])
 
   const handleTableChange = (page: number, pageSize: number) => {
     fetchData(page, pageSize)
@@ -82,12 +83,29 @@ const SnowFlake = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await client.delete(`/snowflake-scripts/script/${id}`)
-      message.success('Deleted successfully.')
+      await client.delete(`/snowflake-scripts/${id}`)
+      toast.success('Deleted successfully.')
       fetchData(pagination.current, pagination.pageSize)
     } catch (error) {
       console.error('Delete failed:', error)
-      message.error('Failed to delete entry.')
+      toast.error('Failed to delete entry.')
+    }
+  }
+
+  const handleRunScript = async (id: number) => {
+    try {
+      const response = await client.get(
+        `/snowflake-scripts/${id}/run-snowflake-script`
+      )
+      if (response.status === 200) {
+        toast.success('Script run successfully.')
+        fetchData(pagination.current, pagination.pageSize)
+      } else {
+        toast.error('Failed to run script.')
+      }
+    } catch (error) {
+      console.error('Failed to run script:', error)
+      toast.error('Failed to run script.')
     }
   }
 
@@ -145,6 +163,13 @@ const SnowFlake = () => {
       width: 150,
       render: (_, record) => (
         <div className='flex gap-2'>
+          <Button
+            type='primary'
+            size='small'
+            onClick={() => handleRunScript(record.id)}
+          >
+            Run Script
+          </Button>
           <Button
             type='primary'
             size='small'

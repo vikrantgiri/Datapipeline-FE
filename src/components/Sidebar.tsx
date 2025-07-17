@@ -97,6 +97,10 @@ const Sidebar: React.FC = () => {
           path: PROTECTED_ROUTES.ACTIVITY_LOG_BY_PREP_MAIL,
           label: 'Activity Logs By Prep Mail',
         },
+        {
+          path: PROTECTED_ROUTES.ACTIVITY_LOG_BY_SNOWFLAKE_SCRIPT,
+          label: 'Activity Logs By Snowflake Script',
+        },
       ],
     },
   ]

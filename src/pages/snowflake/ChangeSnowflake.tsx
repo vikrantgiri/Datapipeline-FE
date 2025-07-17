@@ -19,7 +19,7 @@ const ChangeSnowflake: React.FC = () => {
     async (id: number) => {
       setLoading(true)
       try {
-        const res = await client.get(`/snowflake-scripts/script/${id}`)
+        const res = await client.get(`/snowflake-scripts/${id}`)
         const item = res.data.data
         form.setFieldsValue({
           email_recipients: item.email_recipients,
@@ -46,7 +46,7 @@ const ChangeSnowflake: React.FC = () => {
 
   const handleFinish = async (values: any) => {
     try {
-      await client.put(`/snowflake-scripts/script/${record.id}`, {
+      await client.put(`/snowflake-scripts/${record.id}`, {
         ...values,
 
         scheduled: values.scheduled,
