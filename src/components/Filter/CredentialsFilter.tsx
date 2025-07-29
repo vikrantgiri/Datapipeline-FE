@@ -69,19 +69,19 @@ const CredentialsFilter: React.FC<CredentialsFilterProps> = ({
               <h3 className='text-lg font-semibold text-gray-900'>{title}</h3>
             </div>
             {hasActiveFilters && (
-              <Badge 
-                count={1} 
+              <Badge
+                count={1}
                 className='bg-blue-100 text-blue-800'
-                style={{ 
-                  backgroundColor: '#dbeafe', 
+                style={{
+                  backgroundColor: '#dbeafe',
                   color: '#1e40af',
                   fontWeight: 'bold',
-                  fontSize: '12px'
+                  fontSize: '12px',
                 }}
               />
             )}
           </div>
-          
+
           <div className='flex items-center gap-2'>
             <Button
               type='text'
@@ -93,7 +93,7 @@ const CredentialsFilter: React.FC<CredentialsFilterProps> = ({
             >
               {showCounts ? 'Hide Counts' : 'Show Counts'}
             </Button>
-            
+
             {hasActiveFilters && (
               <Button
                 type='text'
@@ -115,7 +115,7 @@ const CredentialsFilter: React.FC<CredentialsFilterProps> = ({
             <label className='text-sm font-medium text-gray-700 whitespace-nowrap min-w-fit'>
               {selectLabel}:
             </label>
-            
+
             <div className='flex-1 min-w-[200px] max-w-[300px]'>
               {loading ? (
                 <div className='flex items-center justify-center h-8'>

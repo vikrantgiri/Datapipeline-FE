@@ -116,7 +116,6 @@ const Credentials = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement
-  
 
       if (
         filterRef.current &&
@@ -126,15 +125,12 @@ const Credentials = () => {
         setShowFilters(false)
       }
     }
-  
+
     document.addEventListener('mousedown', handleClickOutside)
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
-  
-
-
 
   const handleDelete = async (id: number) => {
     setLoading(true)
@@ -267,13 +263,13 @@ const Credentials = () => {
       </div>
 
       {/* Search Bar */}
-      <div className="relative">
-        <div className="flex items-center gap-2">
+      <div className='relative'>
+        <div className='flex items-center gap-2'>
           <Search
-            placeholder="Search credentials..."
+            placeholder='Search credentials...'
             allowClear
             enterButton={<SearchOutlined />}
-            className="w-full"
+            className='w-full'
             onSearch={handleSearch}
             onChange={e => setSearchText(e.target.value)}
             value={searchText}
@@ -285,7 +281,7 @@ const Credentials = () => {
               display: 'flex',
               alignItems: 'center',
               gap: 7,
-              textDecorationStyle:"solid",
+              textDecorationStyle: 'solid',
             }}
             onClick={() => setShowFilters(prev => !prev)}
           >
@@ -298,18 +294,21 @@ const Credentials = () => {
             >
               <path d='M6 10.117V15l4-2v-2.883l4.447-5.34A1 1 0 0 0 13.763 5H2.237a1 1 0 0 0-.684 1.777L6 10.117z' />
             </svg>
-           Filters
+            Filters
           </Button>
         </div>
 
         {/* Filter Overlay */}
         {showFilters && (
-          <div  ref={filterRef} className="absolute right-0 top-12 z-10 w-full sm:w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-6 mt-2">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Filters</h3>
+          <div
+            ref={filterRef}
+            className='absolute right-0 top-12 z-10 w-full sm:w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-6 mt-2'
+          >
+            <div className='flex items-center justify-between mb-4'>
+              <h3 className='text-lg font-medium text-gray-900'>Filters</h3>
               <button
                 onClick={() => setShowFilters(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className='text-gray-500 hover:text-gray-700'
               >
                 ✕
               </button>

@@ -393,46 +393,45 @@ const InputFileDefinition = () => {
           )}
         </div>
 
+        {/* Table */}
+        <div className='relative w-full'>
+          <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden'>
+            <Table
+              columns={columns}
+              dataSource={data}
+              rowKey='id'
+              loading={loading}
+              scroll={{ x: 'max-content' }}
+              pagination={false} // We'll handle pagination manually
+              size='middle'
+              className='custom-table'
+            />
 
-            {/* Table */}
-            <div className='relative w-full'>
-            <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden'>
-              <Table
-                columns={columns}
-                dataSource={data}
-                rowKey='id'
-                loading={loading}
-                scroll={{ x: 'max-content' }}
-                pagination={false} // We'll handle pagination manually
-                size='middle'
-                className='custom-table'
-              />
-
-              {/* Custom Pagination */}
-              <div className='flex items-center justify-between px-6 py-4 border-t border-gray-200 '>
-                <div className='text-sm text-gray-600'>
-                  Showing {(pagination.current - 1) * pagination.pageSize + 1}
-                  to{' '}
-                  {Math.min(
-                    pagination.current * pagination.pageSize,
-                    pagination.total
-                  )}
-                  of {pagination.total} entries
-                </div>
-                <Pagination
-                  current={pagination.current}
-                  pageSize={pagination.pageSize}
-                  total={pagination.total}
-                  showSizeChanger
-                  onChange={handleTableChange}
-                  onShowSizeChange={handleTableChange}
-                  pageSizeOptions={['10', '20', '50', '100']}
-                  className='custom-pagination'
-                />
+            {/* Custom Pagination */}
+            <div className='flex items-center justify-between px-6 py-4 border-t border-gray-200 '>
+              <div className='text-sm text-gray-600'>
+                Showing {(pagination.current - 1) * pagination.pageSize + 1}
+                to{' '}
+                {Math.min(
+                  pagination.current * pagination.pageSize,
+                  pagination.total
+                )}
+                of {pagination.total} entries
               </div>
-            </div>
+              <Pagination
+                current={pagination.current}
+                pageSize={pagination.pageSize}
+                total={pagination.total}
+                showSizeChanger
+                onChange={handleTableChange}
+                onShowSizeChange={handleTableChange}
+                pageSizeOptions={['10', '20', '50', '100']}
+                className='custom-pagination'
+              />
             </div>
           </div>
+        </div>
+      </div>
     </>
   )
 }

@@ -10,7 +10,6 @@ const AddCredentials: React.FC = () => {
   const [credentials, setCredentials] = useState<any[]>([])
   const navigate = useNavigate()
 
-  
   const handleFinish = async (values: any) => {
     try {
       const res = await client.post('/credentials', values)

@@ -168,25 +168,24 @@ const FileDownloadDefinition = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement
-  
+
       const isInsideFilter =
         filterRef.current?.contains(target) ||
         document.querySelector('.ant-select-dropdown')?.contains(target) ||
         target.closest('.ant-select') || // Ant Design select trigger
         target.closest('.ant-picker-dropdown') || // In case of date picker
         target.closest('.ant-dropdown') // General dropdowns
-  
+
       if (!isInsideFilter) {
         setShowFilters(false)
       }
     }
-  
+
     document.addEventListener('mousedown', handleClickOutside)
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
-  
 
   const handleDelete = async (id: number) => {
     setLoading(true)
