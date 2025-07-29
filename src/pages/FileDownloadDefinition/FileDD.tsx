@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Button, Input, Table, Popconfirm, message, Pagination } from 'antd'
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
@@ -9,6 +9,9 @@ import { getCredentialsFilters } from '../../api/filter-api'
 import FilterDropdown from '../../components/Add-Form-Component/Filter-dropdown'
 import { toast } from 'react-toastify'
 import { PROTECTED_ROUTES } from '../../constants/routes'
+import FilterButton from '../../components/FilterButton'
+import FilterContainer from '../../components/FilterContainer'
+import { useFilterState } from '../../hooks/useFilterState'
 const { Search } = Input
 
 export interface FileDownloadDefinitionItem {
@@ -58,8 +61,15 @@ const FileDownloadDefinition = () => {
   const [filterPostDC, setFilterPostDC] = useState('')
   const [filterPostCallShaper, setFilterPostCallShaper] = useState('')
   const [filterInsertPostgres, setFilterInsertPostgres] = useState('')
-  const [showFilters, setShowFilters] = useState(false)
-  const filterRef = useRef<HTMLDivElement>(null)
+
+  const {
+    showFilters,
+    containerRef,
+    handleFilterToggle,
+    handleCloseFilters,
+    handleSelectStart,
+    handleSelectEnd,
+  } = useFilterState()
 
   const [pagination, setPagination] = useState<PaginationData>({
     current: 1,
@@ -157,34 +167,13 @@ const FileDownloadDefinition = () => {
     const fetchFilter = async () => {
       try {
         const res = await getCredentialsFilters()
+        console.log('Credentials filters API response:', res)
         setCredentialsFilters(res?.data || [])
       } catch (error) {
         console.error('Failed to fetch filters', error)
       }
     }
     fetchFilter()
-  }, [])
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement
-
-      const isInsideFilter =
-        filterRef.current?.contains(target) ||
-        document.querySelector('.ant-select-dropdown')?.contains(target) ||
-        target.closest('.ant-select') || // Ant Design select trigger
-        target.closest('.ant-picker-dropdown') || // In case of date picker
-        target.closest('.ant-dropdown') // General dropdowns
-
-      if (!isInsideFilter) {
-        setShowFilters(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
   }, [])
 
   const handleDelete = async (id: number) => {
@@ -418,17 +407,7 @@ const FileDownloadDefinition = () => {
             onChange={e => setSearchText(e.target.value)}
             value={searchText}
           />
-          <Button
-            type='primary'
-            style={{
-              width: 100,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 7,
-              textDecorationStyle: 'solid',
-            }}
-            onClick={() => setShowFilters(prev => !prev)}
-          >
+          <FilterButton onToggle={handleFilterToggle} isOpen={showFilters}>
             <svg
               xmlns='http://www.w3.org/2000/svg'
               width='16'
@@ -439,52 +418,68 @@ const FileDownloadDefinition = () => {
               <path d='M6 10.117V15l4-2v-2.883l4.447-5.34A1 1 0 0 0 13.763 5H2.237a1 1 0 0 0-.684 1.777L6 10.117z' />
             </svg>
             Filters
-          </Button>
+          </FilterButton>
         </div>
         {/* Filters Sidebar */}
-        {showFilters && (
-          <div
-            ref={filterRef}
-            className='absolute right-0 top-12 z-10 w-full sm:w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-6 mt-2'
-          >
-            <div className='flex items-center justify-between mb-4'>
-              <h3 className='text-lg font-medium text-gray-900'>Filters</h3>
-              <button
-                onClick={() => setShowFilters(false)}
-                className='text-gray-500 hover:text-gray-700'
-              >
-                ✕
-              </button>
-            </div>
-
-            <FilterDropdown
-              title='By Credentials'
-              options={[...credentialsFilters]}
-              onChange={value => setSelectedCredential(value)}
-              value={selectedCredential}
-              type='id-value'
-            />
-
-            <FilterDropdown
-              title='By Post DC'
-              options={[...postDCOptions]}
-              onChange={value => setFilterPostDC(value)}
-              value={filterPostDC}
-            />
-            <FilterDropdown
-              title='By Post Call Shaper'
-              options={[...postCallShaperOptions]}
-              onChange={value => setFilterPostCallShaper(value)}
-              value={filterPostCallShaper}
-            />
-            <FilterDropdown
-              title='By Insert Postgres'
-              options={[...InsertPGOptions]}
-              onChange={value => setFilterInsertPostgres(value)}
-              value={filterInsertPostgres}
-            />
+        <FilterContainer
+          isOpen={showFilters}
+          onClose={handleCloseFilters}
+          containerRef={containerRef}
+        >
+          <div className='flex items-center justify-between mb-4'>
+            <h3 className='text-lg font-medium text-gray-900'>Filters</h3>
+            <button
+              onClick={handleCloseFilters}
+              className='text-gray-500 hover:text-gray-700'
+            >
+              ✕
+            </button>
           </div>
-        )}
+
+          <FilterDropdown
+            title='By Credentials'
+            options={[...credentialsFilters]}
+            onChange={value => {
+              console.log('Credentials filter changed:', value)
+              setSelectedCredential(value)
+            }}
+            value={selectedCredential}
+            type='id-value'
+            onSelectStart={handleSelectStart}
+            onSelectEnd={handleSelectEnd}
+          />
+
+          <FilterDropdown
+            title='By Post DC'
+            options={[...postDCOptions]}
+            onChange={value => {
+              console.log('Post DC filter changed:', value)
+              setFilterPostDC(value)
+            }}
+            value={filterPostDC}
+            type='label-value'
+            onSelectStart={handleSelectStart}
+            onSelectEnd={handleSelectEnd}
+          />
+          <FilterDropdown
+            title='By Post Call Shaper'
+            options={[...postCallShaperOptions]}
+            onChange={value => setFilterPostCallShaper(value)}
+            value={filterPostCallShaper}
+            type='label-value'
+            onSelectStart={handleSelectStart}
+            onSelectEnd={handleSelectEnd}
+          />
+          <FilterDropdown
+            title='By Insert Postgres'
+            options={[...InsertPGOptions]}
+            onChange={value => setFilterInsertPostgres(value)}
+            value={filterInsertPostgres}
+            type='label-value'
+            onSelectStart={handleSelectStart}
+            onSelectEnd={handleSelectEnd}
+          />
+        </FilterContainer>
       </div>
 
       {/* Table */}

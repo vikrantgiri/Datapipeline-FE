@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Button, Input, Table, message, Popconfirm, Pagination } from 'antd'
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
@@ -8,6 +8,7 @@ import client from '../../api/axiosInstance'
 import FilterDropdown from '../../components/Add-Form-Component/Filter-dropdown'
 import { getThirdPartyFilters } from '../../api/filter-api'
 import { PROTECTED_ROUTES } from '../../constants/routes'
+import { useFilterDropdown } from '../../hooks/useFilterDropdown'
 
 const { Search } = Input
 
@@ -38,8 +39,15 @@ const Credentials = () => {
   const [searchText, setSearchText] = useState('')
   const [thirdParyFilters, setThirdPartyFilters] = useState()
   const [selectedFilter, setSelectedFilter] = useState('')
-  const [showFilters, setShowFilters] = useState(false)
-  const filterRef = useRef<HTMLDivElement>(null)
+
+  // Use the custom hook for filter dropdown management
+  const {
+    showFilters,
+    filterRef,
+    buttonRef,
+    handleFilterButtonClick,
+    handleCloseFilters,
+  } = useFilterDropdown()
 
   const [pagination, setPagination] = useState<PaginationData>({
     current: 1,
@@ -111,25 +119,6 @@ const Credentials = () => {
       }
     }
     fetchFilter()
-  }, [])
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement
-
-      if (
-        filterRef.current &&
-        !filterRef.current.contains(target) &&
-        !document.querySelector('.ant-select-dropdown')?.contains(target)
-      ) {
-        setShowFilters(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
   }, [])
 
   const handleDelete = async (id: number) => {
@@ -275,6 +264,7 @@ const Credentials = () => {
             value={searchText}
           />
           <Button
+            ref={buttonRef}
             type='primary'
             style={{
               width: 100,
@@ -283,7 +273,7 @@ const Credentials = () => {
               gap: 7,
               textDecorationStyle: 'solid',
             }}
-            onClick={() => setShowFilters(prev => !prev)}
+            onClick={handleFilterButtonClick}
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -307,7 +297,7 @@ const Credentials = () => {
             <div className='flex items-center justify-between mb-4'>
               <h3 className='text-lg font-medium text-gray-900'>Filters</h3>
               <button
-                onClick={() => setShowFilters(false)}
+                onClick={handleCloseFilters}
                 className='text-gray-500 hover:text-gray-700'
               >
                 ✕
