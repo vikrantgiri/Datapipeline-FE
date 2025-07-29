@@ -7,7 +7,6 @@ import {
   Tag,
   Empty,
   Button,
-  Avatar,
   Typography,
   Row,
   Col,
@@ -283,18 +282,13 @@ const TriggerLeadByID: React.FC = () => {
   }
 
   return (
-    <div className=''>
+    <div className=' w-full h-full overflow-scroll'>
       <div className=' bg-gradient-to-br '>
         <div className='mx-auto'>
           {/* Header */}
           <Card className='mb-6 border-0' style={{ borderRadius: '16px' }}>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-4'>
-                <Avatar
-                  size={64}
-                  icon={<UserOutlined />}
-                  className='bg-gradient-to-r from-blue-400 to-purple-500'
-                />
                 <div>
                   <Title level={2} className='m-0 text-gray-800'>
                     Lead Profile

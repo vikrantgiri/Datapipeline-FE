@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { Button, Input, Table, message, Popconfirm, Pagination } from 'antd'
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
@@ -38,8 +38,9 @@ const Credentials = () => {
   const [searchText, setSearchText] = useState('')
   const [thirdParyFilters, setThirdPartyFilters] = useState()
   const [selectedFilter, setSelectedFilter] = useState('')
+  const [showFilters, setShowFilters] = useState(false)
+  const filterRef = useRef<HTMLDivElement>(null)
 
-  // Pagination state
   const [pagination, setPagination] = useState<PaginationData>({
     current: 1,
     pageSize: 10,
@@ -69,8 +70,6 @@ const Credentials = () => {
 
         if (Array.isArray(rawData)) {
           setData(rawData)
-
-          // Update pagination state
           setPagination(prev => ({
             ...prev,
             current: page,
@@ -95,12 +94,10 @@ const Credentials = () => {
     fetchData(1, pagination.pageSize)
   }, [fetchData, pagination.pageSize])
 
-  // Handle search with debounce
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       fetchData(1, pagination.pageSize)
     }, 500)
-
     return () => clearTimeout(timeoutId)
   }, [fetchData, pagination.pageSize])
 
@@ -116,14 +113,35 @@ const Credentials = () => {
     fetchFilter()
   }, [])
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+  
+
+      if (
+        filterRef.current &&
+        !filterRef.current.contains(target) &&
+        !document.querySelector('.ant-select-dropdown')?.contains(target)
+      ) {
+        setShowFilters(false)
+      }
+    }
+  
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+  
+
+
+
   const handleDelete = async (id: number) => {
     setLoading(true)
     try {
       await client.delete(`/credentials/${id}`)
       setData(prev => prev.filter(item => item.id !== id))
       message.success('Credential successfully deleted.')
-
-      // Refresh current page data
       fetchData(pagination.current, pagination.pageSize)
     } catch (error) {
       console.error('Error while delete.', error)
@@ -248,87 +266,96 @@ const Credentials = () => {
         </Link>
       </div>
 
-      <div className='grid grid-cols-1 lg:grid-cols-4 gap-6'>
-        {/* Main Content */}
-        <div className='lg:col-span-3 space-y-6'>
-          {/* Search Bar */}
-          <div className='relative'>
-            <Search
-              placeholder='Search credentials...'
-              allowClear
-              enterButton={<SearchOutlined />}
-              className='w-full'
-              onSearch={handleSearch}
-              onChange={e => setSearchText(e.target.value)}
-              value={searchText}
-            />
-          </div>
-
-          {/* Table */}
-          <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden'>
-            <Table
-              columns={columns}
-              dataSource={data}
-              rowKey='id'
-              loading={loading}
-              scroll={{ x: 'max-content' }}
-              pagination={false} // We'll handle pagination manually
-              size='middle'
-              className='custom-table'
-            />
-
-            {/* Custom Pagination */}
-            <div className='flex items-center justify-between px-6 py-4 border-t border-gray-200 '>
-              <div className='text-sm text-gray-600'>
-                Showing {(pagination.current - 1) * pagination.pageSize + 1} to{' '}
-                {Math.min(
-                  pagination.current * pagination.pageSize,
-                  pagination.total
-                )}{' '}
-                of {pagination.total} entries
-              </div>
-              <Pagination
-                current={pagination.current}
-                pageSize={pagination.pageSize}
-                total={pagination.total}
-                showSizeChanger
-                onChange={handleTableChange}
-                onShowSizeChange={handleTableChange}
-                pageSizeOptions={['10', '20', '50', '100']}
-                className='custom-pagination'
-              />
-            </div>
-          </div>
+      {/* Search Bar */}
+      <div className="relative">
+        <div className="flex items-center gap-2">
+          <Search
+            placeholder="Search credentials..."
+            allowClear
+            enterButton={<SearchOutlined />}
+            className="w-full"
+            onSearch={handleSearch}
+            onChange={e => setSearchText(e.target.value)}
+            value={searchText}
+          />
+          <Button
+            type='primary'
+            style={{
+              width: 100,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 7,
+              textDecorationStyle:"solid",
+            }}
+            onClick={() => setShowFilters(prev => !prev)}
+          >
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              width='16'
+              height='16'
+              fill='currentColor'
+              viewBox='0 0 16 16'
+            >
+              <path d='M6 10.117V15l4-2v-2.883l4.447-5.34A1 1 0 0 0 13.763 5H2.237a1 1 0 0 0-.684 1.777L6 10.117z' />
+            </svg>
+           Filters
+          </Button>
         </div>
 
-        {/* Filters Sidebar */}
-        <div className='lg:col-span-1'>
-          <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6'>
-            <div className='flex items-center mb-4'>
-              <svg
-                className='w-5 h-5 text-gray-500 mr-2'
-                fill='none'
-                stroke='currentColor'
-                viewBox='0 0 24 24'
+        {/* Filter Overlay */}
+        {showFilters && (
+          <div  ref={filterRef} className="absolute right-0 top-12 z-10 w-full sm:w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-6 mt-2">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-900">Filters</h3>
+              <button
+                onClick={() => setShowFilters(false)}
+                className="text-gray-500 hover:text-gray-700"
               >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth={2}
-                  d='M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z'
-                />
-              </svg>
-              <h3 className='text-lg font-medium text-gray-900'>Filters</h3>
+                ✕
+              </button>
             </div>
+            <FilterDropdown
+              title='By Third Party'
+              options={[...(thirdParyFilters || [])]}
+              onChange={value => setSelectedFilter(value)}
+              value={selectedFilter}
+            />
+          </div>
+        )}
+      </div>
 
-            <div className='space-y-4'>
-              <FilterDropdown
-                title='By Third Party'
-                options={[...(thirdParyFilters || [])]}
-                onChange={value => setSelectedFilter(value)}
-                value={selectedFilter}
-              />
+      {/* Table Section */}
+      <div className='relative w-full'>
+        <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden w-full'>
+          <Table
+            columns={columns}
+            dataSource={data}
+            rowKey='id'
+            loading={loading}
+            scroll={{ x: 'max-content' }}
+            pagination={false}
+            size='middle'
+            className='custom-table w-full'
+          />
+          <div className='flex items-center justify-between px-6 py-4 border-t border-gray-200'>
+            <div className='text-sm text-gray-600'>
+              Showing {(pagination.current - 1) * pagination.pageSize + 1} to{' '}
+              {Math.min(
+                pagination.current * pagination.pageSize,
+                pagination.total
+              )}{' '}
+              of {pagination.total} entries
             </div>
+            <Pagination
+              current={pagination.current}
+              pageSize={pagination.pageSize}
+              total={pagination.total}
+              showSizeChanger
+              onChange={handleTableChange}
+              onShowSizeChange={handleTableChange}
+              pageSizeOptions={['10', '20', '50', '100']}
+              className='custom-pagination'
+            />
           </div>
         </div>
       </div>

@@ -140,8 +140,27 @@ const SnowFlake = () => {
       key: 'sql_script',
       width: 100,
       render: (script: string) => (
-        <Tooltip title={script}>
-          <div className='w-full max-w-[380px] overflow-hidden text-ellipsis whitespace-nowrap'>
+        <Tooltip
+          title={
+            <div
+              style={{
+                maxHeight: '350px',
+                overflowY: 'auto',
+                whiteSpace: 'pre-wrap',
+                fontSize: '13px',
+              }}
+            >
+              {script}
+            </div>
+          }
+          placement='bottomLeft'
+          color='blue'
+          overlayStyle={{
+            maxWidth: '500px',
+          }}
+          mouseEnterDelay={0.3}
+        >
+          <div className='w-full max-w-[380px] overflow-hidden text-ellipsis whitespace-nowrap cursor-help'>
             {script}
           </div>
         </Tooltip>

@@ -1,6 +1,6 @@
-// import React, { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Form, Input, Button, Select } from 'antd'
-// import client from '../../api/axiosInstance'
+import client from '../../api/axiosInstance'
 const { Option } = Select
 
 interface SnowflakeFormProps {
@@ -10,25 +10,25 @@ interface SnowflakeFormProps {
 }
 
 const SnowflakeForm: React.FC<SnowflakeFormProps> = ({ form, onFinish }) => {
-  // const [scheduled, setScheduled] = React.useState<string[]>([])
+  const [scheduled, setScheduled] = React.useState<string[]>([])
 
-  // useEffect(() => {
-  //   const fetchScheduledOptions = async () => {
-  //     try {
-  //       const res = await client.get('/filter/get-scheduled-options')
+  useEffect(() => {
+    const fetchScheduledOptions = async () => {
+      try {
+        const res = await client.get('/filter/get-schedule-types')
 
-  //       if (res?.data?.error == null) {
-  //         const parsed = res.data.data.map(
-  //           (item: any) => Object.values(item)[0]
-  //         )
-  //         setScheduled(parsed)
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching scheduled options.', error)
-  //     }
-  //   }
-  //   fetchScheduledOptions()
-  // }, [])
+        if (res?.data?.error == null) {
+          const parsed = res.data.data.map(
+            (item: any) => Object.values(item)[0]
+          )
+          setScheduled(parsed)
+        }
+      } catch (error) {
+        console.error('Error fetching scheduled options.', error)
+      }
+    }
+    fetchScheduledOptions()
+  }, [])
   return (
     <>
       <div className='max-h-[600px] overflow-y-auto p-4 rounded'>
@@ -79,14 +79,14 @@ const SnowflakeForm: React.FC<SnowflakeFormProps> = ({ form, onFinish }) => {
             rules={[{ required: true, message: 'Please select a schedule' }]}
           >
             <Select placeholder='Select schedule'>
-              <Option value='Daily'>Daily</Option>
+              {/* <Option value='Daily'>Daily</Option>
               <Option value='Weekly'>Weekly</Option>
-              <Option value='Monthly'>Monthly</Option>
-              {/* {scheduled.map((option: string, index: number) => (
+              <Option value='Monthly'>Monthly</Option> */}
+              {scheduled.map((option: string, index: number) => (
                 <Option key={index} value={option}>
                   {option}
                 </Option>
-              ))} */}
+              ))}
             </Select>
           </Form.Item>
         </Form>
