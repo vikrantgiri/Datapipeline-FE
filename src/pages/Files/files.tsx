@@ -138,10 +138,9 @@ const Files = () => {
     }
   }
 
-  const handleDownloadCsv = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+  const handleDownloadCsv = async (id: number) => {
     try {
-      const res = await client.get('/files/download-csv', {
+      const res = await client.get(`/files/download-csv/${id}`, {
         responseType: 'blob',
       })
       if (res.status === 200) {
@@ -243,7 +242,7 @@ const Files = () => {
       render: (_, record) => (
         <div className='flex items-center space-x-2'>
           <Button
-            onClick={handleDownloadCsv}
+            onClick={() => handleDownloadCsv(record.id)}
             className='inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors duration-200'
           >
             <Download className='w-3 h-3 mr-1' />
