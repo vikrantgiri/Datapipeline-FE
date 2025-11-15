@@ -36,6 +36,9 @@ const AddInputFileDefinition = lazy(
 const ChangeInputFileDefinition = lazy(
   () => import('../pages/Input-File-Definitions/ChangeInputFileDefinition')
 )
+const InputFileDownloads = lazy(
+  () => import('../pages/InputFIleDownloads/InputFIleDownloads')
+)
 
 // Prep Mails
 const PrepMails = lazy(() => import('../pages/prep-mails/prepMails'))
@@ -151,6 +154,13 @@ export const protectedRoutes: RouteConfig[] = [
     requiresAuth: true,
     breadcrumb: ['Input File Definitions', 'Change'],
   },
+  {
+    path: PROTECTED_ROUTES.INPUT_FILE_DOWNLOADS,
+    element: <InputFileDownloads />,
+    title: 'Input File Downloads',
+    requiresAuth: true,
+    breadcrumb: ['Input File Downloads'],
+  },
 
   // Prep Mails
   {
