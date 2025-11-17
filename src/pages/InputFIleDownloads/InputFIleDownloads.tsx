@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, List, Typography, message, Spin, Alert } from 'antd'
-import { DownloadOutlined, FileTextOutlined } from '@ant-design/icons'
+import {  FileTextOutlined } from '@ant-design/icons'
 import client from '../../api/axiosInstance'
 import { toast } from 'react-toastify'
 
@@ -132,15 +132,15 @@ const InputFileDownloads = () => {
               >
                 Download Top 500 (.csv)
               </Button>,
-              <Button
-                key='download-full'
-                type='primary'
-                icon={<DownloadOutlined />}
-                loading={downloading[`${fileName}-full`]}
-                onClick={() => handleDownload(fileName, 'full')}
-              >
-                Download Full (.zip)
-              </Button>,
+              // <Button
+              //   key='download-full'
+              //   type='primary'
+              //   icon={<DownloadOutlined />}
+              //   loading={downloading[`${fileName}-full`]}
+              //   onClick={() => handleDownload(fileName, 'full')}
+              // >
+              //   Download Full (.zip)
+              // </Button>,
             ]}
           >
             <Text strong>{fileName}</Text>
