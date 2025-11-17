@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, List, Typography, message, Spin, Alert } from 'antd'
-import {  FileTextOutlined } from '@ant-design/icons'
+import { FileTextOutlined } from '@ant-design/icons'
 import client from '../../api/axiosInstance'
 import { toast } from 'react-toastify'
 
