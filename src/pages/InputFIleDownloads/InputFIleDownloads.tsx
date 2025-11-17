@@ -23,7 +23,7 @@ const InputFileDownloads = () => {
       try {
         // 1. Fetch the list of files
         const res = await client.get('/prescreen/list')
-        
+
         // Assuming the response data is an array of strings
         if (Array.isArray(res.data.data.files)) {
           setFileList(res.data.data.files)
@@ -33,7 +33,6 @@ const InputFileDownloads = () => {
           setFileList([])
           setError('File list format is incorrect.')
         }
-
       } catch (err) {
         console.error('Failed to fetch file list.', err)
         setError('Could not load the list of files. Please try again.')
@@ -49,9 +48,9 @@ const InputFileDownloads = () => {
   const handleDownload = async (fileName: string, type: 'full' | '500') => {
     const downloadKey = `${fileName}-${type}`
     setDownloading(prev => ({ ...prev, [downloadKey]: true }))
-    
+
     try {
-      const res = await client.get('/download-input-file', {
+      const res = await client.get('/prescreen/download/input-file', {
         params: {
           file_name: fileName,
           type: type,
@@ -63,29 +62,27 @@ const InputFileDownloads = () => {
       // Create a URL for the blob
       const blob = new Blob([res.data])
       const url = window.URL.createObjectURL(blob)
-      
+
       // Create a temporary link element to trigger the download
       const a = document.createElement('a')
       a.style.display = 'none'
       a.href = url
-      
+
       // Set the appropriate filename with extension
-      const downloadFileName = type === '500'
-        ? `${fileName}_top500.csv`
-        : `${fileName}_full.zip`
-      
+      const downloadFileName =
+        type === '500' ? `${fileName}_top500.csv` : `${fileName}_full.zip`
+
       a.download = downloadFileName
-      
+
       // Trigger the download
       document.body.appendChild(a)
       a.click()
-      
+
       // Clean up
       window.URL.revokeObjectURL(url)
       a.remove()
-      
+
       message.success(`Download started for ${downloadFileName}`)
-      
     } catch (err) {
       console.error('Failed to download file.', err)
       message.error(`Failed to download ${fileName}.`)
@@ -97,26 +94,38 @@ const InputFileDownloads = () => {
 
   const renderContent = () => {
     if (loading) {
-      return <Spin size="large" className="flex justify-center items-center h-64" />
+      return (
+        <Spin
+          size='large'
+          className='flex justify-center items-center h-full'
+        />
+      )
     }
 
     if (error) {
-      return <Alert message="Error" description={error} type="error" showIcon />
+      return <Alert message='Error' description={error} type='error' showIcon />
     }
 
     if (fileList.length === 0) {
-      return <Alert message="No files available for download." type="info" showIcon />
+      return (
+        <Alert
+          message='No files available for download.'
+          type='info'
+          showIcon
+        />
+      )
     }
 
     return (
       <List
+        className='w-full'
         bordered
         dataSource={fileList}
         renderItem={fileName => (
           <List.Item
             actions={[
               <Button
-                key="download-500"
+                key='download-500'
                 icon={<FileTextOutlined />}
                 loading={downloading[`${fileName}-500`]}
                 onClick={() => handleDownload(fileName, '500')}
@@ -124,8 +133,8 @@ const InputFileDownloads = () => {
                 Download Top 500 (.csv)
               </Button>,
               <Button
-                key="download-full"
-                type="primary"
+                key='download-full'
+                type='primary'
                 icon={<DownloadOutlined />}
                 loading={downloading[`${fileName}-full`]}
                 onClick={() => handleDownload(fileName, 'full')}
@@ -154,9 +163,9 @@ const InputFileDownloads = () => {
           </p>
         </div>
       </div>
-      
+
       {/* File List */}
-      <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden'>
+      <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex items-center justify-center'>
         {renderContent()}
       </div>
     </div>

@@ -3,13 +3,12 @@ import { Button, Input, Table, message, Popconfirm, Pagination } from 'antd'
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import type { ColumnsType } from 'antd/es/table'
-import {  Download, Trash2 } from 'lucide-react'
+import { Download, Trash2 } from 'lucide-react'
 import client from '../../api/axiosInstance'
 import FilterDropdown from '../../components/Add-Form-Component/Filter-dropdown'
 import { getTaskTypeFilters, getThirdPartyFilters } from '../../api/filter-api'
 import { PROTECTED_ROUTES } from '../../constants/routes'
 import { toast } from 'react-toastify'
-
 
 const { Search } = Input
 
@@ -310,7 +309,6 @@ const InputFileDefinition = () => {
         </Button>
       ),
     },
-   
   ]
 
   const useTabuOptions = [
@@ -322,7 +320,7 @@ const InputFileDefinition = () => {
     <>
       <div className='flex flex-col gap-6'>
         {/* Header */}
-        
+
         <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
           <div>
             <h1 className='text-3xl font-bold text-gray-900'>

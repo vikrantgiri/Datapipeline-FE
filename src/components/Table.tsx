@@ -1,7 +1,6 @@
 import { Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import DownloadButton from "./DownloadButton";
-
+import DownloadButton from './Downloadbutton/DownloadButton'
 
 interface CustomTableProps<T> {
   data: T[]
