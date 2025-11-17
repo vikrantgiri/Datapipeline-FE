@@ -62,6 +62,11 @@ const Sidebar: React.FC = () => {
       icon: <FileText size={18} />,
     },
     {
+      path: PROTECTED_ROUTES.INPUT_FILE_DOWNLOADS,
+      label: 'Input File Downloads',
+      icon: <Download size={18} />,
+    },
+    {
       path: PROTECTED_ROUTES.PREP_MAILS,
       label: 'Prep Mails',
       icon: <Mail size={18} />,
