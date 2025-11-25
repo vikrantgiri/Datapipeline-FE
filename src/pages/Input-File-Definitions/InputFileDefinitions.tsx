@@ -3,7 +3,7 @@ import { Button, Input, Table, message, Popconfirm, Pagination } from 'antd'
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import type { ColumnsType } from 'antd/es/table'
-import { Download, Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import client from '../../api/axiosInstance'
 import FilterDropdown from '../../components/Add-Form-Component/Filter-dropdown'
 import { getTaskTypeFilters, getThirdPartyFilters } from '../../api/filter-api'
@@ -289,26 +289,7 @@ const InputFileDefinition = () => {
           </Popconfirm>
         </div>
       ),
-    },
-    {
-      title: 'ACTIONS',
-      key: 'actions',
-      // ... your existing actions render
-    },
-    {
-      title: 'Download',
-      key: 'download',
-      width: 100, // 100 width is likely enough
-      render: () => (
-        <Button
-          icon={<Download size={14} />}
-          onClick={() => navigate(PROTECTED_ROUTES.INPUT_FILE_DOWNLOADS)}
-          size='small'
-        >
-          Files
-        </Button>
-      ),
-    },
+    }
   ]
 
   const useTabuOptions = [
