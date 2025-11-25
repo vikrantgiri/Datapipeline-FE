@@ -289,7 +289,7 @@ const InputFileDefinition = () => {
           </Popconfirm>
         </div>
       ),
-    }
+    },
   ]
 
   const useTabuOptions = [
