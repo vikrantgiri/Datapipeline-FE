@@ -62,7 +62,6 @@ const InputFileDownloads = () => {
       if (type === 'full') {
         const presignedUrl = res?.data?.data?.download_url
 
-
         window.location.href = presignedUrl
 
         return
