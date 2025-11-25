@@ -56,20 +56,17 @@ const InputFileDownloads = () => {
           type: type,
         },
         // Crucial: Tell Axios to expect a binary file (blob)
-        responseType: type==='full' ? 'json' : 'blob',
+        responseType: type === 'full' ? 'json' : 'blob',
       })
 
-
       if (type === 'full') {
-        const presignedUrl = res?.data?.data?.download_url;
-      
-        console.log("Presigned URL:", presignedUrl);
-      
-        window.location.href = presignedUrl;
-      
-        return;
+        const presignedUrl = res?.data?.data?.download_url
+
+
+        window.location.href = presignedUrl
+
+        return
       }
-      
 
       // Create a URL for the blob
       const blob = new Blob([res.data])
