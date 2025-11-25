@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, List, Typography, message, Spin, Alert } from 'antd'
-import { FileTextOutlined } from '@ant-design/icons'
+import { FileTextOutlined, DownloadOutlined } from '@ant-design/icons'
 import client from '../../api/axiosInstance'
 import { toast } from 'react-toastify'
 
@@ -56,8 +56,20 @@ const InputFileDownloads = () => {
           type: type,
         },
         // Crucial: Tell Axios to expect a binary file (blob)
-        responseType: 'blob',
+        responseType: type==='full' ? 'json' : 'blob',
       })
+
+
+      if (type === 'full') {
+        const presignedUrl = res?.data?.data?.download_url;
+      
+        console.log("Presigned URL:", presignedUrl);
+      
+        window.location.href = presignedUrl;
+      
+        return;
+      }
+      
 
       // Create a URL for the blob
       const blob = new Blob([res.data])
@@ -132,15 +144,15 @@ const InputFileDownloads = () => {
               >
                 Download Top 500 (.csv)
               </Button>,
-              // <Button
-              //   key='download-full'
-              //   type='primary'
-              //   icon={<DownloadOutlined />}
-              //   loading={downloading[`${fileName}-full`]}
-              //   onClick={() => handleDownload(fileName, 'full')}
-              // >
-              //   Download Full (.zip)
-              // </Button>,
+              <Button
+                key='download-full'
+                type='primary'
+                icon={<DownloadOutlined />}
+                loading={downloading[`${fileName}-full`]}
+                onClick={() => handleDownload(fileName, 'full')}
+              >
+                Download Full (.zip)
+              </Button>,
             ]}
           >
             <Text strong>{fileName}</Text>
