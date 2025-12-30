@@ -103,16 +103,22 @@ const PrepMails = () => {
     e.preventDefault()
     try {
       const res = await client.get('/prep-mail/download-csv', {
-        responseType: 'blob',
+        responseType: 'json',
       })
       if (res.status === 200) {
-        const blob = new Blob([res.data], { type: 'text/csv' })
-        const url = window.URL.createObjectURL(blob)
+        const { download_url, file_name } = res.data.data
+
+        if (!download_url) {
+          throw new Error('Download URL missing')
+        }
+
         const a = document.createElement('a')
-        a.href = url
-        a.download = 'prep-mail.csv'
+        a.href = download_url
+        a.download = file_name || 'prep-mail.csv'
+        document.body.appendChild(a)
         a.click()
-        window.URL.revokeObjectURL(url)
+        a.remove()
+
         toast.success('CSV downloaded successfully')
       }
     } catch (error: any) {
